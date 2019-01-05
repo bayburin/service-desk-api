@@ -4,7 +4,9 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.3.1'
 
 gem 'awesome_print'
+gem 'doorkeeper'
 gem 'colorize'
+gem 'responders'
 gem 'rubocop', require: false
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -45,12 +47,13 @@ group :development do
 end
 
 group :test do
+  gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '~> 3.8'
   gem 'rspec-its'
   gem 'shoulda-matchers'
-  gem 'database_cleaner'
+  gem 'webmock'
 end
 
 
