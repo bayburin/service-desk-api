@@ -4,4 +4,10 @@ Rails.application.routes.draw do
   end
 
   get 'users/info', to: 'users#info'
+
+  namespace :api, constraints: { format: 'json' } do
+    namespace :v1 do
+      resources :categories
+    end
+  end
 end

@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::API
-  before_action :doorkeeper_authorize!
-  respond_to :json
+  # before_action :doorkeeper_authorize!
 
   protected
 

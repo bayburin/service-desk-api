@@ -3,10 +3,12 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.3.1'
 
+gem 'active_model_serializers'
 gem 'awesome_print'
-gem 'doorkeeper'
 gem 'colorize'
-gem 'responders'
+gem 'doorkeeper'
+gem 'oj'
+gem 'oj_mimic_json'
 gem 'rubocop', require: false
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
