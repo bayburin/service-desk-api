@@ -37,6 +37,7 @@ module ServiceDeskBackend
     config.api_only = true
 
     config.generators do |g|
+      g.orm :active_record
       g.test_framework :rspec,
                        fixtures: true,
                        routing_specs: false,

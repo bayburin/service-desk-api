@@ -1,0 +1,5 @@
+ru:
+  mongoid:
+    attributes:
+      ticket_property:
+        name: 'Имя'

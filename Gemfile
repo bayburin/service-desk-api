@@ -7,6 +7,7 @@ gem 'active_model_serializers'
 gem 'awesome_print'
 gem 'colorize'
 gem 'doorkeeper'
+gem 'mongoid'
 gem 'oj'
 gem 'oj_mimic_json'
 gem 'rubocop', require: false
