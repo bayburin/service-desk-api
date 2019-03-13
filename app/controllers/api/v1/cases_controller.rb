@@ -4,7 +4,7 @@ module Api
       impressionist
 
       def index
-        render json: Case.all
+        render json: policy_scope(Case).all
       end
 
       def show

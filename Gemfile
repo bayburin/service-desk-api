@@ -12,6 +12,7 @@ gem 'impressionist'
 gem 'mongoid'
 gem 'oj'
 gem 'oj_mimic_json'
+gem 'pundit'
 gem 'rubocop', require: false
 gem 'thinking-sphinx'
 
