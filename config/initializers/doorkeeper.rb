@@ -13,7 +13,7 @@ Doorkeeper.configure do
   end
 
   resource_owner_from_credentials do |_routes|
-    auth = Doorkeeper::Auth.new(params[:username], params[:password])
+    auth = Api::V1::Doorkeeper::Auth.new(params[:username], params[:password])
     auth.run ? UserIss.find_by(tn: auth.data['tn']) : nil
   end
 

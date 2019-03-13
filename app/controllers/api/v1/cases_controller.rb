@@ -3,6 +3,8 @@ module Api
     class CasesController < BaseController
       impressionist
 
+      before_action :doorkeeper_authorize!
+
       def index
         render json: policy_scope(Case).all
       end
