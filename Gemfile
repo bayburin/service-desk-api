@@ -11,6 +11,7 @@ gem 'mongoid'
 gem 'oj'
 gem 'oj_mimic_json'
 gem 'rubocop', require: false
+gem 'thinking-sphinx'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.2'

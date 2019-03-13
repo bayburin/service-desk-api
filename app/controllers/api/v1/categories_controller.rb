@@ -1,9 +1,8 @@
 module Api
   module V1
-    class CategoriesController < ApplicationController
+    class CategoriesController < BaseController
       def index
-        # render json: Category.all
-        render json: TicketProperty.all
+        render json: Category.all
       end
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_06_102013) do
+ActiveRecord::Schema.define(version: 2019_03_12_035839) do
 
   create_table "auth_center_tokens", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "resource_owner_id"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_102013) do
     t.integer "popularity", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "delta", default: true
     t.index ["popularity"], name: "index_categories_on_popularity"
   end
 
@@ -55,6 +56,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_102013) do
     t.integer "popularity", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "delta", default: true
     t.index ["category_id"], name: "index_services_on_category_id"
     t.index ["popularity"], name: "index_services_on_popularity"
   end
@@ -89,6 +91,7 @@ ActiveRecord::Schema.define(version: 2019_03_06_102013) do
     t.integer "popularity", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "delta", default: true
     t.index ["popularity"], name: "index_tickets_on_popularity"
     t.index ["service_id"], name: "index_tickets_on_service_id"
   end
