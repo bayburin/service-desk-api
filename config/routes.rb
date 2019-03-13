@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   namespace :api, constraints: { format: 'json' } do
     namespace :v1 do
       resources :categories
+      resources :cases, params: :case_id
       # Глобальный поиск
       get :search, to: 'base#search'
     end

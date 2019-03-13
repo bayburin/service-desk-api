@@ -45,7 +45,7 @@ module Doorkeeper
       raise 'Не удалось получить данные пользователя' unless user_info.run
 
       @data = user_info.data
-      AuthCenterToken.create!(@token_data.merge(resource_owner_id: data['id_tn']))
+      AuthCenterToken.create!(@token_data.merge(resource_owner_id: data['tn']))
     end
   end
 end

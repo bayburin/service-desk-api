@@ -57,7 +57,7 @@ module Doorkeeper
 
     it 'creates AuthCenterToken with resource_owner_id from user_data' do
       expect { subject.run }.to change(AuthCenterToken, :count).by(1)
-      expect(AuthCenterToken.last.resource_owner_id).to eq user_data['id_tn']
+      expect(AuthCenterToken.last.resource_owner_id).to eq user_data['tn']
     end
   end
 end
