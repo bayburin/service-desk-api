@@ -4,6 +4,7 @@ class CreateSolutions < ActiveRecord::Migration[5.2]
       t.references :ticket
       t.text :reason
       t.text :solution
+      t.text :link
       t.timestamps
     end
   end

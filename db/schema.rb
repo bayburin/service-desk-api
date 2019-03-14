@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
-    t.string "short_description"
+    t.text "short_description"
     t.integer "popularity", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
   create_table "services", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "category_id"
     t.string "name"
-    t.string "short_description"
+    t.text "short_description"
     t.text "install"
     t.boolean "is_sla", null: false
     t.string "sla"

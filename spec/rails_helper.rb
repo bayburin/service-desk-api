@@ -7,6 +7,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 require 'database_cleaner'
 require 'webmock/rspec'
+require 'thinking_sphinx/test'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -75,6 +76,8 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.include JsonSpec::Helpers
 end
 
 Shoulda::Matchers.configure do |config|
@@ -84,3 +87,4 @@ Shoulda::Matchers.configure do |config|
   end
 end
 WebMock.disable_net_connect!
+ThinkingSphinx::Deltas.suspend!

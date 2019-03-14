@@ -56,6 +56,8 @@ end
 group :test do
   gem 'database_cleaner'
   gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'json_spec'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '~> 3.8'
   gem 'rspec-its'
