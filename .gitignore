@@ -33,3 +33,4 @@ config/development.sphinx.conf
 config/thinking_sphinx.yml
 db/sphinx
 .env
+.ruby-version
