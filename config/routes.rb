@@ -5,6 +5,10 @@ Rails.application.routes.draw do
 
   namespace :api, constraints: { format: 'json' } do
     namespace :v1 do
+      resources :dashboard, only: :index do
+        # Глобальный поиск
+        get :search, to: 'dashboard#search', params: :search, on: :collection
+      end
       resources :categories, only: %i[index show] do
         resources :services, only: :index
       end
@@ -14,8 +18,6 @@ Rails.application.routes.draw do
       resources :cases, params: :case_id
       # Получение данных о пользователе
       get 'users/info', to: 'users#info'
-      # Глобальный поиск
-      get :search, to: 'base#search', params: :search
     end
   end
 end

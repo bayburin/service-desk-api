@@ -47,13 +47,14 @@ tags = Tag.create(
   [
     { name: 'сеть' },
     { name: 'локальная' },
-    { name: 'закрытая' }
+    { name: 'закрытая' },
+    { name: 'регистрация' }
   ]
 )
 
 ticket = Ticket.create(
   service: Service.find_by(name: 'Подключение к ЗЛС'),
-  name: 'Как зарегестрироваться в закрытой локальной сети?'
+  name: 'Как зарегистрироваться в закрытой локальной сети?'
 )
 
 ticket.tags << tags

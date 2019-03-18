@@ -4,7 +4,6 @@ class ServiceSerializer < ActiveModel::Serializer
   has_many :tickets, if: :include_tickets?
 
   def include_tickets?
-    Rails.logger.info "#{object.without_associations}".red
     !object.without_associations
   end
 end

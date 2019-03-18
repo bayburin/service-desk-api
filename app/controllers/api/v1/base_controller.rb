@@ -3,14 +3,6 @@ module Api
     class BaseController < ApplicationController
       include Pundit
 
-      def search
-        data = ThinkingSphinx
-                 .search(params[:search], order: 'popularity DESC')
-                 .each { |s| s.without_associations = params[:without_associations].to_s == 'true' }
-
-        render json: data
-      end
-
       protected
 
       def current_user
