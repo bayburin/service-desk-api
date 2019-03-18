@@ -4,7 +4,11 @@ module Api
       include Pundit
 
       def search
-        render json: ThinkingSphinx.search(params[:search], order: 'popularity DESC')
+        data = ThinkingSphinx
+                 .search(params[:search], order: 'popularity DESC')
+                 .each { |s| s.without_associations = params[:without_associations].to_s == 'true' }
+
+        render json: data
       end
 
       protected

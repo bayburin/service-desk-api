@@ -7,5 +7,7 @@ class Ticket < ApplicationRecord
 
   belongs_to :service
 
-  validates :service_id, :ticket, presence: true
+  validates :service_id, :name, presence: true
+
+  attr_accessor :without_associations
 end

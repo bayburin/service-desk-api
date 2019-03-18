@@ -7,4 +7,6 @@ class Service < ApplicationRecord
 
   validates :name, presence: true
   validates :is_sla, inclusion: { in: [true, false] }
+
+  attr_accessor :without_associations
 end

@@ -53,7 +53,7 @@ tags = Tag.create(
 
 ticket = Ticket.create(
   service: Service.find_by(name: 'Подключение к ЗЛС'),
-  ticket: 'Как зарегестрироваться в закрытой локальной сети?'
+  name: 'Как зарегестрироваться в закрытой локальной сети?'
 )
 
 ticket.tags << tags

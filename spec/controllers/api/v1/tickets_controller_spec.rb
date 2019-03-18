@@ -17,7 +17,7 @@ module Api
           end
         end
 
-        %w[id service_id ticket popularity solutions tags].each do |attr|
+        %w[id service_id name popularity solutions tags].each do |attr|
           it "has #{attr} attribute" do
             get :index, params: params, format: :json
 

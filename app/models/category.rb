@@ -6,4 +6,6 @@ class Category < ApplicationRecord
   validates :name, presence: true
 
   accepts_nested_attributes_for :services
+
+  attr_accessor :without_associations
 end

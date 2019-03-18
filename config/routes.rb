@@ -15,7 +15,7 @@ Rails.application.routes.draw do
       # Получение данных о пользователе
       get 'users/info', to: 'users#info'
       # Глобальный поиск
-      get :search, to: 'base#search'
+      get :search, to: 'base#search', params: :search
     end
   end
 end
