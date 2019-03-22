@@ -9,4 +9,6 @@ class Service < ApplicationRecord
   validates :is_sla, inclusion: { in: [true, false] }
 
   attr_accessor :without_associations
+
+  scope :by_popularity, -> { order('popularity DESC') }
 end

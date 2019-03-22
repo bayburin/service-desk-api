@@ -2,8 +2,8 @@ module Api
   module V1
     class DashboardController < BaseController
       def index
-        categories = Category.all.each { |s| s.without_associations = params[:without_associations].to_s == 'true' }
-        services = Service.all.includes(:tickets)
+        categories = Category.all.by_popularity.each { |s| s.without_associations = params[:without_associations].to_s == 'true' }
+        services = Service.all.by_popularity.includes(:tickets)
 
         render json: Dashboard.new(categories, services), serializer: DashboardSerializer, include: '**'
       end
