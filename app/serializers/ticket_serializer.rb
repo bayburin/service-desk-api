@@ -3,4 +3,9 @@ class TicketSerializer < ActiveModel::Serializer
 
   has_many :solutions
   has_many :tags
+  belongs_to :service, if: :include_service?
+
+  def include_service?
+    !(object.without_associations || object.without_service)
+  end
 end

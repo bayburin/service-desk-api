@@ -9,7 +9,7 @@ class Ticket < ApplicationRecord
 
   validates :service_id, :name, presence: true
 
-  attr_accessor :without_associations
+  attr_accessor :without_associations, :without_service
 
   scope :by_popularity, -> { order('popularity DESC') }
 end

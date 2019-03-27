@@ -8,7 +8,7 @@ class Service < ApplicationRecord
   validates :name, presence: true
   validates :is_sla, inclusion: { in: [true, false] }
 
-  attr_accessor :without_associations
+  attr_accessor :without_associations, :without_category
 
   scope :by_popularity, -> { order('popularity DESC') }
 end

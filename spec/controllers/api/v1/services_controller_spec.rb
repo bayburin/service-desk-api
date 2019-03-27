@@ -35,6 +35,12 @@ module Api
           expect(response.status).to eq 200
         end
       end
+
+      describe 'GET #show' do
+        it 'loads all tickets with specified service_id'
+        it 'has attributes'
+        it 'respond with 200 status'
+      end
     end
   end
 end

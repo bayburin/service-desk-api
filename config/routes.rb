@@ -9,11 +9,11 @@ Rails.application.routes.draw do
         # Глобальный поиск
         get :search, to: 'dashboard#search', params: :search, on: :collection
       end
-      resources :categories, only: %i[index show] do
-        resources :services, only: :index
+      resources :categories, only: :index do
+        resources :services, only: %i[index show]
       end
       resources :services, only: :show do
-        resources :tickets, only: %i[index show]
+        resources :tickets, only: :show
       end
       resources :cases, params: :case_id
       # Получение данных о пользователе
