@@ -8,23 +8,24 @@ module Api
         let!(:services) { create_list(:service, size) }
         let(:params) { { without_associations: 'true' } }
 
-        it 'includes services and controllers' do
-          get :index, params: params, format: :json
+        before { get :index, params: params, format: :json }
 
+        it 'includes services and controllers' do
           expect(response.body).to have_json_path('categories')
           expect(response.body).to have_json_path('services')
         end
 
-        it 'loads all services' do
-          get :index, params: params, format: :json
-
+        it 'loads all categories and services' do
           expect(response.body).to have_json_size(size).at_path('categories')
           expect(response.body).to have_json_size(size).at_path('services')
         end
 
-        it 'respond with 200 status' do
-          get :index, params: params, format: :json
+        it 'does not load associations' do
+          expect(response.body).not_to have_json_path('categories/0/service')
+          expect(response.body).not_to have_json_path('services/0/tickets')
+        end
 
+        it 'respond with 200 status' do
           expect(response.status).to eq 200
         end
       end

@@ -3,52 +3,63 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe TicketsController, type: :controller do
-      # describe 'GET #index' do
-      #   let(:service) { create(:service) }
-      #   let!(:tickets) { create_list(:ticket, 3, service: service) }
-      #   let(:params) { { service_id: service.id } }
+      describe 'GET #index' do
+        let(:service) { create(:service) }
+        let!(:tickets) { create_list(:ticket, 3, service: service) }
+        let(:params) { { service_id: service.id } }
 
-      #   it 'loads all tickets with specified service_id' do
-      #     get :index, params: params, format: :json
+        before { get :index, params: params, format: :json }
 
-      #     expect(response.body).to have_json_size(service.tickets.count)
-      #     parse_json(response.body).each do |t|
-      #       expect(t['service_id']).to eq service.id
-      #     end
-      #   end
+        it 'loads all tickets with specified service_id' do
+          expect(response.body).to have_json_size(service.tickets.count)
+          parse_json(response.body).each do |t|
+            expect(t['service_id']).to eq service.id
+          end
+        end
 
-      #   %w[id service_id name popularity answers tags].each do |attr|
-      #     it "has #{attr} attribute" do
-      #       get :index, params: params, format: :json
+        %w[id service_id name popularity answers service].each do |attr|
+          it "has #{attr} attribute" do
+            expect(response.body).to have_json_path("0/#{attr}")
+          end
+        end
 
-      #       expect(response.body).to have_json_path("0/#{attr}")
-      #     end
-      #   end
+        it 'includes :category attribute into service' do
+          expect(response.body).to have_json_path('0/service/category')
+        end
 
-      #   it 'respond with 200 status' do
-      #     get :index, params: params, format: :json
-
-      #     expect(response.status).to eq 200
-      #   end
-      # end
+        it 'respond with 200 status' do
+          expect(response.status).to eq 200
+        end
+      end
 
       describe 'GET #show' do
         let(:service) { create(:service) }
-        let!(:tickets) { create_list(:ticket, 3, service: service) }
-        let(:selected_ticket) { tickets.first }
-        let(:answers) { create_list(:answer, 3, ticket: selected_ticket) }
-        let(:params) { { service_id: service.id, id: selected_ticket.id } }
+        let(:tickets) { create_list(:ticket, 3, service: service) }
+        let!(:ticket) { tickets.first }
+        let(:params) { { id: ticket.id } }
+
+        before { get :show, params: params, format: :json }
 
         it 'loads ticket' do
-          get :show, params: params, format: :json
-
-          expect(parse_json(response.body)['id']).to eq selected_ticket.id
+          expect(parse_json(response.body)['id']).to eq ticket.id
         end
 
-        it 'loads all answers for ticket' do
-          get :show, params: params, format: :json
+        %w[id service_id name popularity service].each do |attr|
+          it "has #{attr} attribute" do
+            expect(response.body).to have_json_path(attr)
+          end
+        end
 
-          expect(response.body).to have_json_path('answers')
+        it 'does not include answers' do
+          expect(response.body).not_to have_json_path('answers')
+        end
+
+        it 'includes :category attribute into service' do
+          expect(response.body).to have_json_path('service/category')
+        end
+
+        it 'respond with 200 status' do
+          expect(response.status).to eq 200
         end
       end
     end

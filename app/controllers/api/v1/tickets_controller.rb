@@ -1,12 +1,16 @@
 module Api
   module V1
     class TicketsController < BaseController
-      # def index
-      #   render json: Service.find(params[:service_id]).tickets
-      # end
+      impressionist
+
+      def index
+        tickets = Ticket.where(service_id: params[:service_id]).includes(:answers, service: :category)
+
+        render json: tickets, include: 'answers,service.category'
+      end
 
       def show
-        render json: Ticket.find_by(id: params[:id], service_id: params[:service_id])
+        render json: Ticket.find(params[:id]), include: 'service.category'
       end
     end
   end
