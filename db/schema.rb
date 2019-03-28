@@ -12,6 +12,16 @@
 
 ActiveRecord::Schema.define(version: 2019_03_13_014515) do
 
+  create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "ticket_id"
+    t.text "reason"
+    t.text "answer"
+    t.text "link"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ticket_id"], name: "index_answers_on_ticket_id"
+  end
+
   create_table "auth_center_tokens", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "resource_owner_id"
     t.string "token_type"
@@ -87,16 +97,6 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
     t.boolean "delta", default: true
     t.index ["category_id"], name: "index_services_on_category_id"
     t.index ["popularity"], name: "index_services_on_popularity"
-  end
-
-  create_table "solutions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "ticket_id"
-    t.text "reason"
-    t.text "solution"
-    t.text "link"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["ticket_id"], name: "index_solutions_on_ticket_id"
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

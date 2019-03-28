@@ -1,9 +1,9 @@
-class CreateSolutions < ActiveRecord::Migration[5.2]
+class CreateAnswers < ActiveRecord::Migration[5.2]
   def change
-    create_table :solutions do |t|
+    create_table :answers do |t|
       t.references :ticket
       t.text :reason
-      t.text :solution
+      t.text :answer
       t.text :link
       t.timestamps
     end

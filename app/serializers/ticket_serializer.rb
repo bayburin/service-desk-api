@@ -1,7 +1,7 @@
 class TicketSerializer < ActiveModel::Serializer
   attributes :id, :service_id, :name, :popularity
 
-  has_many :solutions
+  has_many :answers
   has_many :tags
   belongs_to :service, if: :include_service?
 

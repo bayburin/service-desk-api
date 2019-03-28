@@ -17,7 +17,7 @@ module Api
       #     end
       #   end
 
-      #   %w[id service_id name popularity solutions tags].each do |attr|
+      #   %w[id service_id name popularity answers tags].each do |attr|
       #     it "has #{attr} attribute" do
       #       get :index, params: params, format: :json
 
@@ -36,7 +36,7 @@ module Api
         let(:service) { create(:service) }
         let!(:tickets) { create_list(:ticket, 3, service: service) }
         let(:selected_ticket) { tickets.first }
-        let(:solutions) { create_list(:solution, 3, ticket: selected_ticket) }
+        let(:answers) { create_list(:answer, 3, ticket: selected_ticket) }
         let(:params) { { service_id: service.id, id: selected_ticket.id } }
 
         it 'loads ticket' do
@@ -45,10 +45,10 @@ module Api
           expect(parse_json(response.body)['id']).to eq selected_ticket.id
         end
 
-        it 'loads all solutions for ticket' do
+        it 'loads all answers for ticket' do
           get :show, params: params, format: :json
 
-          expect(response.body).to have_json_path('solutions')
+          expect(response.body).to have_json_path('answers')
         end
       end
     end
