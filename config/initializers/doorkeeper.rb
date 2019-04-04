@@ -14,7 +14,14 @@ Doorkeeper.configure do
 
   resource_owner_from_credentials do |_routes|
     auth = Api::V1::Doorkeeper::Auth.new(params[:username], params[:password])
-    auth.run ? UserIss.find_by(tn: auth.data['tn']) : nil
+    return nil unless auth.run
+
+    if user = UserIss.find_by(tn: auth.data['tn'])
+      user
+    else
+      ::Rails.logger.error "Не удалось получить данные из таблицы UserIss".red
+      nil
+    end
   end
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb

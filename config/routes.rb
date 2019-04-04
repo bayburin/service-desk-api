@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :dashboard, only: :index do
         # Глобальный поиск
-        get :search, to: 'dashboard#search', on: :collection
+        get :search, to: :search, on: :collection
       end
       resources :categories, only: :index do
         resources :services, only: :index
@@ -20,9 +20,14 @@ Rails.application.routes.draw do
       resources :tickets, only: [] do
         resources :answers, only: :index
       end
-      resources :cases, params: :case_id
+      resources :cases, param: :case_id
       # Получение данных о пользователе
-      get 'users/info', to: 'users#info'
+      resources :users, only: [] do
+        collection do
+          get :info, to: :info
+          get :owns, to: :owns
+        end
+      end
     end
   end
 end

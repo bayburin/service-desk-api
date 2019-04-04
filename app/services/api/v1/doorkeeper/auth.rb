@@ -50,6 +50,7 @@ module Api
 
           @data = user_info.data
           AuthCenterToken.create!(@token_data.merge(resource_owner_id: data['tn']))
+          ::Rails.logger.info "Токен, полученный с auth_center записан"
         end
       end
     end

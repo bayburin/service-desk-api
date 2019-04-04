@@ -38,7 +38,7 @@ module Api
       describe 'GET #show' do
         let(:category) { create(:category) }
         let(:services) { create_list(:service, 3, category: category) }
-        let!(:service) { service.first }
+        let!(:service) { services.first }
         let(:params) { { id: service.id } }
 
         before { get :show, params: params, format: :json }

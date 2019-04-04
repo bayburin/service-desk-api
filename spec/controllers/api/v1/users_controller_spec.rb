@@ -35,6 +35,38 @@ module Api
           end
         end
       end
+
+      describe 'GET #owns' do
+        let(:user) { UserIss.find_by(id_tn: token.resource_owner_id) }
+        let(:user_data) { [] }
+
+        before do
+          create_list(:service, 3, is_sla: true)
+          create_list(:service, 3, is_sla: false)
+          stub_request(:get, "#{ENV['SVT_NAME']}/user_isses/#{resource_owner.id_tn}/items")
+            .to_return(body: user_data.to_json)
+          get :owns, format: :json
+        end
+
+        it 'connects with http://svt.iss-reshetnev.ru to receive items' do
+          expect(WebMock).to have_requested(:get, "#{ENV['SVT_NAME']}/user_isses/#{resource_owner.id_tn}/items")
+        end
+
+        it 'respond with :items and :services arrays' do
+          expect(response.body).to have_json_path('services')
+          expect(response.body).to have_json_path('items')
+        end
+
+        it 'loads all visible services' do
+          parse_json(response.body)['services'].each do |service|
+            expect(service['is_sla']).to be_truthy
+          end
+        end
+
+        it 'respond with 200 status' do
+          expect(response.status).to eq 200
+        end
+      end
     end
   end
 end
