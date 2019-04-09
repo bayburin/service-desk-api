@@ -27,6 +27,7 @@ module ServiceDeskBackend
     config.i18n.default_locale = :ru
 
     config.autoload_paths << Rails.root.join('lib', 'resources').to_s
+    config.autoload_paths << Rails.root.join('lib', 'proxies').to_s
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

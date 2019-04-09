@@ -1,8 +1,6 @@
 module Api
   module V1
     class CasesController < BaseController
-      impressionist
-
       before_action :doorkeeper_authorize!
 
       def index
@@ -11,30 +9,29 @@ module Api
 
       def show
         @case = Case.find(params[:case_id])
-        impressionist(@case, 'Кейс найден')
 
         render json: @case
       end
 
       def create
-        @case = Case.new(params[:case_id])
+        @case = CaseSaveProxy.new(
+          Case.new(cases_params)
+        )
 
         if @case.save
-          impressionist(@case, 'Кейс создан')
-          render json: @case.id
+          render json: @case.kase
         else
-          render json: @case.errors.full_messages.join('. ')
+          render json: @case.kase.errors.full_messages.join('. '), status: :unprocessable_entity
         end
       end
 
       def update
-        @case = Case.find(params[:case_id])
+        @case = Case.find(cases_params)
 
         if @case.update(cases_params)
-          impressionist(@case, 'Кейс обновлен')
           render json: @case.id
         else
-          render json: @case.errors.full_messages.join('. ')
+          render json: @case.errors.full_messages.join('. '), status: :unprocessable_entity
         end
       end
 
@@ -42,17 +39,29 @@ module Api
         @case = Case.find(params[:case_id])
 
         if @case.destroy
-          impressionist(@case, 'Кейс удален')
           render json: { message: 'Заявка удалена' }
         else
-          render json: @case.errors.full_messages.join('. ')
+          render json: @case.errors.full_messages.join('. '), status: :unprocessable_entity
         end
       end
 
       protected
 
       def cases_params
-        params.require(:case).permit(:case_id)
+        params.require(:case).permit(
+          :id_tn,
+          :user_tn,
+          :fio,
+          :dept,
+          :email,
+          :phone,
+          :mobile,
+          :desc,
+          :without_service,
+          :without_item,
+          service: [:id],
+          item: %i[item_id invent_num]
+        )
       end
     end
   end
