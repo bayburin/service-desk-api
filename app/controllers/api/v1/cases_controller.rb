@@ -4,7 +4,7 @@ module Api
       before_action :doorkeeper_authorize!
 
       def index
-        render json: policy_scope(Case).all
+        render json: policy_scope(Case)
       end
 
       def show
@@ -17,6 +17,7 @@ module Api
         @case = CaseSaveProxy.new(
           Case.new(cases_params)
         )
+        authorize @case.kase
 
         if @case.save
           render json: @case.kase

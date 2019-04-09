@@ -3,6 +3,11 @@ module Api
     class BaseController < ApplicationController
       include Pundit
 
+      # Обрабтка случаев, когда у пользователя нет доступа на выполнение запрашиваемых действий
+      rescue_from Pundit::NotAuthorizedError do |_exception|
+        render json: { full_message: I18n.t('controllers.app.access_denied') }, status: :forbidden
+      end
+
       protected
 
       def current_user
