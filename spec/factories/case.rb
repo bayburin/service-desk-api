@@ -7,7 +7,6 @@ FactoryBot.define do
     mobile { Faker::PhoneNumber.phone_number }
     without_service { false }
     without_item { false }
-    item { nil }
 
     transient do
       user_iss { build_stubbed(:user_iss) }
