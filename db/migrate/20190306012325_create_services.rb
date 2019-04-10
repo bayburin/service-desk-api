@@ -5,10 +5,9 @@ class CreateServices < ActiveRecord::Migration[5.2]
       t.string :name
       t.text :short_description
       t.text :install
-      t.boolean :is_sla, null: false, defailt: false
-      t.string :sla
+      t.boolean :is_hidden, null: false, default: true
+      t.boolean :has_common_case, null: false, default: false
       t.integer :popularity, index: true, default: 0
-      t.boolean :has_free_request, null: false, default: false
       t.timestamps
     end
   end

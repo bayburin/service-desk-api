@@ -88,10 +88,9 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
     t.string "name"
     t.text "short_description"
     t.text "install"
-    t.boolean "is_sla", null: false
-    t.string "sla"
+    t.boolean "is_hidden", default: true, null: false
+    t.boolean "has_common_case", default: false, null: false
     t.integer "popularity", default: 0
-    t.boolean "has_free_request", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "delta", default: true
@@ -117,6 +116,9 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
   create_table "tickets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "service_id"
     t.string "name"
+    t.integer "ticket_type"
+    t.boolean "is_hidden", default: true, null: false
+    t.string "sla"
     t.integer "popularity", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

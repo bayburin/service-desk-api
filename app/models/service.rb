@@ -6,7 +6,7 @@ class Service < ApplicationRecord
   belongs_to :category
 
   validates :name, presence: true
-  validates :is_sla, inclusion: { in: [true, false] }
+  validates :is_hidden, inclusion: { in: [true, false] }
 
   attr_accessor :without_associations, :without_category
 

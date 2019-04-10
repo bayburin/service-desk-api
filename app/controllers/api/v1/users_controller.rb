@@ -24,7 +24,7 @@ module Api
           http.request(req)
         end
 
-        render json: UserOwns.new(JSON.parse(response.body), Service.where(is_sla: true)), serializer: UserOwnsSerializer, status: response.code
+        render json: UserOwns.new(JSON.parse(response.body), Service.where(is_hidden: false)), serializer: UserOwnsSerializer, status: response.code
       end
     end
   end

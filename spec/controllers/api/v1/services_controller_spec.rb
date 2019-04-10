@@ -20,7 +20,7 @@ module Api
           end
         end
 
-        %w[id category_id name short_description install popularity is_sla sla popularity category].each do |attr|
+        %w[id category_id name short_description install popularity is_hidden has_common_case popularity category].each do |attr|
           it "has #{attr} attribute" do
             expect(response.body).to have_json_path("0/#{attr}")
           end
@@ -47,7 +47,7 @@ module Api
           expect(parse_json(response.body)['id']).to eq service.id
         end
 
-        %w[id category_id name short_description install popularity is_sla sla popularity category].each do |attr|
+        %w[id category_id name short_description install popularity is_hidden has_common_case popularity category].each do |attr|
           it "has #{attr} attribute" do
             expect(response.body).to have_json_path(attr)
           end

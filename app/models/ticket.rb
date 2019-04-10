@@ -7,9 +7,12 @@ class Ticket < ApplicationRecord
 
   belongs_to :service
 
-  validates :service_id, :name, presence: true
+  validates :name, :ticket_type, presence: true
+  validates :is_hidden, inclusion: { in: [true, false] }
 
   attr_accessor :without_associations, :without_service
+
+  enum ticket_type: { question: 1, case: 2 }
 
   scope :by_popularity, -> { order('popularity DESC') }
 end

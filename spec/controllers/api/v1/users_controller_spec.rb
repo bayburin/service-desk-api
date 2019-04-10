@@ -41,8 +41,8 @@ module Api
         let(:user_data) { [] }
 
         before do
-          create_list(:service, 3, is_sla: true)
-          create_list(:service, 3, is_sla: false)
+          create_list(:service, 3, is_hidden: false)
+          create_list(:service, 3, is_hidden: true)
           stub_request(:get, "#{ENV['SVT_NAME']}/user_isses/#{resource_owner.id_tn}/items")
             .to_return(body: user_data.to_json)
           get :owns, format: :json
@@ -59,7 +59,7 @@ module Api
 
         it 'loads all visible services' do
           parse_json(response.body)['services'].each do |service|
-            expect(service['is_sla']).to be_truthy
+            expect(service['is_hidden']).to be_falsey
           end
         end
 

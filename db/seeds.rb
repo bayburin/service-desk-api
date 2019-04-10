@@ -11,19 +11,22 @@ Category.create(
         {
           name: 'Тестовая услуга',
           short_description: 'Техническая услуга, скрыть от всех',
-          is_sla: false,
+          is_hidden: true,
+          has_common_case: false,
           popularity: 7
         },
         {
           name: 'Кабинеты начальников',
           short_description: 'Здесь вы можете найти информацию о том, где находится начальник нужного вам отдела',
-          is_sla: true,
+          is_hidden: false,
+          has_common_case: false,
           popularity: 35
         },
         {
           name: 'Другое',
           short_description: 'Вопросы, не попадающие под все остальные категории',
-          is_sla: true,
+          is_hidden: false,
+          has_common_case: false,
           popularity: 64
         }
       ]
@@ -36,13 +39,15 @@ Category.create(
         {
           name: 'Подключение к ЗЛС',
           short_description: 'Вопросы по подключению ЗЛС',
-          is_sla: true,
+          is_hidden: false,
+          has_common_case: true,
           popularity: 19
         },
         {
           name: 'Работа в ЗЛС',
           short_description: 'Вопросы по работе в ЗЛС',
-          is_sla: true,
+          is_hidden: false,
+          has_common_case: false,
           popularity: 11
         }
       ]
@@ -65,13 +70,25 @@ tickets = Ticket.create(
   [
     {
       service: Service.find_by(name: 'Подключение к ЗЛС'),
+      name: 'Свободная заявка',
+      ticket_type: :case,
+      is_hidden: false,
+      sla: '2 дня',
+      popularity: 4
+    },
+    {
+      service: Service.find_by(name: 'Подключение к ЗЛС'),
       name: 'Как зарегистрироваться в закрытой локальной сети?',
-      popularity: '33'
+      ticket_type: :question,
+      is_hidden: false,
+      popularity: 33
     },
     {
       service: Service.find_by(name: 'Подключение к ЗЛС'),
       name: 'Как отменить регистрацию в закрытой локальной сети?',
-      popularity: '12'
+      ticket_type: :question,
+      is_hidden: false,
+      popularity: 12
     }
   ]
 )
