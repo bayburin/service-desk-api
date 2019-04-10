@@ -8,6 +8,4 @@ class Category < ApplicationRecord
   accepts_nested_attributes_for :services
 
   attr_accessor :without_associations
-
-  scope :by_popularity, -> { order('popularity DESC') }
 end
