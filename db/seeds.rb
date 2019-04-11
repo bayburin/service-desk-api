@@ -72,7 +72,7 @@ tickets = Ticket.create(
       service: Service.find_by(name: 'Подключение к ЗЛС'),
       name: 'Свободная заявка',
       ticket_type: :case,
-      is_hidden: false,
+      is_hidden: true,
       sla: '2 дня',
       popularity: 4
     },
@@ -96,7 +96,7 @@ tickets = Ticket.create(
 tickets.first.tags << Tag.where(name: %w[сеть локальная закрытая регистрация])
 tickets.last.tags << Tag.where(name: %w[сеть локальная закрытая отмена резрегистрироваться])
 
-tickets.first.answers.create(
+Ticket.find_by(name: 'Как зарегистрироваться в закрытой локальной сети?').answers.create(
   [
     {
       reason: 'В подразделении нет компьютера ЗЛС.',
