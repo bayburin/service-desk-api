@@ -11,7 +11,7 @@ module Api
       protected
 
       def current_user
-        UserIss.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
+        UserIss.where(tn: doorkeeper_token.resource_owner_id).first if doorkeeper_token
       end
 
       def doorkeeper_unauthorized_render_options(error: nil)

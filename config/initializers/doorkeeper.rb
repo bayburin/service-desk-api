@@ -14,7 +14,7 @@ Doorkeeper.configure do
 
   resource_owner_from_credentials do |_routes|
     auth = Api::V1::Doorkeeper::Auth.new(params[:username], params[:password])
-    auth.run ? UserIss.find_by(tn: auth.data['tn']) : nil
+    auth.run ? UserIss.where(tn: auth.data['tn']).first : nil
   end
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
