@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :case do
+    case_id { nil }
     service { create(:service) }
     host_id { 765_300 }
     item_id { 123 }

@@ -11,10 +11,13 @@ module Api
       subject { CaseSaveProxy.new(kase) }
 
       %i[save update].each do |method|
-        before { stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json').to_return(status: 200, body: '', headers: {}) }
+        before do
+          stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json').to_return(status: 200, body: '', headers: {})
+          stub_request(:put, "https://astraea-ui.iss-reshetnev.ru/api/cases/#{kase.case_id}.json").to_return(status: 200, body: '', headers: {})
+        end
 
         context "when run #{method} method" do
-          it 'receive :method_missing method' do
+          it 'receives :method_missing method' do
             expect(subject).to receive(:method_missing)
 
             subject.send(method)
@@ -25,8 +28,8 @@ module Api
           end
 
           %i[item_id invent_num].each do |attr|
-            it "add #{attr} attribute to the kase" do
-              subject.save
+            it "adds #{attr} attribute to the kase" do
+              subject.send(method)
 
               expect(subject.kase.send(attr)).to eq send(attr)
             end
@@ -35,7 +38,7 @@ module Api
               let!(:kase) { build(:case, host_id: nil, item_id: nil, item: item, without_item: true) }
 
               it "does not add #{attr} attribute" do
-                subject.save
+                subject.send(method)
 
                 expect(subject.kase.has_attibute?(send(attr))).to be_falsey
               end
