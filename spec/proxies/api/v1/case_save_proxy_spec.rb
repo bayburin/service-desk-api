@@ -6,7 +6,10 @@ module Api
       let(:item_id) { 999 }
       let(:invent_num) { 'new invent num' }
       let(:item) { double(:item, item_id: item_id, invent_num: invent_num) }
-      let!(:kase) { build(:case, host_id: nil, item_id: nil, item: item) }
+      let(:common_ticket) { create(:ticket, ticket_type: :common_case) }
+      let(:connect_ticket) { create(:ticket, ticket_type: :case) }
+      let(:service) { create(:service, tickets: [common_ticket, connect_ticket]) }
+      let!(:kase) { build(:case, host_id: nil, item_id: nil, item: item, service: service, ticket_id: nil) }
 
       subject { CaseSaveProxy.new(kase) }
 
@@ -42,6 +45,14 @@ module Api
 
                 expect(subject.kase.has_attibute?(send(attr))).to be_falsey
               end
+            end
+          end
+
+          context 'when ticket_id is not defined' do
+            it 'adds :ticket_id attribute which equal ticket_type named :common_case' do
+              subject.send(method)
+
+              expect(subject.kase.ticket_id).to eq subject.kase.service.tickets.find_by(ticket_type: :common_case).id
             end
           end
         end

@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
     t.boolean "delta", default: true
     t.index ["popularity"], name: "index_tickets_on_popularity"
     t.index ["service_id"], name: "index_tickets_on_service_id"
+    t.index ["ticket_type"], name: "index_tickets_on_ticket_type"
   end
 
 end

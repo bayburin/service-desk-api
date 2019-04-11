@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :case do
     case_id { nil }
     service { create(:service) }
+    ticket_id { service.tickets.where(ticket_type: %i[case common_case]).first.try(:id) }
     host_id { 765_300 }
     item_id { 123 }
     desc { Faker::Quote.famous_last_words }

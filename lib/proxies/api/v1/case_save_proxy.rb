@@ -28,6 +28,7 @@ module Api
 
       def process_params
         processing_item unless kase.without_item
+        processing_service unless kase.ticket_id
 
         ::Rails.logger.info "Case after processing: #{kase.inspect}"
       end
@@ -35,6 +36,10 @@ module Api
       def processing_item
         kase.item_id = kase.item.item_id
         kase.invent_num = kase.item.invent_num
+      end
+
+      def processing_service
+        kase.ticket_id = Ticket.find_by(ticket_type: :common_case, service_id: kase.service.id).try(:id)
       end
     end
   end
