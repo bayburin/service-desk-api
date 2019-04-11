@@ -6,6 +6,8 @@ module Api
       describe 'GET #index' do
         let(:category) { create(:category) }
         let!(:services) { create_list(:service, 3, category: category) }
+        let!(:service) { create(:service, category: category, is_hidden: true) }
+        let(:service_count) { services.size }
         let(:params) { { category_id: category.id } }
 
         before do
@@ -13,10 +15,16 @@ module Api
           get :index, params: params, format: :json
         end
 
-        it 'loads all services with specified category_id' do
-          expect(response.body).to have_json_size(category.services.count)
+        it 'loads services with specified category_id' do
+          expect(response.body).to have_json_size(service_count)
           parse_json(response.body).each do |s|
             expect(s['category_id']).to eq category.id
+          end
+        end
+
+        it 'loads only visible services' do
+          parse_json(response.body).each do |t|
+            expect(t['is_hidden']).to be_falsey
           end
         end
 

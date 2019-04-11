@@ -4,7 +4,7 @@ module Api
       impressionist
 
       def index
-        tickets = Ticket.where(service_id: params[:service_id]).includes(:answers, service: :category)
+        tickets = Ticket.where(service_id: params[:service_id], is_hidden: false).includes(:answers, service: :category)
 
         render json: tickets, include: 'answers,service.category'
       end

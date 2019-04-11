@@ -6,14 +6,22 @@ module Api
       describe 'GET #index' do
         let(:service) { create(:service) }
         let!(:tickets) { create_list(:ticket, 3, service: service) }
+        let!(:common_case) { create(:ticket, service: service, ticket_type: :case, is_hidden: true) }
+        let(:ticket_count) { tickets.size }
         let(:params) { { service_id: service.id } }
 
         before { get :index, params: params, format: :json }
 
-        it 'loads all tickets with specified service_id' do
-          expect(response.body).to have_json_size(service.tickets.count)
+        it 'loads tickets with specified service_id' do
+          expect(response.body).to have_json_size(ticket_count)
           parse_json(response.body).each do |t|
             expect(t['service_id']).to eq service.id
+          end
+        end
+
+        it 'loads only visible tickets' do
+          parse_json(response.body).each do |t|
+            expect(t['is_hidden']).to be_falsey
           end
         end
 
