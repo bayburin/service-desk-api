@@ -6,7 +6,7 @@ module Api
       describe 'GET #index' do
         let(:service) { create(:service) }
         let!(:tickets) { create_list(:ticket, 3, service: service) }
-        let!(:common_case) { create(:ticket, service: service, ticket_type: :case, is_hidden: true) }
+        let!(:common_case) { create(:ticket, service: service, ticket_type: :common_case, is_hidden: true) }
         let(:ticket_count) { tickets.size }
         let(:params) { { service_id: service.id } }
 

@@ -71,7 +71,7 @@ tickets = Ticket.create(
     {
       service: Service.find_by(name: 'Подключение к ЗЛС'),
       name: 'Свободная заявка',
-      ticket_type: :case,
+      ticket_type: :common_case,
       is_hidden: true,
       sla: '2 дня',
       popularity: 4
