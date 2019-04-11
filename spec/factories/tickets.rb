@@ -4,6 +4,7 @@ FactoryBot.define do
     name { Faker::Restaurant.name }
     ticket_type { :question }
     is_hidden { false }
+    to_approve { false }
     sla { '20 minutes' }
     popularity { Faker::Number.number(3) }
   end

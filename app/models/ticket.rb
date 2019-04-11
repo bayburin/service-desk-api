@@ -8,7 +8,7 @@ class Ticket < ApplicationRecord
   belongs_to :service
 
   validates :name, :ticket_type, presence: true
-  validates :is_hidden, inclusion: { in: [true, false] }
+  validates :is_hidden, :to_approve, inclusion: { in: [true, false] }
 
   attr_accessor :without_associations, :without_service
 
