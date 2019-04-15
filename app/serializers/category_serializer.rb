@@ -1,5 +1,5 @@
 class CategorySerializer < ActiveModel::Serializer
-  attributes :id, :name, :short_description, :popularity
+  attributes :id, :name, :short_description, :icon_name, :popularity
 
   has_many :services, if: :include_services?
 

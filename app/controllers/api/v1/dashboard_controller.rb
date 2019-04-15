@@ -2,10 +2,10 @@ module Api
   module V1
     class DashboardController < BaseController
       def index
-        categories = Category.extend(Scope).by_popularity.each { |c| c.without_associations = true }
-        services = Service.extend(Scope).by_popularity.includes(:category).each { |s| s.without_category = true }
+        categories = Category.extend(Scope).by_popularity
+        services = Service.extend(Scope).by_popularity.includes(:tickets)
 
-        render json: Dashboard.new(categories, services), serializer: DashboardSerializer
+        render json: Dashboard.new(categories, services), serializer: DashboardSerializer, include: 'categories,services.tickets'
       end
 
       def search

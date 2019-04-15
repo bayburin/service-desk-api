@@ -8,5 +8,5 @@ class Service < ApplicationRecord
   validates :name, presence: true
   validates :is_hidden, inclusion: { in: [true, false] }
 
-  attr_accessor :without_associations, :without_category
+  attr_accessor :without_associations
 end

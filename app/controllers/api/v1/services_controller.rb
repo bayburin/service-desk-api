@@ -4,7 +4,7 @@ module Api
       impressionist
 
       def index
-        services = Service.where(category_id: params[:category_id], is_hidden: false).includes(:category)
+        services = Service.where(category_id: params[:category_id]).includes(:category)
 
         render json: services, include: 'category'
       end

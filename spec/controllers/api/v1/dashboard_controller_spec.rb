@@ -20,9 +20,12 @@ module Api
           expect(response.body).to have_json_size(size).at_path('services')
         end
 
-        it 'does not load associations' do
+        it 'loads :tickets association for services' do
+          expect(response.body).to have_json_path('services/0/tickets')
+        end
+
+        it 'does not load :service association for categories' do
           expect(response.body).not_to have_json_path('categories/0/service')
-          expect(response.body).not_to have_json_path('services/0/tickets')
         end
 
         it 'respond with 200 status' do

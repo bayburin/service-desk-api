@@ -10,7 +10,7 @@ class Ticket < ApplicationRecord
   validates :name, :ticket_type, presence: true
   validates :is_hidden, :to_approve, inclusion: { in: [true, false] }
 
-  attr_accessor :without_associations, :without_service
+  attr_accessor :without_associations
 
   enum ticket_type: { question: 1, case: 2, common_case: 3 }
 end

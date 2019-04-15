@@ -7,6 +7,7 @@ Category.create(
       name: 'Общие вопросы',
       short_description: 'Вопросы, касающиеся работы УИВТ',
       popularity: 20,
+      icon_name: 'mdi-alert-decagram',
       services_attributes: [
         {
           name: 'Тестовая услуга',
@@ -35,6 +36,7 @@ Category.create(
       name: 'Закрытая локальная сеть',
       popularity: 5,
       short_description: 'Вопросы, касающиеся закрытой локальной сети (ЗЛС)',
+      icon_name: 'mdi-lan',
       services_attributes: [
         {
           name: 'Подключение к ЗЛС',

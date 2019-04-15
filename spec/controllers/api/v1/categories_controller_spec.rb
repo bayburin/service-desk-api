@@ -12,7 +12,7 @@ module Api
           expect(response.body).to have_json_size(3)
         end
 
-        %w[id name short_description popularity services].each do |attr|
+        %w[id name short_description popularity icon_name services].each do |attr|
           it "has #{attr} attribute" do
             get :index, format: :json
 
