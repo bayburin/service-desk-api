@@ -13,9 +13,9 @@
 ActiveRecord::Schema.define(version: 2019_03_13_014515) do
 
   create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "ticket_id"
+    t.bigint "ticket_id", null: false
     t.text "reason"
-    t.text "answer"
+    t.text "answer", null: false
     t.text "link"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
   end
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "short_description"
     t.integer "popularity", default: 0
     t.string "icon_name"
@@ -84,8 +84,9 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
   end
 
   create_table "services", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "category_id"
-    t.string "name"
+    t.bigint "category_id", null: false
+    t.bigint "form_id"
+    t.string "name", null: false
     t.text "short_description"
     t.text "install"
     t.boolean "is_hidden", default: true, null: false
@@ -95,18 +96,19 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
     t.datetime "updated_at", null: false
     t.boolean "delta", default: true
     t.index ["category_id"], name: "index_services_on_category_id"
+    t.index ["form_id"], name: "index_services_on_form_id"
     t.index ["popularity"], name: "index_services_on_popularity"
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "ticket_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "ticket_id"
-    t.bigint "tag_id"
+    t.bigint "ticket_id", null: false
+    t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tag_id"], name: "index_ticket_tags_on_tag_id"
@@ -114,9 +116,9 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
   end
 
   create_table "tickets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "service_id"
-    t.string "name"
-    t.integer "ticket_type"
+    t.bigint "service_id", null: false
+    t.string "name", null: false
+    t.integer "ticket_type", null: false
     t.boolean "is_hidden", default: true, null: false
     t.string "sla"
     t.boolean "to_approve", default: false, null: false
@@ -129,4 +131,9 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
     t.index ["ticket_type"], name: "index_tickets_on_ticket_type"
   end
 
+  add_foreign_key "answers", "tickets"
+  add_foreign_key "services", "categories"
+  add_foreign_key "ticket_tags", "tags"
+  add_foreign_key "ticket_tags", "tickets"
+  add_foreign_key "tickets", "services"
 end
