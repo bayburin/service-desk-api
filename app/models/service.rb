@@ -2,6 +2,7 @@ class Service < ApplicationRecord
   is_impressionable counter_cache: true, column_name: :popularity, unique: :request_hash
 
   has_many :tickets, dependent: :destroy
+  has_many :responsible_users, as: :responseable, dependent: :destroy
 
   belongs_to :category
 

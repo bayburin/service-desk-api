@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_13_014515) do
+ActiveRecord::Schema.define(version: 2019_04_15_083135) do
 
   create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "ticket_id", null: false
@@ -81,6 +81,16 @@ ActiveRecord::Schema.define(version: 2019_03_13_014515) do
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
+  end
+
+  create_table "responsible_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "responseable_type"
+    t.bigint "responseable_id"
+    t.integer "tn"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["responseable_type", "responseable_id"], name: "index_responsible_users_on_responseable_type_and_responseable_id"
+    t.index ["tn"], name: "index_responsible_users_on_tn"
   end
 
   create_table "services", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -1,3 +1,4 @@
+
 Category.destroy_all
 Tag.destroy_all
 
@@ -76,7 +77,11 @@ tickets = Ticket.create(
       ticket_type: :common_case,
       is_hidden: true,
       sla: '2 дня',
-      popularity: 4
+      popularity: 4,
+      responsible_users: [
+        ResponsibleUser.new(tn: 21056),
+        ResponsibleUser.new(tn: 15173)
+      ]
     },
     {
       service: Service.find_by(name: 'Подключение к ЗЛС'),
