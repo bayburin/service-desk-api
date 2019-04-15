@@ -9,28 +9,28 @@ Category.create(
       short_description: 'Вопросы, касающиеся работы УИВТ',
       popularity: 20,
       icon_name: 'mdi-alert-decagram',
-      services_attributes: [
-        {
+      services: [
+        Service.new({
           name: 'Тестовая услуга',
           short_description: 'Техническая услуга, скрыть от всех',
           is_hidden: true,
           has_common_case: false,
           popularity: 7
-        },
-        {
+        }),
+        Service.new({
           name: 'Кабинеты начальников',
           short_description: 'Здесь вы можете найти информацию о том, где находится начальник нужного вам отдела',
           is_hidden: false,
           has_common_case: false,
           popularity: 35
-        },
-        {
+        }),
+        Service.new({
           name: 'Другое',
           short_description: 'Вопросы, не попадающие под все остальные категории',
           is_hidden: false,
           has_common_case: false,
           popularity: 64
-        }
+        })
       ]
     },
     {
@@ -38,21 +38,21 @@ Category.create(
       popularity: 5,
       short_description: 'Вопросы, касающиеся закрытой локальной сети (ЗЛС)',
       icon_name: 'mdi-lan',
-      services_attributes: [
-        {
+      services: [
+        Service.new({
           name: 'Подключение к ЗЛС',
           short_description: 'Вопросы по подключению ЗЛС',
           is_hidden: false,
           has_common_case: true,
           popularity: 19
-        },
-        {
+        }),
+        Service.new({
           name: 'Работа в ЗЛС',
           short_description: 'Вопросы по работе в ЗЛС',
           is_hidden: false,
           has_common_case: false,
           popularity: 11
-        }
+        })
       ]
     }
   ]
