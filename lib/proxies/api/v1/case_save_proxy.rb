@@ -1,5 +1,6 @@
 module Api
   module V1
+    # Класс оборачивает объект Case и дополняет параметрами, необходимыми для сохранения.
     class CaseSaveProxy
       attr_reader :kase
 
@@ -20,26 +21,29 @@ module Api
         need_to_respond?(method_name) || super
       end
 
-      private
+      protected
 
       def need_to_respond?(method_name)
-        %w[save update].include?(method_name.to_s)
+        method_name.to_s == 'save'
       end
 
       def process_params
-        processing_item unless kase.without_item
         processing_service unless kase.ticket_id
+        processing_responsibles
 
-        ::Rails.logger.info "Case after processing: #{kase.inspect}"
-      end
-
-      def processing_item
-        kase.item_id = kase.item.item_id
-        kase.invent_num = kase.item.invent_num
+        ::Rails.logger.debug "Case after processing: #{kase.to_json}"
       end
 
       def processing_service
-        kase.ticket_id = Ticket.find_by(ticket_type: :common_case, service_id: kase.service.id).try(:id)
+        kase.ticket_id = find_ticket.try(:id)
+      end
+
+      def processing_responsibles
+        kase.accs = find_ticket&.responsible_users&.pluck(:tn) || []
+      end
+
+      def find_ticket
+        @find_ticket ||= kase.ticket_id ? Ticket.find(kase.ticket_id) : Ticket.find_by(ticket_type: :common_case, service_id: kase.service_id)
       end
     end
   end

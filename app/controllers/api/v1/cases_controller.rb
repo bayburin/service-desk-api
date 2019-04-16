@@ -7,12 +7,6 @@ module Api
         render json: policy_scope(Case)
       end
 
-      def show
-        @case = Case.find(params[:case_id])
-
-        render json: @case
-      end
-
       def create
         @case = CaseSaveProxy.new(
           Case.new(cases_params)
@@ -23,16 +17,6 @@ module Api
           render json: @case.kase
         else
           render json: @case.kase.errors.full_messages.join('. '), status: :unprocessable_entity
-        end
-      end
-
-      def update
-        @case = Case.find(cases_params)
-
-        if @case.update(cases_params)
-          render json: @case.id
-        else
-          render json: @case.errors.full_messages.join('. '), status: :unprocessable_entity
         end
       end
 
@@ -60,8 +44,9 @@ module Api
           :desc,
           :without_service,
           :without_item,
-          service: [:id],
-          item: %i[item_id invent_num]
+          :service_id,
+          :item_id,
+          :invent_num
         )
       end
     end

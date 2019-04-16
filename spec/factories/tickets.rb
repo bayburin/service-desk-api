@@ -7,5 +7,6 @@ FactoryBot.define do
     to_approve { false }
     sla { '20 minutes' }
     popularity { Faker::Number.number(3) }
+    responsible_users { build_list(:responsible_user, 2, responseable: nil) }
   end
 end

@@ -5,56 +5,68 @@ module Api
     RSpec.describe CaseSaveProxy, type: :model do
       let(:item_id) { 999 }
       let(:invent_num) { 'new invent num' }
-      let(:item) { double(:item, item_id: item_id, invent_num: invent_num) }
       let(:common_ticket) { create(:ticket, ticket_type: :common_case) }
       let(:connect_ticket) { create(:ticket, ticket_type: :case) }
-      let(:service) { create(:service, tickets: [common_ticket, connect_ticket]) }
-      let!(:kase) { build(:case, host_id: nil, item_id: nil, item: item, service: service, ticket_id: nil) }
+      let!(:service) { create(:service, tickets: [common_ticket, connect_ticket]) }
+      let!(:kase) { build(:case, host_id: nil, item_id: nil, service: service) }
 
       subject { CaseSaveProxy.new(kase) }
 
-      %i[save update].each do |method|
-        before do
-          stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json').to_return(status: 200, body: '', headers: {})
-          stub_request(:put, "https://astraea-ui.iss-reshetnev.ru/api/cases/#{kase.case_id}.json").to_return(status: 200, body: '', headers: {})
+      before do
+        stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json').to_return(status: 200, body: '', headers: {})
+      end
+
+      it 'receives :method_missing method' do
+        expect(subject).to receive(:method_missing)
+
+        subject.save
+      end
+
+      it 'respond_to save method' do
+        expect(subject.respond_to?(:save)).to be_truthy
+      end
+
+      context 'when ticket_id is not defined' do
+        before { kase.ticket_id = nil }
+
+        it 'adds :ticket_id attribute which equal ticket_type named :common_case' do
+          subject.save
+
+          expect(subject.kase.ticket_id).to eq subject.kase.service.tickets.find_by(ticket_type: :common_case).id
         end
 
-        context "when run #{method} method" do
-          it 'receives :method_missing method' do
-            expect(subject).to receive(:method_missing)
+        it 'adds responsible users from :common_case type' do
+          subject.save
 
-            subject.send(method)
-          end
+          expect(subject.kase.accs).to match_array(common_ticket.responsible_users.pluck(:tn))
+        end
+      end
 
-          it "respond_to #{method} method" do
-            expect(subject.respond_to?(method)).to be_truthy
-          end
+      context 'when ticket_id is defined' do
+        before { kase.ticket_id = connect_ticket.id }
 
-          %i[item_id invent_num].each do |attr|
-            it "adds #{attr} attribute to the kase" do
-              subject.send(method)
+        it 'adds responsible users from current ticket' do
+          subject.save
 
-              expect(subject.kase.send(attr)).to eq send(attr)
-            end
+          expect(subject.kase.accs).to match_array(connect_ticket.responsible_users.pluck(:tn))
+        end
+      end
 
-            context 'and when attribute :without_item is true' do
-              let!(:kase) { build(:case, host_id: nil, item_id: nil, item: item, without_item: true) }
+      context 'when :common_case is not defined' do
+        before { allow(subject).to receive(:find_ticket).and_return(nil) }
 
-              it "does not add #{attr} attribute" do
-                subject.send(method)
+        it 'returns true' do
+          expect(subject.save).to be_truthy
+        end
+      end
 
-                expect(subject.kase.has_attibute?(send(attr))).to be_falsey
-              end
-            end
-          end
+      context 'when responsible_users is empty' do
+        before { allow(subject).to receive_message_chain(:find_ticket, :responsible_users).and_return([]) }
 
-          context 'when ticket_id is not defined' do
-            it 'adds :ticket_id attribute which equal ticket_type named :common_case' do
-              subject.send(method)
+        it 'sets empty array to :accs attribute' do
+          subject.save
 
-              expect(subject.kase.ticket_id).to eq subject.kase.service.tickets.find_by(ticket_type: :common_case).id
-            end
-          end
+          expect(subject.kase.accs).to be_empty
         end
       end
     end
