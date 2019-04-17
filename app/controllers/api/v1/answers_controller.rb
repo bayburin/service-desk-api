@@ -4,7 +4,10 @@ module Api
       impressionist
 
       def index
-        answers = Answer.where(ticket_id: params[:ticket_id]).includes(ticket: { service: :category })
+        ticket = Ticket.find(params[:ticket_id])
+        impressionist ticket
+
+        answers = ticket.answers.includes(ticket: { service: :category })
 
         render json: answers, include: 'ticket.service.category'
       end
