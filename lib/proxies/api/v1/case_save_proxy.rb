@@ -28,7 +28,7 @@ module Api
       end
 
       def process_params
-        processing_service unless kase.ticket_id
+        processing_service
         processing_responsibles
 
         ::Rails.logger.debug "Case after processing: #{kase.to_json}"
@@ -36,6 +36,7 @@ module Api
 
       def processing_service
         kase.ticket_id = find_ticket.try(:id)
+        kase.sla = find_ticket.try(:sla)
       end
 
       def processing_responsibles

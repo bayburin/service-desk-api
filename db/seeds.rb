@@ -76,7 +76,7 @@ tickets = Ticket.create(
       name: 'Подключение к ЗЛС',
       ticket_type: :common_case,
       is_hidden: true,
-      sla: '2 дня',
+      sla: 48,
       popularity: 4,
       responsible_users: [
         ResponsibleUser.new(tn: 21056),
