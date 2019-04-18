@@ -29,10 +29,16 @@ module Api
       context 'when ticket_id is not defined' do
         before { kase.ticket_id = nil }
 
-        it 'adds :ticket_id attribute which equal ticket_type named :common_case' do
+        it 'adds :ticket_id attribute from :common_case type' do
           subject.save
 
-          expect(subject.kase.ticket_id).to eq subject.kase.service.tickets.find_by(ticket_type: :common_case).id
+          expect(subject.kase.ticket_id).to eq common_ticket.id
+        end
+
+        it 'adds :sla attribute from :common_case type' do
+          subject.save
+
+          expect(subject.kase.sla).to eq common_ticket.sla
         end
 
         it 'adds responsible users from :common_case type' do

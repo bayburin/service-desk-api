@@ -5,6 +5,7 @@ class Case < ActiveResource::Base
 
   has_many :accs
   belongs_to :service
+  belongs_to :ticket
 
   schema do
     attribute 'case_id', :integer
@@ -23,8 +24,9 @@ class Case < ActiveResource::Base
     # attribute 'host_info'
     attribute 'desc', :text
     # attribute 'extlink'
-    # attribute 'starttime'
-    # attribute 'endtime'
+    attribute 'starttime', :string
+    attribute 'endtime', :string
+    attribute 'time', :string
     # attribute 'tags'
     attribute 'phone', :string
     attribute 'email', :string
@@ -35,4 +37,14 @@ class Case < ActiveResource::Base
   end
 
   alias_attribute :invent_num, :host_id
+
+  def runtime
+    Api::V1::Runtime.new(starttime, endtime, time)
+  end
+
+  def runtime=(runtime)
+    self.starttime = runtim.starttime
+    self.endtime = runtime.endtime
+    self.time = runtime.time
+  end
 end

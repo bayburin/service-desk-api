@@ -4,7 +4,9 @@ module Api
       before_action :doorkeeper_authorize!
 
       def index
-        render json: policy_scope(Case)
+        cases = policy_scope(Case)
+
+        render json: cases
       end
 
       def create
@@ -14,7 +16,7 @@ module Api
         authorize @case.kase
 
         if @case.save
-          render json: @case.kase
+          render json: @case.kase.case_id
         else
           render json: @case.kase.errors.full_messages.join('. '), status: :unprocessable_entity
         end
