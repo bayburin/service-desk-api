@@ -130,7 +130,7 @@ ActiveRecord::Schema.define(version: 2019_04_15_083135) do
     t.string "name", null: false
     t.integer "ticket_type", null: false
     t.boolean "is_hidden", default: true, null: false
-    t.string "sla"
+    t.integer "sla", limit: 2
     t.boolean "to_approve", default: false, null: false
     t.integer "popularity", default: 0
     t.datetime "created_at", null: false

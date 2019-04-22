@@ -4,33 +4,34 @@ module Api
       before_action :doorkeeper_authorize!
 
       def index
-        cases = policy_scope(Case)
+        case_dashboard = CaseApiPolicy::Scope.new(current_user, Cases::CaseApi).resolve.query(filters: params[:filters])
 
-        render json: cases
+        render json: CaseDashboard.new(case_dashboard), serializer: CaseDashboardSerializer, include: 'cases.service,cases.ticket,statuses'
       end
 
       def create
-        @case = CaseSaveProxy.new(
-          Case.new(cases_params)
-        )
-        authorize @case.kase
+        kase = Case.new(cases_params)
+        authorize kase
 
-        if @case.save
-          render json: @case.kase.case_id
+        case_decorator = CaseSaveDecorator.new(kase)
+        case_decorator.decorate
+
+        if kase = Cases::CaseApi.save(case_decorator.kase)
+          render json: kase
         else
-          render json: @case.kase.errors.full_messages.join('. '), status: :unprocessable_entity
+          render json: { message: 'Ошибка' }, status: :unprocessable_entity
         end
       end
 
-      def destroy
-        @case = Case.find(params[:case_id])
+      # def destroy
+      #   @case = Case.find(params[:case_id])
 
-        if @case.destroy
-          render json: { message: 'Заявка удалена' }
-        else
-          render json: @case.errors.full_messages.join('. '), status: :unprocessable_entity
-        end
-      end
+      #   if @case.destroy
+      #     render json: { message: 'Заявка удалена' }
+      #   else
+      #     render json: @case.errors.full_messages.join('. '), status: :unprocessable_entity
+      #   end
+      # end
 
       protected
 

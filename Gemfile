@@ -2,11 +2,11 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'active_model_serializers'
-gem 'activeresource'
 gem 'awesome_print'
 gem 'colorize'
 gem 'doorkeeper'
 gem 'dotenv-rails'
+gem 'faraday'
 gem 'impressionist'
 gem 'mongoid'
 gem 'oj'

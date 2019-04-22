@@ -34,18 +34,10 @@ GEM
       globalid (>= 0.3.6)
     activemodel (5.2.3)
       activesupport (= 5.2.3)
-    activemodel-serializers-xml (1.0.2)
-      activemodel (> 5.x)
-      activesupport (> 5.x)
-      builder (~> 3.1)
     activerecord (5.2.3)
       activemodel (= 5.2.3)
       activesupport (= 5.2.3)
       arel (>= 9.0)
-    activeresource (5.1.0)
-      activemodel (>= 5.0, < 7)
-      activemodel-serializers-xml (~> 1.0)
-      activesupport (>= 5.0, < 7)
     activestorage (5.2.3)
       actionpack (= 5.2.3)
       activerecord (= 5.2.3)
@@ -88,6 +80,8 @@ GEM
       railties (>= 4.2.0)
     faker (1.9.3)
       i18n (>= 0.7)
+    faraday (0.15.4)
+      multipart-post (>= 1.2, < 3)
     ffi (1.10.0)
     fuubar (2.3.2)
       rspec-core (~> 3.0)
@@ -132,6 +126,7 @@ GEM
       mongo (>= 2.5.1, < 3.0.0)
     msgpack (1.2.9)
     multi_json (1.13.1)
+    multipart-post (2.0.0)
     mysql2 (0.5.2)
     nio4r (2.3.1)
     nokogiri (1.10.2)
@@ -262,7 +257,6 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
-  activeresource
   awesome_print
   bootsnap (>= 1.1.0)
   byebug
@@ -272,6 +266,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
+  faraday
   fuubar
   impressionist
   json_spec

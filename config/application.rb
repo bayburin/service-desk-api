@@ -28,7 +28,7 @@ module ServiceDeskBackend
 
     config.autoload_paths << Rails.root.join('lib', 'services').to_s
     config.autoload_paths << Rails.root.join('lib', 'resources').to_s
-    config.autoload_paths << Rails.root.join('lib', 'proxies').to_s
+    config.autoload_paths << Rails.root.join('lib', 'decorators').to_s
     config.autoload_paths << Rails.root.join('lib', 'modules').to_s
     config.autoload_paths << Rails.root.join('lib', 'value_objects').to_s
 

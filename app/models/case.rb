@@ -1,39 +1,19 @@
 # Legacy database
-class Case < ActiveResource::Base
-  self.site = 'https://astraea-ui.iss-reshetnev.ru/api/'
-  self.primary_key = :case_id
+class Case
+  include ActiveModel::Model
+  include ActiveModel::Serializers::JSON
 
-  has_many :accs
-  belongs_to :service
-  belongs_to :ticket
+  def self.attributes
+    %i[case_id service_id ticket_id user_tn id_tn user_info host_id item_id desc phone email mobile status_id status starttime endtime time sla accs]
+  end
 
-  schema do
-    attribute 'case_id', :integer
-    attribute 'service_id', :integer
-    attribute 'ticket_id', :integer
-    # attribute 'severity'
-    # attribute 'type'
-    # attribute 'source'
-    # attribute 'destination'
-    attribute 'user_tn', :integer
-    attribute 'id_tn', :integer
-    # attribute 'rating'
-    attribute 'user_info', :string
-    attribute 'host_id', :string
-    attribute 'item_id', :integer
-    # attribute 'host_info'
-    attribute 'desc', :text
-    # attribute 'extlink'
-    attribute 'starttime', :string
-    attribute 'endtime', :string
-    attribute 'time', :string
-    # attribute 'tags'
-    attribute 'phone', :string
-    attribute 'email', :string
-    attribute 'mobile', :string
-    # attribute 'create_user_id'
-    # attribute 'last_user_id'
-    # attribute 'last_date'
+  attr_accessor *attributes
+
+  def initialize(attributes = [])
+    attributes.each do |attr, _value|
+      define_singleton_method("#{attr}=") { |val| attributes[attr] = val }
+      define_singleton_method(attr) { attributes[attr] }
+    end
   end
 
   alias_attribute :invent_num, :host_id
@@ -46,5 +26,17 @@ class Case < ActiveResource::Base
     self.starttime = runtim.starttime
     self.endtime = runtime.endtime
     self.time = runtime.time
+  end
+
+  def service
+    Service.find_by(id: service_id)
+  end
+
+  def ticket
+    Ticket.find_by(id: ticket_id)
+  end
+
+  def attributes
+    self.class.attributes.inject({}) { |hash, attr| hash.merge(Hash[attr, send(attr)]) }
   end
 end
