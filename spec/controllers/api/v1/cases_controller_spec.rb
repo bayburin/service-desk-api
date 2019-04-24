@@ -13,7 +13,7 @@ module Api
 
       describe 'GET #index' do
         let(:kase) { attributes_for(:case) }
-        let(:astraea_response) { { cases: [kase], statuses: [] } }
+        let(:astraea_response) { { cases: [kase], statuses: [], case_count: 1 } }
         let(:params) { { filters: Oj.dump(limit: 15, offset: 30, status_id: 1) } }
         before { stub_request(:get, %r{#{astraea_url}/cases.json}).to_return(status: 200, body: Oj.dump(astraea_response)) }
 
@@ -35,7 +35,7 @@ module Api
           get :index, format: :json
         end
 
-        %w[cases statuses].each do |attr|
+        %w[cases statuses case_count].each do |attr|
           it "respond with :#{attr} attributes" do
             get :index, format: :json
 

@@ -9,7 +9,7 @@ Rails.application.routes.draw do
         # Глобальный поиск
         get :search, to: :search, on: :collection
       end
-      resources :categories, only: :index do
+      resources :categories, only: %i[index show] do
         resources :services, only: :index
       end
       resources :services, only: :show
