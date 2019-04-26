@@ -3,4 +3,6 @@ ThinkingSphinx::Index.define :ticket, with: :active_record, delta: true do
   indexes tags.name, as: :tag_name
 
   has popularity
+
+  where 'ticket_type != 3'
 end

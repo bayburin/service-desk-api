@@ -13,5 +13,5 @@ class Ticket < ApplicationRecord
 
   attr_accessor :without_associations
 
-  enum ticket_type: { question: 1, case: 2, common_case: 3 }
+  enum ticket_type: { question: 1, case: 2, common_case: 3 }, _suffix: :ticket
 end

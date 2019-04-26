@@ -10,9 +10,8 @@ Rails.application.routes.draw do
         get :search, to: :search, on: :collection
       end
       resources :categories, only: %i[index show] do
-        resources :services, only: :index
+        resources :services, only: %i[index show]
       end
-      resources :services, only: :show
       resources :services, only: [] do
         resources :tickets, only: :index
       end
