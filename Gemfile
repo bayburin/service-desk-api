@@ -14,6 +14,7 @@ gem 'oj_mimic_json'
 gem 'pundit'
 gem 'rubocop', require: false
 gem 'thinking-sphinx'
+gem 'virtus'
 gem 'unicorn'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

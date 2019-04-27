@@ -2,30 +2,43 @@
 class Case
   include ActiveModel::Model
   include ActiveModel::Serializers::JSON
+  include Virtus::Model
 
-  def self.attributes
-    %i[case_id service_id ticket_id user_tn id_tn user_info host_id item_id desc phone email mobile status_id status starttime endtime time sla accs]
-  end
-
-  attr_accessor *attributes
-
-  def initialize(attributes = [])
-    attributes.each do |attr, _value|
-      define_singleton_method("#{attr}=") { |val| attributes[attr] = val }
-      define_singleton_method(attr) { attributes[attr] }
-    end
-  end
+  attribute :case_id, Integer
+  attribute :service_id, Integer
+  attribute :service, Service
+  attribute :ticket_id, Integer
+  attribute :ticket, Ticket
+  attribute :user_tn, Integer
+  attribute :id_tn, Integer
+  attribute :user_info, String
+  attribute :host_id, String
+  attribute :item_id, Integer
+  attribute :desc, String
+  attribute :phone, String
+  attribute :email, String
+  attribute :mobile, String
+  attribute :status_id, Integer
+  attribute :status, String
+  attribute :starttime, DateTime
+  attribute :endtime, DateTime
+  attribute :time, DateTime
+  attribute :sla, Integer
+  attribute :accs, Array[Integer]
+  attribute :runtime, Api::V1::Runtime
 
   alias_attribute :invent_num, :host_id
 
   def runtime
-    Api::V1::Runtime.new(starttime, endtime, time)
+    Api::V1::Runtime.new(starttime: starttime, endtime: endtime, time: time)
   end
 
   def runtime=(runtime)
-    self.starttime = runtim.starttime
+    self.starttime = runtime.starttime
     self.endtime = runtime.endtime
     self.time = runtime.time
+
+    super(runtime)
   end
 
   def service
@@ -34,9 +47,5 @@ class Case
 
   def ticket
     Ticket.find_by(id: ticket_id)
-  end
-
-  def attributes
-    self.class.attributes.inject({}) { |hash, attr| hash.merge(Hash[attr, send(attr)]) }
   end
 end

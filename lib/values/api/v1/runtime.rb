@@ -3,19 +3,15 @@ module Api
     # Класс, обрабатывающий аттрибуты времени в заявке.
     class Runtime
       include ActiveModel::Serialization
+      include Virtus.value_object
 
       DATE_FORMAT = '%d.%m.%Y'.freeze
       TIME_FORMAT = '%H:%M'.freeze
 
-      attr_reader :starttime, :endtime, :time
-
-      # starttime - DATETIME
-      # endtime - DATETIME
-      # time - TIMESTAMP
-      def initialize(starttime, endtime, time)
-        @starttime = Time.zone.parse(starttime.to_s)
-        @endtime = Time.zone.parse(endtime.to_s)
-        @time = time ? DateTime.strptime(time.to_s, '%s').in_time_zone : nil
+      values do
+        attribute :starttime, DateTime
+        attribute :endtime, DateTime
+        attribute :time, DateTime
       end
 
       def alive?
