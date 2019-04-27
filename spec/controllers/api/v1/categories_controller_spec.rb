@@ -6,10 +6,10 @@ module Api
       describe 'GET #index' do
         let!(:categories) { create_list(:category, 3) }
 
-        it 'loads all categories' do
-          get :index, format: :json
+        it 'runs :all method for CategoriesQuery instance' do
+          expect_any_instance_of(CategoriesQuery).to receive(:all)
 
-          expect(response.body).to have_json_size(3)
+          get :index, format: :json
         end
 
         %w[id name short_description popularity icon_name services].each do |attr|

@@ -4,7 +4,7 @@ module Api
       impressionist
 
       def index
-        render json: Category.extend(Scope).includes(:services).by_popularity
+        render json: CategoriesQuery.new.all
       end
 
       def show
