@@ -14,6 +14,6 @@ class ServiceSerializer < ActiveModel::Serializer
   end
 
   def tickets
-    object.tickets.where.not(ticket_type: :common_case).extend(Api::V1::Scope).by_popularity
+    Api::V1::TicketsQuery.new(object.tickets).all
   end
 end

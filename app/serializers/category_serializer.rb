@@ -5,7 +5,7 @@ class CategorySerializer < ActiveModel::Serializer
   has_many :faq
 
   def faq
-    object.tickets.where(ticket_type: :question).extend(Api::V1::Scope).by_popularity.includes(:answers).limit(5)
+    Api::V1::QuestionsQuery.new(object.tickets).most_popular
   end
 
   def include_services?

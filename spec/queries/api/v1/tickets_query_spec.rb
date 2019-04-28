@@ -2,22 +2,23 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe CategoriesQuery, type: :model do
-      let!(:categories) { create_list(:category, 5) }
+    RSpec.describe TicketsQuery, type: :model do
+      let!(:tickets) { create_list(:ticket, 5) }
+      let!(:ticket) { create(:ticket, ticket_type: :common_case) }
 
       it 'inherits from ApplicationQuery class' do
-        expect(CategoriesQuery).to be < ApplicationQuery
+        expect(TicketsQuery).to be < ApplicationQuery
       end
 
       context 'when scope does not exist' do
         it 'creates scope' do
-          expect(subject.scope).to eq Category.all
+          expect(subject.scope).to eq Ticket.all
         end
       end
 
       context 'when scope exists' do
-        let(:scope) { Category.first(2) }
-        subject { CategoriesQuery.new(scope) }
+        let(:scope) { Ticket.first(2) }
+        subject { TicketsQuery.new(scope) }
 
         it 'use current scope' do
           expect(subject.scope).to eq scope
@@ -25,8 +26,8 @@ module Api
       end
 
       describe '#all' do
-        it 'loads all categories' do
-          expect(subject.all.count).to eq categories.count
+        it 'loads all tickets except tickets with :common_case type' do
+          expect(subject.all.count).to eq tickets.count
         end
 
         it 'runs scope :by_popularity' do
