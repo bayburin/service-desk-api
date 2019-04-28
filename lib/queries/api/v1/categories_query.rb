@@ -8,6 +8,10 @@ module Api
       def all
         scope.includes(:services).by_popularity
       end
+
+      def visible
+        all.visible
+      end
     end
   end
 end

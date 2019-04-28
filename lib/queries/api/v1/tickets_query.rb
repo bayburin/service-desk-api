@@ -6,7 +6,17 @@ module Api
       end
 
       def all
-        scope.where.not(ticket_type: :common_case).by_popularity
+        tickets.by_popularity
+      end
+
+      def visible
+        tickets.visible.by_popularity
+      end
+
+      private
+
+      def tickets
+        scope.where.not(ticket_type: :common_case)
       end
     end
   end

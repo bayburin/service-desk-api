@@ -14,6 +14,6 @@ class ServiceSerializer < ActiveModel::Serializer
   end
 
   def tickets
-    Api::V1::TicketsQuery.new(object.tickets).all
+    Api::V1::TicketsQuery.new(object.tickets).visible
   end
 end

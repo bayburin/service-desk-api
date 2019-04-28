@@ -5,7 +5,6 @@ module Api
     RSpec.describe QuestionsQuery, type: :model do
       let!(:tickets) { create_list(:ticket, 5) }
       let!(:ticket) { create(:ticket, ticket_type: :common_case) }
-      subject { QuestionsQuery.new }
 
       it 'inherits from TicketsQuery class' do
         expect(QuestionsQuery).to be < TicketsQuery
@@ -20,6 +19,20 @@ module Api
           expect(subject.scope).to receive(:by_popularity)
 
           subject.all
+        end
+      end
+
+      describe '#visible' do
+        it 'runs scope :visible' do
+          expect(subject.scope).to receive(:visible).and_call_original
+
+          subject.visible
+        end
+
+        it 'runs scope :by_popularity' do
+          expect(subject.scope).to receive(:by_popularity)
+
+          subject.visible
         end
       end
     end

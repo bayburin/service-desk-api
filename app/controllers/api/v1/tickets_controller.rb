@@ -10,7 +10,7 @@ module Api
       # end
 
       def show
-        render json: Ticket.find(params[:id]), include: 'service.category'
+        render json: Ticket.find(params[:id], is_hidden: false), include: 'service.category'
       end
     end
   end

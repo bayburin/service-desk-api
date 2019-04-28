@@ -36,6 +36,20 @@ module Api
           subject.all
         end
       end
+
+      describe '#visible' do
+        it 'runs scope :visible' do
+          expect(subject.scope).to receive(:visible).and_call_original
+
+          subject.visible
+        end
+
+        it 'runs scope :by_popularity' do
+          expect(subject.scope).to receive(:by_popularity)
+
+          subject.visible
+        end
+      end
     end
   end
 end
