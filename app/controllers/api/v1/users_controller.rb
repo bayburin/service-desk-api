@@ -16,15 +16,10 @@ module Api
       end
 
       def owns
-        uri = URI("#{ENV['SVT_NAME']}/user_isses/#{current_user.id_tn}/items")
+        items = Svt::SvtApi.items(current_user)
+        services = Service.extend(Scope).visible
 
-        response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
-          req = Net::HTTP::Get.new(uri)
-          ::Rails.logger.info 'Получение списка техники для текущего пользователя'
-          http.request(req)
-        end
-
-        render json: UserOwns.new(JSON.parse(response.body), Service.where(is_hidden: false)), serializer: UserOwnsSerializer, status: response.code
+        render json: UserOwns.new(items, services), serializer: UserOwnsSerializer
       end
     end
   end
