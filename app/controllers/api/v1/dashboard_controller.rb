@@ -10,7 +10,7 @@ module Api
 
       def search
         data = ThinkingSphinx
-                 .search(params[:search], order: 'popularity DESC')
+                 .search(params[:search], order: 'popularity DESC', per_page: 1000)
                  .each { |s| s.without_associations = true }
 
         render json: data
