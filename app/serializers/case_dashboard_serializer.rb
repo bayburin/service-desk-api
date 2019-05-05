@@ -1,5 +1,5 @@
 class CaseDashboardSerializer < ActiveModel::Serializer
-  attributes :statuses, :case_count
+  attributes :statuses
 
   has_many :cases, each_serializer: CaseSerializer
 end
