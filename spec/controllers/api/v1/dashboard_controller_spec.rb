@@ -16,8 +16,8 @@ module Api
           end
         end
 
-        it 'loads all categories' do
-          expect(response.body).to have_json_size(size).at_path('categories')
+        it 'loads only 9 categories' do
+          expect(response.body).to have_json_size(9).at_path('categories')
         end
 
         it 'loads most popular services' do

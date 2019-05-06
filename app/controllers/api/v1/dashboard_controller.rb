@@ -2,7 +2,7 @@ module Api
   module V1
     class DashboardController < BaseController
       def index
-        categories = CategoriesQuery.new.all
+        categories = CategoriesQuery.new.all.limit(9)
         services = ServicesQuery.new.most_popular.includes(:tickets).each do |service|
           service.tickets.each(&:without_associations!)
         end
