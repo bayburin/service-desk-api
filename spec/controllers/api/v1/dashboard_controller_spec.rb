@@ -4,20 +4,24 @@ module Api
   module V1
     RSpec.describe DashboardController, type: :controller do
       describe 'GET #index' do
-        let(:size) { 5 }
+        let(:size) { 10 }
         let!(:services) { create_list(:service, size) }
         let(:params) { { without_associations: 'true' } }
 
         before { get :index, params: params, format: :json }
 
-        it 'includes services and controllers' do
-          expect(response.body).to have_json_path('categories')
-          expect(response.body).to have_json_path('services')
+        %w[categories services].each do |attr|
+          it "includes #{attr}" do
+            expect(response.body).to have_json_path(attr)
+          end
         end
 
-        it 'loads all categories and services' do
+        it 'loads all categories' do
           expect(response.body).to have_json_size(size).at_path('categories')
-          expect(response.body).to have_json_size(size).at_path('services')
+        end
+
+        it 'loads most popular services' do
+          expect(response.body).to have_json_size(6).at_path('services')
         end
 
         it 'loads :tickets association for services' do

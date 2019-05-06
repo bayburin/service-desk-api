@@ -19,6 +19,8 @@ Bundler.require(*Rails.groups)
 
 module ServiceDeskBackend
   class Application < Rails::Application
+    Dotenv::Railtie.load
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
@@ -30,7 +32,8 @@ module ServiceDeskBackend
     config.autoload_paths << Rails.root.join('lib', 'resources').to_s
     config.autoload_paths << Rails.root.join('lib', 'decorators').to_s
     config.autoload_paths << Rails.root.join('lib', 'modules').to_s
-    config.autoload_paths << Rails.root.join('lib', 'value_objects').to_s
+    config.autoload_paths << Rails.root.join('lib', 'values').to_s
+    config.autoload_paths << Rails.root.join('lib', 'queries').to_s
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

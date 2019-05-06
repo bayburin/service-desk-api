@@ -9,7 +9,7 @@ module Api
         end
 
         def post(resource_path, params = {})
-          response = conn.post(resource_path, Oj.dump(params))
+          response = conn.post(resource_path, params.to_json)
           Oj.load(response.body)
         end
       end

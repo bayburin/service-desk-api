@@ -15,9 +15,8 @@ Rails.application.routes.draw do
       resources :services, only: [] do
         resources :tickets, only: :index
       end
-      resources :tickets, only: :show
-      resources :tickets, only: [] do
-        resources :answers, only: :index
+      resources :tickets, only: :show do
+        resources :answers, only: :show
       end
       resources :cases, param: :case_id
       # Получение данных о пользователе

@@ -6,7 +6,7 @@ module Api
       let(:starttime) { Time.zone.now }
       let(:endtime) { Time.zone.now + 4.days }
       let(:time) { (Time.zone.now + 2.days).to_i }
-      subject { Runtime.new(starttime, endtime, time) }
+      subject { Runtime.new(starttime: starttime, endtime: endtime, time: time) }
 
       describe '#alive?' do
         context 'when :endtime is set' do

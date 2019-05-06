@@ -8,4 +8,8 @@ class Service < ApplicationRecord
   validates :is_hidden, inclusion: { in: [true, false] }
 
   attr_accessor :without_associations
+
+  def without_associations!
+    self.without_associations = true
+  end
 end

@@ -43,12 +43,11 @@ module Api
         before do
           create_list(:service, 3, is_hidden: false)
           create_list(:service, 3, is_hidden: true)
-          stub_request(:get, "#{ENV['SVT_NAME']}/user_isses/#{resource_owner.id_tn}/items")
-            .to_return(body: user_data.to_json)
+          stub_request(:get, "#{ENV['SVT_NAME']}/user_isses/#{resource_owner.id_tn}/items").to_return(body: user_data.to_json)
           get :owns, format: :json
         end
 
-        it 'connects with http://svt.iss-reshetnev.ru to receive items' do
+        it 'connects with server to receive items' do
           expect(WebMock).to have_requested(:get, "#{ENV['SVT_NAME']}/user_isses/#{resource_owner.id_tn}/items")
         end
 

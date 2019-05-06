@@ -50,7 +50,6 @@ module Api
         let!(:ticket) { create(:ticket, ticket_type: :common_case, service: service) }
         let!(:tickets) { create_list(:ticket, 3, ticket_type: :question, service: service) }
         let(:params) { { category_id: category.id, id: service.id } }
-        let(:by_popularity) { Ticket.where.not(ticket_type: :common_case).extend(Scope).all.by_popularity.pluck(:id) }
 
         before { get :show, params: params, format: :json }
 
@@ -58,28 +57,12 @@ module Api
           expect(parse_json(response.body)['id']).to eq service.id
         end
 
-        %w[id category_id name short_description install popularity is_hidden has_common_case popularity category tickets].each do |attr|
-          it "has #{attr} attribute" do
-            expect(response.body).to have_json_path(attr)
-          end
-        end
-
-        it 'loads tickets' do
-          expect(response.body).to have_json_size(service.tickets.where.not(ticket_type: :common_case).count).at_path('tickets')
-        end
-
-        it 'does not load tickets with :common_case type' do
-          parse_json(response.body)['tickets'].each do |ticket|
-            expect(ticket['ticket_type']).not_to eq 'common_case'
-          end
-        end
-
         it 'loads answers for :tickets attribute' do
           expect(response.body).to have_json_path('tickets/0/answers')
         end
 
-        it 'loads answers by popularity' do
-          expect(parse_json(response.body)['tickets'].map { |el| el['id'] }).to eq by_popularity
+        it 'runs ServiceSerializer' do
+          expect(response.body).to eq ServiceSerializer.new(service).to_json(include: [:category, tickets: :answers])
         end
 
         it 'respond with 200 status' do
