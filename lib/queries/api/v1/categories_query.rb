@@ -6,12 +6,12 @@ module Api
       end
 
       def all
-        scope.includes(:services).by_popularity
+        scope.by_popularity
       end
 
-      def visible
-        all.visible
-      end
+      # def visible
+      #   all.visible
+      # end
     end
   end
 end

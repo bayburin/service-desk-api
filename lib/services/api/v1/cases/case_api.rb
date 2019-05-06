@@ -5,13 +5,13 @@ module Api
         attr_accessor :case_params
 
         def self.query(params = {})
-          response = Request.get('cases.json', params.merge(@case_params || {}))
+          response = Api::V1::Cases::Request.get('cases.json', params.merge(@case_params || {}))
           response.fetch('cases', []).map! { |kase| Case.new(kase) }
           response
         end
 
         def self.save(kase)
-          response = Request.post('cases.json', kase)
+          response = Api::V1::Cases::Request.post('cases.json', kase)
           return unless response
 
           kase.case_id = response['case_id']
@@ -28,7 +28,7 @@ module Api
         end
 
         def query(params = {})
-          response = Request.get('cases.json', params.merge(@case_params || {}))
+          response = Api::V1::Cases::Request.get('cases.json', params.merge(@case_params || {}))
           response.fetch('cases', []).map! { |kase| Case.new(kase) }
           response
         end

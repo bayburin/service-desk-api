@@ -3,8 +3,8 @@ FactoryBot.define do
     case_id { nil }
     user_tn { nil }
     id_tn { nil }
-    dept { nil }
-    fio { nil }
+    # dept { nil }
+    # fio { nil }
     phone { nil }
     email { nil }
     user_info { nil }
@@ -36,8 +36,8 @@ FactoryBot.define do
       user = ev.user_iss || build_stubbed(:user_iss)
       kase.user_tn = user.tn
       kase.id_tn = user.id_tn
-      kase.dept = user.dept
-      kase.fio = user.fio
+      # kase.dept = user.dept
+      # kase.fio = user.fio
       kase.phone = user.tel
       kase.email = user.email
 

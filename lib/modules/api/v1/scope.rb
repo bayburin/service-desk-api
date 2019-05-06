@@ -1,6 +1,5 @@
 module Api
   module V1
-    # TODO: добавить тесты
     module Scope
       def by_popularity
         order(popularity: :desc)

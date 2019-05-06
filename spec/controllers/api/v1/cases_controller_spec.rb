@@ -14,8 +14,9 @@ module Api
       describe 'GET #index' do
         let(:kase) { attributes_for(:case) }
         let(:astraea_response) { { cases: [kase], statuses: [] } }
-        let(:params) { { filters: Oj.dump(limit: 15, offset: 30, status_id: 1) } }
-        before { stub_request(:get, %r{#{astraea_url}/cases.json}).to_return(status: 200, body: Oj.dump(astraea_response)) }
+        let(:filters) { { limit: 15, offset: 30, status_id: 1 } }
+        let(:params) { { filters: filters.to_json } }
+        before { stub_request(:get, %r{#{astraea_url}/cases.json}).to_return(status: 200, body: astraea_response.to_json) }
 
         it 'adds :filters attribute to request which included string with filter params' do
           get :index, params: params, format: :json
@@ -56,7 +57,7 @@ module Api
         let(:decorator) { CaseSaveDecorator.new(kase) }
 
         before do
-          stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json').to_return(status: 200, body: Oj.dump(kase), headers: {})
+          stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json').to_return(status: 200, body: kase.to_json, headers: {})
           allow(Case).to receive(:new).and_return(kase)
           allow(CaseSaveDecorator).to receive(:new).and_return(decorator)
         end

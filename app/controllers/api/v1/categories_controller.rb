@@ -4,11 +4,11 @@ module Api
       impressionist
 
       def index
-        render json: CategoriesQuery.new.visible
+        render json: CategoriesQuery.new.all.includes(:services), include: 'services'
       end
 
       def show
-        render json: Category.find(params[:id], is_hidden: false), include: 'services,faq.answers'
+        render json: Category.find(params[:id]), include: 'services,faq.answers'
       end
     end
   end

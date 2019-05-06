@@ -14,7 +14,7 @@ module Api
         let(:data) { { message: 'it works' } }
 
         context 'when response has 200 status' do
-          before { stub_request(:get, 'http://test-api/cases.json').to_return(status: 200, body: Oj.dump(data)) }
+          before { stub_request(:get, 'http://test-api/cases.json').to_return(status: 200, body: data.to_json) }
 
           it 'returns data' do
             expect(subject.get('cases.json')).to eq data.as_json
@@ -27,7 +27,7 @@ module Api
         let(:returned_data) { { id: 12_345 } }
 
         context  'when response has 200 status' do
-          before { stub_request(:post, 'http://test-api/cases.json').with(body: Oj.dump(sended_data)).to_return(status: 200, body: Oj.dump(returned_data)) }
+          before { stub_request(:post, 'http://test-api/cases.json').with(body: sended_data.to_json).to_return(status: 200, body: returned_data.to_json) }
 
           it 'returns data' do
             expect(subject.post('cases.json', sended_data)).to eq returned_data.as_json

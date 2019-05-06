@@ -3,25 +3,27 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe TicketsQuery, type: :model do
-      let!(:tickets) { create_list(:ticket, 5) }
+      let(:service) { create(:service) }
+      let!(:tickets) { create_list(:ticket, 5, service: service) }
       let!(:ticket) { create(:ticket, ticket_type: :common_case) }
+      let(:scope) { service.tickets }
+      subject { TicketsQuery.new(scope) }
 
       it 'inherits from ApplicationQuery class' do
         expect(TicketsQuery).to be < ApplicationQuery
       end
 
-      context 'when scope does not exist' do
-        it 'creates scope' do
-          expect(subject.scope).to eq Ticket.all
+      context 'when scope exists' do
+        it 'use current scope' do
+          expect(subject.scope).to eq scope
         end
       end
 
-      context 'when scope exists' do
-        let(:scope) { Ticket.first(2) }
-        subject { TicketsQuery.new(scope) }
+      context 'when scope does not exist' do
+        subject { TicketsQuery.new }
 
-        it 'use current scope' do
-          expect(subject.scope).to eq scope
+        it 'creates scope' do
+          expect(subject.scope).to eq Ticket.all
         end
       end
 
@@ -31,7 +33,7 @@ module Api
         end
 
         it 'runs scope :by_popularity' do
-          expect(subject.scope).to receive(:by_popularity)
+          expect(subject).to receive_message_chain(:tickets, :by_popularity)
 
           subject.all
         end
@@ -39,13 +41,13 @@ module Api
 
       describe '#visible' do
         it 'runs scope :visible' do
-          expect(subject.scope).to receive(:visible).and_call_original
+          expect(subject).to receive(:visible).and_call_original
 
           subject.visible
         end
 
         it 'runs scope :by_popularity' do
-          expect(subject.scope).to receive(:by_popularity)
+          expect(subject).to receive_message_chain(:tickets, :visible, :by_popularity)
 
           subject.visible
         end

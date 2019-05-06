@@ -16,7 +16,7 @@ module Api
       private
 
       def questions
-        scope.where(ticket_type: :question)
+        scope.where(ticket_type: :question).extend(Scope)
       end
     end
   end

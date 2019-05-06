@@ -2,7 +2,7 @@ module Api
   module V1
     class TicketsQuery < ApplicationQuery
       def initialize(scope = Ticket.all)
-        @scope = scope.extend(Scope)
+        @scope = scope
       end
 
       def all
@@ -16,7 +16,7 @@ module Api
       private
 
       def tickets
-        scope.where.not(ticket_type: :common_case)
+        scope.where.not(ticket_type: :common_case).extend(Scope)
       end
     end
   end

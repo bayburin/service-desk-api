@@ -6,11 +6,13 @@ module Api
       RSpec.describe SvtApi, type: :model do
         describe '#items' do
           let!(:user) { build(:user_iss) }
+          let(:item_data) { [] }
+          subject { Api::V1::Svt::SvtApi }
 
           it 'runs :get method' do
-            expect(Api::V1::Cases::Request).to receive(:get).with("user_isses/#{user.id_tn}/items")
+            expect(Api::V1::Svt::Request).to receive(:get).with("user_isses/#{user.id_tn}/items", {})
 
-            subject.item(user)
+            subject.items(user)
           end
         end
       end
