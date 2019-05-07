@@ -31,7 +31,7 @@ module Api
         end
 
         it 'runs :resolve method for policy instance' do
-          expect_any_instance_of(CaseApiPolicy::Scope).to receive_message_chain(:resolve, :query).and_return(astraea_response)
+          expect_any_instance_of(CaseApiPolicy::Scope).to receive(:resolve).and_call_original
 
           get :index, format: :json
         end
@@ -48,6 +48,16 @@ module Api
           get :index, format: :json
 
           expect(response.status).to eq 200
+        end
+
+        context 'when api respond with error' do
+          before { stub_request(:get, %r{#{astraea_url}/cases.json}).to_return(status: 422, body: astraea_response.to_json) }
+
+          it 'respond with error status' do
+            get :index, format: :json
+
+            expect(response.status).to eq 422
+          end
         end
       end
 
@@ -81,7 +91,7 @@ module Api
         end
 
         it 'runs :save method of Cases::CaseApi' do
-          expect(Cases::CaseApi).to receive(:save).with(decorator.kase)
+          expect(Cases::CaseApi).to receive(:save).with(decorator.kase).and_call_original
 
           post :create, params: params, format: :json
         end
@@ -101,10 +111,44 @@ module Api
         end
 
         context 'when case was not created' do
-          before { allow(Cases::CaseApi).to receive(:save).and_return(nil) }
+          before { allow_any_instance_of(Faraday::Response).to receive(:status).and_return(422) }
 
-          it 'respond with status 422' do
+          it 'respond with error status' do
             post :create, params: params, format: :json
+
+            expect(response.status).to eq 422
+          end
+        end
+      end
+
+      describe 'DELETE #destroy' do
+        let(:params) { { case_id: 12_345 } }
+
+        before { stub_request(:delete, %r{#{astraea_url}/cases.json?}).to_return(status: 200, body: {}.to_json) }
+
+        it 'creates instance of scope policy' do
+          expect(CaseApiPolicy::Scope).to receive(:new).with(resource_owner, Cases::CaseApi).and_return(CaseApiPolicy::Scope.new(resource_owner, Cases::CaseApi))
+
+          delete :destroy, params: params, format: :json
+        end
+
+        it 'runs :resolve method for policy instance' do
+          expect_any_instance_of(CaseApiPolicy::Scope).to receive(:resolve).and_call_original
+
+          delete :destroy, params: params, format: :json
+        end
+
+        it 'respond with 200 status' do
+          delete :destroy, params: params, format: :json
+
+          expect(response.status).to eq 200
+        end
+
+        context 'when api respond with error' do
+          before { stub_request(:delete, %r{#{astraea_url}/cases.json?}).to_return(status: 422, body: {}.to_json) }
+
+          it 'respond with error status' do
+            delete :destroy, params: params, format: :json
 
             expect(response.status).to eq 422
           end

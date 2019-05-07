@@ -7,7 +7,7 @@ module Api
         subject { Request }
 
         it 'inherits from Api::V1::Request' do
-          expect(subject).to be < Api::V1::Connection
+          expect(subject).to be < Api::V1::ApiConnection
         end
 
         it 'sets API_ENDPOINT constant' do

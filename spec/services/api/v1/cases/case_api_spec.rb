@@ -10,16 +10,17 @@ module Api
           describe '.query' do
             let(:kase) { attributes_for(:case) }
             let(:response) { { cases: [kase] } }
-            before { allow(Api::V1::Cases::Request).to receive(:get).with('cases.json', anything).and_return(response.as_json) }
+
+            before { stub_request(:get, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json').to_return(status: 200, body: response.to_json, headers: {}) }
 
             it 'runs :get method' do
-              expect(Api::V1::Cases::Request).to receive(:get).with('cases.json', {})
+              expect(Api::V1::Cases::Request).to receive(:get).with('cases.json', {}).and_call_original
 
               subject.query
             end
 
             it 'creates instances of Case' do
-              subject.query['cases'].each do |kase_i|
+              subject.query.body['cases'].each do |kase_i|
                 expect(kase_i).to be_instance_of Case
               end
             end
@@ -28,36 +29,16 @@ module Api
           describe '.save' do
             let(:kase) { build(:case) }
 
+            before { stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json').to_return(status: 200, body: {}.to_json, headers: {}) }
+
             it 'runs :post method' do
               expect(Api::V1::Cases::Request).to receive(:post).with('cases.json', an_instance_of(Case))
 
-              subject.save(build(:case))
+              subject.save(kase)
             end
 
-            context 'when kase was saved' do
-              let(:response) { { case_id: 12_345 } }
-
-              before { allow(Api::V1::Cases::Request).to receive(:post).with('cases.json', kase).and_return(response.as_json) }
-
-              it 'returns kase' do
-                expect(subject.save(kase)).to be_instance_of(Case)
-              end
-
-              it 'changes :case_id attribute of Case' do
-                expect { subject.save(kase) }.to change { kase.case_id }.to(response.as_json['case_id'])
-              end
-            end
-
-            context 'when kase was not saved' do
-              before { allow(Api::V1::Cases::Request).to receive(:post).with('cases.json', kase).and_return(nil) }
-
-              it 'returns nil' do
-                expect(subject.save(kase)).to be_nil
-              end
-
-              it 'does not change :case_id attribute of Case' do
-                expect { subject.save(kase) }.not_to change { kase.case_id }
-              end
+            it 'returns instance of Faradat::Response class' do
+              expect(subject.save(kase)).to be_instance_of(Faraday::Response)
             end
           end
 
@@ -78,24 +59,41 @@ module Api
           describe '#query' do
             let(:kase) { attributes_for(:case) }
             let(:response) { { cases: [kase] } }
-            before { allow(Api::V1::Cases::Request).to receive(:get).with('cases.json', anything).and_return(response.as_json) }
+
+            before { stub_request(:get, %r{https://astraea-ui.iss-reshetnev.ru/api/cases.json.*}).to_return(status: 200, body: response.to_json, headers: {}) }
 
             it 'runs :get method' do
-              expect(Api::V1::Cases::Request).to receive(:get).with('cases.json', {})
+              expect(Api::V1::Cases::Request).to receive(:get).with('cases.json', {}).and_call_original
 
               subject.query
             end
 
             it 'runs :get method with params from @case_params variable' do
-              expect(Api::V1::Cases::Request).to receive(:get).with('cases.json', foo: :bar, user_tn: 12_345)
+              expect(Api::V1::Cases::Request).to receive(:get).with('cases.json', foo: :bar, user_tn: 12_345).and_call_original
 
               subject.where(foo: :bar).query(user_tn: 12_345)
             end
 
             it 'creates instances of Case' do
-              subject.query['cases'].each do |kase_i|
+              subject.query.body['cases'].each do |kase_i|
                 expect(kase_i).to be_instance_of Case
               end
+            end
+          end
+
+          describe '#destroy' do
+            let(:params) { { case_id: 12_345 } }
+
+            before { stub_request(:delete, %r{https://astraea-ui.iss-reshetnev.ru/api/cases.json.*}).to_return(status: 200, body: {}.to_json, headers: {}) }
+
+            it 'runs :destroy method' do
+              expect(Api::V1::Cases::Request).to receive(:delete).with('cases.json', params)
+
+              subject.destroy(params)
+            end
+
+            it 'returns instance of Faradat::Response class' do
+              expect(subject.destroy(params)).to be_instance_of(Faraday::Response)
             end
           end
 

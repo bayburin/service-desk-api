@@ -2,8 +2,8 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe Connection, type: :model do
-      subject { Connection }
+    RSpec.describe ApiConnection, type: :model do
+      subject { ApiConnection }
 
       describe '.conn' do
         it 'returns instance of Faraday' do

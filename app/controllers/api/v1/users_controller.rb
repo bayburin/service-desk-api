@@ -16,7 +16,7 @@ module Api
       end
 
       def owns
-        items = Svt::SvtApi.items(current_user)
+        items = Svt::SvtApi.items(current_user).body
         services = Service.extend(Scope).visible
 
         render json: UserOwns.new(items, services), serializer: UserOwnsSerializer

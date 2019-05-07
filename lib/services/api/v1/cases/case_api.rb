@@ -6,16 +6,12 @@ module Api
 
         def self.query(params = {})
           response = Api::V1::Cases::Request.get('cases.json', params.merge(@case_params || {}))
-          response.fetch('cases', []).map! { |kase| Case.new(kase) }
+          response.body.fetch('cases', []).map! { |kase| Case.new(kase) }
           response
         end
 
         def self.save(kase)
-          response = Api::V1::Cases::Request.post('cases.json', kase)
-          return unless response
-
-          kase.case_id = response['case_id']
-          kase
+          Api::V1::Cases::Request.post('cases.json', kase)
         end
 
         def self.where(**args)
@@ -29,8 +25,12 @@ module Api
 
         def query(params = {})
           response = Api::V1::Cases::Request.get('cases.json', params.merge(@case_params || {}))
-          response.fetch('cases', []).map! { |kase| Case.new(kase) }
+          response.body.fetch('cases', []).map! { |kase| Case.new(kase) }
           response
+        end
+
+        def destroy(params = {})
+          Api::V1::Cases::Request.delete('cases.json', params.merge(@case_params || {}))
         end
 
         def where(**args)
