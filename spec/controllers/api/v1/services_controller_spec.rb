@@ -3,6 +3,8 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe ServicesController, type: :controller do
+      sign_in_user
+
       describe 'GET #index' do
         let!(:services) { create_list(:service, 3) }
 

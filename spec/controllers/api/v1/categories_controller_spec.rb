@@ -3,6 +3,8 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe CategoriesController, type: :controller do
+      sign_in_user
+
       describe 'GET #index' do
         let!(:categories) { create_list(:category, 3) }
 

@@ -2,10 +2,10 @@ require 'rails_helper'
 
 module Api
   module V1
-    describe 'Scope' do
+    RSpec.describe Scope do
       subject { Service.extend(Scope) }
 
-      describe '::by_priority' do
+      describe '#by_priority' do
         before { create_list(:service, 3) }
 
 
@@ -18,7 +18,7 @@ module Api
         end
       end
 
-      describe '::visible' do
+      describe '#visible' do
         before do
           create_list(:service, 3, is_hidden: false)
           create_list(:service, 3, is_hidden: true)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_15_083135) do
+ActiveRecord::Schema.define(version: 2019_05_14_072010) do
 
   create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "ticket_id", null: false
@@ -139,6 +139,15 @@ ActiveRecord::Schema.define(version: 2019_04_15_083135) do
     t.index ["popularity"], name: "index_tickets_on_popularity"
     t.index ["service_id"], name: "index_tickets_on_service_id"
     t.index ["ticket_type"], name: "index_tickets_on_ticket_type"
+  end
+
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "tn"
+    t.integer "id_tn"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["id_tn"], name: "index_users_on_id_tn"
+    t.index ["tn"], name: "index_users_on_tn"
   end
 
   add_foreign_key "answers", "tickets"

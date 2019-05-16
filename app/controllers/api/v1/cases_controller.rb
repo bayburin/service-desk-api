@@ -1,8 +1,6 @@
 module Api
   module V1
     class CasesController < BaseController
-      before_action :doorkeeper_authorize!
-
       def index
         response = case_api_wrapper.query(filters: params[:filters])
 
@@ -19,7 +17,7 @@ module Api
 
         case_decorator = CaseSaveDecorator.new(kase)
         case_decorator.decorate
-        response = Cases::CaseApi.save(case_decorator.kase)
+        response = CaseApi.save(case_decorator.kase)
 
         render json: response.body, status: response.status
       end
@@ -33,7 +31,7 @@ module Api
       protected
 
       def case_api_wrapper
-        CaseApiPolicy::Scope.new(current_user, Cases::CaseApi).resolve
+        CaseApiPolicy::Scope.new(current_user, CaseApi).resolve
       end
 
       def cases_params

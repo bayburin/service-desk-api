@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'active_model_serializers'
 gem 'awesome_print'
 gem 'colorize'
-gem 'doorkeeper'
+gem 'devise'
 gem 'dotenv-rails'
 gem 'faraday'
 gem 'faraday_middleware'
