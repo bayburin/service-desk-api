@@ -3,13 +3,9 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe CasesController, type: :controller do
-      let(:resource_owner) { build_stubbed(:user_iss) }
-      let(:token) { double(acceptable?: true, resource_owner_id: resource_owner.tn) }
+      sign_in_user
+
       let(:astraea_url) { 'https://astraea-ui.iss-reshetnev.ru/api' }
-      before do
-        allow(controller).to receive(:current_user).and_return(resource_owner)
-        allow(controller).to receive(:doorkeeper_token).and_return(token)
-      end
 
       describe 'GET #index' do
         let(:kase) { attributes_for(:case) }
@@ -25,12 +21,12 @@ module Api
         end
 
         it 'creates instance of scope policy' do
-          expect(CaseApiPolicy::Scope).to receive(:new).with(resource_owner, Cases::CaseApi).and_return(CaseApiPolicy::Scope.new(resource_owner, Cases::CaseApi))
+          expect(CaseApiPolicy::Scope).to receive(:new).with(subject.current_user, CaseApi).and_call_original
 
           get :index, format: :json
         end
 
-        it 'runs :resolve method for policy instance' do
+        it 'runs #resolve method for policy instance' do
           expect_any_instance_of(CaseApiPolicy::Scope).to receive(:resolve).and_call_original
 
           get :index, format: :json
@@ -72,7 +68,7 @@ module Api
           allow(CaseSaveDecorator).to receive(:new).and_return(decorator)
         end
 
-        it 'runs authorize method' do
+        it 'runs #authorize method' do
           expect(controller).to receive(:authorize).with(kase)
 
           post :create, params: params, format: :json
@@ -84,14 +80,14 @@ module Api
           post :create, params: params, format: :json
         end
 
-        it 'runs decorate method' do
+        it 'runs #decorate method' do
           expect(decorator).to receive(:decorate)
 
           post :create, params: params, format: :json
         end
 
-        it 'runs :save method of Cases::CaseApi' do
-          expect(Cases::CaseApi).to receive(:save).with(decorator.kase).and_call_original
+        it 'runs #save method of Cases::CaseApi' do
+          expect(CaseApi).to receive(:save).with(decorator.kase).and_call_original
 
           post :create, params: params, format: :json
         end
@@ -127,12 +123,12 @@ module Api
         before { stub_request(:delete, %r{#{astraea_url}/cases.json?}).to_return(status: 200, body: {}.to_json) }
 
         it 'creates instance of scope policy' do
-          expect(CaseApiPolicy::Scope).to receive(:new).with(resource_owner, Cases::CaseApi).and_return(CaseApiPolicy::Scope.new(resource_owner, Cases::CaseApi))
+          expect(CaseApiPolicy::Scope).to receive(:new).with(subject.current_user, CaseApi).and_call_original
 
           delete :destroy, params: params, format: :json
         end
 
-        it 'runs :resolve method for policy instance' do
+        it 'runs #resolve method for policy instance' do
           expect_any_instance_of(CaseApiPolicy::Scope).to receive(:resolve).and_call_original
 
           delete :destroy, params: params, format: :json

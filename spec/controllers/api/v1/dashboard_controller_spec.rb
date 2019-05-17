@@ -3,6 +3,8 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe DashboardController, type: :controller do
+      sign_in_user
+
       describe 'GET #index' do
         let(:size) { 10 }
         let!(:services) { create_list(:service, size) }

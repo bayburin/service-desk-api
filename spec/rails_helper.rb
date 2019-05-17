@@ -11,6 +11,8 @@ require 'thinking_sphinx/test'
 require 'pundit/rspec'
 # Add additional requires below this line. Rails is not loaded until this point!
 
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -36,6 +38,8 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.extend ControllerMacros, type: :controller
 
   # start by truncating all the tables but then use the faster transaction strategy the rest of the time.
   config.before(:suite) do

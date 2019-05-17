@@ -56,6 +56,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    bcrypt (3.1.12)
     bootsnap (1.4.2)
       msgpack (~> 1.0)
     bson (4.4.2)
@@ -73,9 +74,13 @@ GEM
     database_cleaner (1.7.0)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    devise (4.6.2)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 4.1.0, < 6.0)
+      responders
+      warden (~> 1.2.3)
     diff-lcs (1.3)
-    doorkeeper (5.0.2)
-      railties (>= 4.2)
     dotenv (2.7.2)
     dotenv-rails (2.7.2)
       dotenv (= 2.7.2)
@@ -145,6 +150,7 @@ GEM
       mini_portile2 (~> 2.4.0)
     oj (3.7.11)
     oj_mimic_json (1.0.1)
+    orm_adapter (0.5.0)
     parallel (1.17.0)
     parser (2.6.2.0)
       ast (~> 2.4.0)
@@ -191,6 +197,9 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
+    responders (2.4.1)
+      actionpack (>= 4.2.0, < 6.0)
+      railties (>= 4.2.0, < 6.0)
     riddle (2.3.2)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
@@ -261,6 +270,8 @@ GEM
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
+    warden (1.2.8)
+      rack (>= 2.0.6)
     webmock (3.5.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -279,7 +290,7 @@ DEPENDENCIES
   byebug
   colorize
   database_cleaner
-  doorkeeper
+  devise
   dotenv-rails
   factory_bot_rails
   faker

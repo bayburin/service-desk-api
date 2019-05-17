@@ -3,19 +3,12 @@ module Api
     class BaseController < ApplicationController
       include Pundit
 
-      # Обрабтка случаев, когда у пользователя нет доступа на выполнение запрашиваемых действий
-      rescue_from Pundit::NotAuthorizedError do |_exception|
-        render json: { full_message: I18n.t('controllers.app.access_denied') }, status: :forbidden
-      end
+      before_action :authenticate_user!
 
       protected
 
-      def current_user
-        UserIss.where(tn: doorkeeper_token.resource_owner_id).first if doorkeeper_token
-      end
-
-      def doorkeeper_unauthorized_render_options(error: nil)
-        { json: { message: I18n.t('doorkeeper.authorizations.new.title') } }
+      def access_token
+        request.headers['Authorization'].to_s.remove('Bearer ')
       end
     end
   end

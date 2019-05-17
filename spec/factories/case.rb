@@ -29,11 +29,11 @@ FactoryBot.define do
     initialize_with { new(attributes) }
 
     transient do
-      user_iss { build_stubbed(:user_iss) }
+      user { build(:user) }
     end
 
     after(:build) do |kase, ev|
-      user = ev.user_iss || build_stubbed(:user_iss)
+      user = ev.user || build(:user)
       kase.user_tn = user.tn
       kase.id_tn = user.id_tn
       # kase.dept = user.dept
