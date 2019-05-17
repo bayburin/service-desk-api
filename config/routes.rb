@@ -10,12 +10,12 @@ Rails.application.routes.draw do
       resources :categories, only: %i[index show] do
         resources :services, only: :show
       end
-      resources :services, only: [:index] do
-        resources :tickets, only: :index
+      resources :services, only: :index do
+        resources :tickets, only: :show
       end
-      resources :tickets, only: :show do
-        resources :answers, only: :show
-      end
+      # resources :tickets, only: :show do
+      #   resources :answers, only: :show
+      # end
       resources :cases, param: :case_id
       # Получение данных о пользователе
       resources :users, only: [] do

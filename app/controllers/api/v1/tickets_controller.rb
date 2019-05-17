@@ -9,9 +9,9 @@ module Api
       #   render json: tickets, include: 'answers,service.category'
       # end
 
-      # def show
-      #   render json: Api::V1::TicketsQuery.new.visible.find(params[:id]), include: 'service.category'
-      # end
+      def show
+        render json: Ticket.find_by(service_id: params[:service_id], id: params[:id]), include: ''
+      end
     end
   end
 end

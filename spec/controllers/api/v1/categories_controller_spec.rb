@@ -14,7 +14,13 @@ module Api
           get :index, format: :json
         end
 
-        it 'includes :service attribute' do
+        it 'runs CategorySerializer' do
+          expect(CategorySerializer).to receive(:new).at_least(3).and_call_original
+
+          get :index, format: :json
+        end
+
+        it 'has :service attribute' do
           get :index, format: :json
 
           expect(response.body).to have_json_path('0/services')
@@ -32,21 +38,33 @@ module Api
         let(:service) { create(:service, category: category) }
         let!(:tickets) { create_list(:ticket, 3, service: service) }
 
-        before { get :show, params: { id: category.id }, format: :json }
-
         it 'load category with specified id' do
+          get :show, params: { id: category.id }, format: :json
+
           expect(parse_json(response.body)['id']).to eq category.id
         end
 
+        it 'has :services attribute' do
+          get :show, params: { id: category.id }, format: :json
+
+          expect(response.body).to have_json_path('services')
+        end
+
         it 'has :answers for :faq attribute' do
+          get :show, params: { id: category.id }, format: :json
+
           expect(response.body).to have_json_path('faq/0/answers')
         end
 
         it 'runs CategorySerializer' do
-          expect(response.body).to eq CategorySerializer.new(category).to_json(include: [:services, faq: :answers])
+          expect(CategorySerializer).to receive(:new).and_call_original
+
+          get :show, params: { id: category.id }, format: :json
         end
 
         it 'respond with 200 status' do
+          get :show, params: { id: category.id }, format: :json
+
           expect(response.status).to eq 200
         end
       end

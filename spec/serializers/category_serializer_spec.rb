@@ -10,46 +10,36 @@ RSpec.describe TicketSerializer, type: :model do
     end
   end
 
-  describe '#include_services?' do
+  describe '#include_associations?' do
     context 'when :without_associations attribute setted to true' do
       let(:category) { create(:category, without_associations: true) }
 
       it 'returns false' do
-        expect(subject).to receive(:include_services?).and_return(false)
+        expect(subject).to receive(:include_associations?).at_least(1).and_return(false)
 
         subject.to_json
+      end
+
+      %w[services faq].each do |attr|
+        it "does not have :#{attr} attribute" do
+          expect(subject.to_json).not_to have_json_path(attr)
+        end
       end
     end
 
     context 'when :without_associations attribute setted to false' do
       let(:category) { create(:category, without_associations: false) }
 
-      it 'returns false' do
-        expect(subject).to receive(:include_services?).and_return(true)
+      it 'returns true' do
+        expect(subject).to receive(:include_associations?).at_least(1).and_return(true)
 
         subject.to_json
       end
-    end
-  end
 
-  describe '#include_faq?' do
-    context 'when :without_associations attribute setted to true' do
-      let(:category) { create(:category, without_associations: true) }
-
-      it 'returns false' do
-        expect(subject).to receive(:include_faqs?).and_return(false)
-
-        subject.to_json
-      end
-    end
-
-    context 'when :without_associations attribute setted to false' do
-      let(:category) { create(:category, without_associations: false) }
-
-      it 'returns false' do
-        expect(subject).to receive(:include_faqs?).and_return(true)
-
-        subject.to_json
+      %w[services faq].each do |attr|
+        it "has :#{attr} attribute" do
+          expect(subject.to_json).to have_json_path(attr)
+        end
       end
     end
   end

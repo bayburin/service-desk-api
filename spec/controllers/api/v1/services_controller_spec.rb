@@ -8,17 +8,33 @@ module Api
       describe 'GET #index' do
         let!(:services) { create_list(:service, 3) }
 
-        before { get :index, format: :json }
-
         it 'loads all services' do
+          get :index, format: :json
+
           expect(response.body).to have_json_size(3)
         end
 
         it 'loads answers for :tickets attribute' do
+          get :index, format: :json
+
           expect(response.body).not_to have_json_path('0/tickets/0/answers')
         end
 
+        it 'has :category attribute' do
+          get :index, format: :json
+
+          expect(response.body).to have_json_path('0/category')
+        end
+
+        it 'runs ServiceSerializer' do
+          expect(ServiceSerializer).to receive(:new).at_least(3).and_call_original
+
+          get :index, format: :json
+        end
+
         it 'respond with 200 status' do
+          get :index, format: :json
+
           expect(response.status).to eq 200
         end
       end
@@ -31,21 +47,33 @@ module Api
         let!(:tickets) { create_list(:ticket, 3, ticket_type: :question, service: service) }
         let(:params) { { category_id: category.id, id: service.id } }
 
-        before { get :show, params: params, format: :json }
-
         it 'loads service with specified service_id' do
+          get :show, params: params, format: :json
+
           expect(parse_json(response.body)['id']).to eq service.id
         end
 
-        it 'loads answers for :tickets attribute' do
+        it 'has :answers for :tickets attribute' do
+          get :show, params: params, format: :json
+
           expect(response.body).to have_json_path('tickets/0/answers')
         end
 
+        it 'has :category attribute' do
+          get :show, params: params, format: :json
+
+          expect(response.body).to have_json_path('category')
+        end
+
         it 'runs ServiceSerializer' do
-          expect(response.body).to eq ServiceSerializer.new(service).to_json(include: [:category, tickets: :answers])
+          expect(ServiceSerializer).to receive(:new).and_call_original
+
+          get :show, params: params, format: :json
         end
 
         it 'respond with 200 status' do
+          get :show, params: params, format: :json
+
           expect(response.status).to eq 200
         end
       end

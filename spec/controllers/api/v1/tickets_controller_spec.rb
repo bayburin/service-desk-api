@@ -42,36 +42,40 @@ module Api
       #   end
       # end
 
-      # describe 'GET #show' do
-      #   let(:service) { create(:service) }
-      #   let(:tickets) { create_list(:ticket, 3, service: service) }
-      #   let!(:ticket) { tickets.first }
-      #   let(:params) { { id: ticket.id } }
+      describe 'GET #show' do
+        let(:service) { create(:service) }
+        let(:tickets) { create_list(:ticket, 3, service: service) }
+        let!(:ticket) { tickets.first }
+        let(:params) { { service_id: ticket.service_id, id: ticket.id } }
 
-      #   before { get :show, params: params, format: :json }
+        before { ticket.without_associations! }
 
-      #   it 'loads ticket' do
-      #     expect(parse_json(response.body)['id']).to eq ticket.id
-      #   end
+        it 'loads ticket' do
+          get :show, params: params, format: :json
 
-      #   %w[id service_id name popularity service].each do |attr|
-      #     it "has #{attr} attribute" do
-      #       expect(response.body).to have_json_path(attr)
-      #     end
-      #   end
+          expect(parse_json(response.body)['id']).to eq ticket.id
+        end
 
-      #   it 'does not include answers' do
-      #     expect(response.body).not_to have_json_path('answers')
-      #   end
+        it 'runs TicketSerializer' do
+          expect(TicketSerializer).to receive(:new).and_call_original
 
-      #   it 'includes :category attribute into service' do
-      #     expect(response.body).to have_json_path('service/category')
-      #   end
+          get :show, params: params, format: :json
+        end
 
-      #   it 'respond with 200 status' do
-      #     expect(response.status).to eq 200
-      #   end
-      # end
+        %w[answers tags service].each do |attr|
+          it "does not have :#{attr} attribute" do
+            get :show, params: params, format: :json
+
+            expect(response.body).not_to have_json_path(attr)
+          end
+        end
+
+        it 'respond with 200 status' do
+          get :show, params: params, format: :json
+
+          expect(response.status).to eq 200
+        end
+      end
     end
   end
 end
