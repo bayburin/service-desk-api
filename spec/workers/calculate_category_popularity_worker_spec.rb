@@ -6,23 +6,21 @@ RSpec.describe CalculateCategoryPopularityWorker, type: :worker do
   let(:changes_popularity) { category.calculate_popularity - old_popularity }
   let!(:services) { create_list(:service, 3, category: category) }
 
-  subject { CalculateCategoryPopularityWorker }
-
   before { allow(Category).to receive(:find).and_return(category) }
 
   it 'finds service with specified id' do
     expect(Category).to receive(:find).with(category.id)
 
-    subject.perform_async(category.id)
+    subject.perform(category.id)
   end
 
   it 'runs :calculate_popularity method' do
     expect(category).to receive(:calculate_popularity)
 
-    subject.perform_async(category.id)
+    subject.perform(category.id)
   end
 
   it 'updates popularity' do
-    expect { subject.perform_async(category.id) }.to change(category, :popularity).by(changes_popularity)
+    expect { subject.perform(category.id) }.to change(category, :popularity).by(changes_popularity)
   end
 end
