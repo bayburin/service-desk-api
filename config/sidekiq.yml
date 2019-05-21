@@ -5,3 +5,8 @@
     cron: '0 2 * * *'   # Запуск каждый день в 2 ночи
     class: CalculatePopularityWorker
     description: 'Задача обновляет рейтинг категорий и услуг'
+
+  update_indices_worker:
+    cron: '0 3 * * *'   # Запуск каждый день в 3 ночи
+    class: UpdateIndicesWorker
+    description: 'Обновление индексов Sphinx'
