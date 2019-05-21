@@ -7,4 +7,8 @@ RSpec.describe Ticket, type: :model do
   it { is_expected.to have_many(:responsible_users).dependent(:destroy) }
   it { is_expected.to belong_to(:service) }
   it { is_expected.to validate_presence_of(:name) }
+
+  it 'includes Associatable module' do
+    expect(subject.singleton_class.ancestors).to include(Associatable)
+  end
 end

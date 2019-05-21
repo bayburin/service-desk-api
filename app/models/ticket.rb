@@ -1,4 +1,6 @@
 class Ticket < ApplicationRecord
+  include Associatable
+
   is_impressionable counter_cache: true, column_name: :popularity, unique: :request_hash
 
   has_many :answers, dependent: :destroy
@@ -11,11 +13,5 @@ class Ticket < ApplicationRecord
   validates :name, :ticket_type, presence: true
   validates :is_hidden, :to_approve, inclusion: { in: [true, false] }
 
-  attr_accessor :without_associations
-
   enum ticket_type: { question: 1, case: 2, common_case: 3 }, _suffix: :ticket
-
-  def without_associations!
-    self.without_associations = true
-  end
 end

@@ -1,0 +1,7 @@
+
+:schedule:
+  calculate_popularity_worker:
+    # every: ["20s"]
+    cron: '0 2 * * *'   # Запуск каждый день в 2 ночи
+    class: CalculatePopularityWorker
+    description: 'Задача обновляет рейтинг категорий и услуг'

@@ -3,7 +3,7 @@ module Api
     class BaseController < ApplicationController
       include Pundit
 
-      before_action :authenticate_user!
+      # before_action :authenticate_user!
 
       protected
 

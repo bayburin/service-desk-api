@@ -1,4 +1,6 @@
 class Service < ApplicationRecord
+  include Associatable
+
   has_many :tickets, dependent: :destroy
   has_many :responsible_users, as: :responseable, dependent: :destroy
 
@@ -7,9 +9,7 @@ class Service < ApplicationRecord
   validates :name, presence: true
   validates :is_hidden, inclusion: { in: [true, false] }
 
-  attr_accessor :without_associations
-
-  def without_associations!
-    self.without_associations = true
+  def calculate_popularity
+    tickets.pluck(:popularity).reduce(:+)
   end
 end

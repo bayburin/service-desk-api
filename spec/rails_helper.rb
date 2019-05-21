@@ -9,6 +9,7 @@ require 'database_cleaner'
 require 'webmock/rspec'
 require 'thinking_sphinx/test'
 require 'pundit/rspec'
+require 'sidekiq/testing'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
@@ -93,3 +94,4 @@ Shoulda::Matchers.configure do |config|
 end
 WebMock.disable_net_connect!
 ThinkingSphinx::Deltas.suspend!
+Sidekiq::Testing.inline!

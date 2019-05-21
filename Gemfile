@@ -14,6 +14,8 @@ gem 'oj'
 gem 'oj_mimic_json'
 gem 'pundit'
 gem 'rubocop', require: false
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
 gem 'thinking-sphinx'
 gem 'unicorn'
 gem 'virtus'
@@ -27,7 +29,7 @@ gem 'puma', '~> 3.11'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
+gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -64,6 +66,7 @@ group :test do
   gem 'rails-controller-testing'
   gem 'rspec-its'
   gem 'rspec-rails', '~> 3.8'
+  gem 'rspec-sidekiq'
   gem 'shoulda-matchers'
   gem 'webmock'
 end
