@@ -1,7 +1,7 @@
 class Ticket < ApplicationRecord
   include Associatable
 
-  is_impressionable counter_cache: true, column_name: :popularity, unique: :request_hash
+  is_impressionable
 
   has_many :answers, dependent: :destroy
   has_many :ticket_tags, dependent: :destroy
@@ -14,4 +14,8 @@ class Ticket < ApplicationRecord
   validates :is_hidden, :to_approve, inclusion: { in: [true, false] }
 
   enum ticket_type: { question: 1, case: 2, common_case: 3 }, _suffix: :ticket
+
+  def calculate_popularity
+    self.popularity += 1
+  end
 end

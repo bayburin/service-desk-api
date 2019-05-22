@@ -10,7 +10,11 @@ module Api
       # end
 
       def show
-        render json: Ticket.find_by(service_id: params[:service_id], id: params[:id]), include: ''
+        ticket = Ticket.find_by(service_id: params[:service_id], id: params[:id])
+        ticket.calculate_popularity
+        ticket.save
+
+        render json: ticket, include: ''
       end
     end
   end

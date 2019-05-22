@@ -62,7 +62,11 @@ module Api
           get :show, params: params, format: :json
         end
 
-        %w[answers tags service].each do |attr|
+        it 'changes popularity of selected ticket' do
+          expect { get :show, params: params, format: :json }.to change { ticket.reload.popularity }.by(1)
+        end
+
+        %w[answers service].each do |attr|
           it "does not have :#{attr} attribute" do
             get :show, params: params, format: :json
 
