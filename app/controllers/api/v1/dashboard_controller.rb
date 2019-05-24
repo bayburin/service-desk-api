@@ -15,7 +15,7 @@ module Api
                  .search(params[:search], order: 'popularity DESC', per_page: 1000)
                  .each { |s| s.without_associations = true }
 
-        render json: data, include: 'answers.attachments'
+        render json: data, include: 'answers.attachments,service'
       end
     end
   end
