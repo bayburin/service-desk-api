@@ -13,8 +13,8 @@ Rails.application.routes.draw do
       resources :services, only: :index do
         resources :tickets, only: :show
       end
-      # resources :tickets, only: :show do
-      #   resources :answers, only: :show
+      # resources :answers, only: [] do
+      get 'answers/:id/attachments/:attachment_id', to: 'answers#download_attachment'
       # end
       resources :cases, param: :case_id
       # Получение данных о пользователе

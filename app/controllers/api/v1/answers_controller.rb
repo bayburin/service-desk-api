@@ -3,14 +3,11 @@ module Api
     class AnswersController < BaseController
       impressionist
 
-      # def index
-      #   ticket = Ticket.find(params[:ticket_id])
-      #   impressionist ticket
+      def download_attachment
+        attachment = Answer.find(params[:id]).attachments.find(params[:attachment_id])
 
-      #   answers = ticket.answers.includes(ticket: { service: :category })
-
-      #   render json: answers, include: 'ticket.service.category'
-      # end
+        send_file attachment.document.file.file
+      end
     end
   end
 end
