@@ -29,7 +29,7 @@ module Api
 
       describe '#all' do
         it 'loads all tickets except tickets with :common_case type' do
-          expect(subject.all.count).to eq tickets.count
+          expect(subject.all.count).to eq service.tickets.count
         end
 
         it 'runs scope :by_popularity' do

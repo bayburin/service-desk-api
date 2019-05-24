@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :answer_attachment do
-    answer_id { 1 }
-    document { 'MyString' }
+    answer { create(:answer) }
+    document { Rack::Test::UploadedFile.new(File.open(Rails.root.join('spec', 'uploads', 'test_file.txt'))) }
   end
 end

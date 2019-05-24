@@ -6,18 +6,24 @@ module Api
       sign_in_user
 
       describe 'GET #index' do
-        let!(:services) { create_list(:service, 3) }
+        before { create_list(:service, 2) }
 
         it 'loads all services' do
           get :index, format: :json
 
-          expect(response.body).to have_json_size(3)
+          expect(response.body).to have_json_size(2)
         end
 
-        it 'loads answers for :tickets attribute' do
+        it 'has :answers attribute for :tickets attribute' do
           get :index, format: :json
 
-          expect(response.body).not_to have_json_path('0/tickets/0/answers')
+          expect(response.body).to have_json_path('0/tickets/0/answers')
+        end
+
+        it 'has :attachments attribute for :answers attribute' do
+          get :index, format: :json
+
+          expect(response.body).to have_json_path('0/tickets/0/answers/0/attachments')
         end
 
         it 'has :category attribute' do
@@ -27,7 +33,7 @@ module Api
         end
 
         it 'runs ServiceSerializer' do
-          expect(ServiceSerializer).to receive(:new).at_least(3).and_call_original
+          expect(ServiceSerializer).to receive(:new).at_least(2).and_call_original
 
           get :index, format: :json
         end
@@ -40,12 +46,9 @@ module Api
       end
 
       describe 'GET #show' do
-        let(:category) { create(:category) }
-        let(:services) { create_list(:service, 3, category: category) }
+        let(:services) { create_list(:service, 2, category: create(:category)) }
         let!(:service) { services.first }
-        let!(:ticket) { create(:ticket, ticket_type: :common_case, service: service) }
-        let!(:tickets) { create_list(:ticket, 3, ticket_type: :question, service: service) }
-        let(:params) { { category_id: category.id, id: service.id } }
+        let(:params) { { category_id: service.category.id, id: service.id } }
 
         it 'loads service with specified service_id' do
           get :show, params: params, format: :json
@@ -53,16 +56,22 @@ module Api
           expect(parse_json(response.body)['id']).to eq service.id
         end
 
-        it 'has :answers for :tickets attribute' do
+        it 'has :category attribute' do
+          get :show, params: params, format: :json
+
+          expect(response.body).to have_json_path('category')
+        end
+
+        it 'has :answers attribute for :tickets attribute' do
           get :show, params: params, format: :json
 
           expect(response.body).to have_json_path('tickets/0/answers')
         end
 
-        it 'has :category attribute' do
+        it 'has :attachments attribute for :answers attribute' do
           get :show, params: params, format: :json
 
-          expect(response.body).to have_json_path('category')
+          expect(response.body).to have_json_path('tickets/0/answers/0/attachments')
         end
 
         it 'runs ServiceSerializer' do

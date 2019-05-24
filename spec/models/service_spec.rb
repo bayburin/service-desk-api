@@ -12,10 +12,9 @@ RSpec.describe Service, type: :model do
 
   describe '#calculate_popularity' do
     let(:service) { create(:service) }
-    let!(:tickets) { create_list(:ticket, 3, service: service) }
 
     it 'calculate popularity based on nested services' do
-      expect(service.calculate_popularity).to eq tickets.pluck(:popularity).reduce(:+)
+      expect(service.calculate_popularity).to eq service.tickets.pluck(:popularity).reduce(:+)
     end
   end
 end
