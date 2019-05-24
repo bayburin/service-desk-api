@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_14_072010) do
+ActiveRecord::Schema.define(version: 2019_05_23_082951) do
+
+  create_table "answer_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "answer_id", null: false
+    t.string "document"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["answer_id"], name: "index_answer_attachments_on_answer_id"
+  end
 
   create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "ticket_id", null: false
@@ -150,6 +158,7 @@ ActiveRecord::Schema.define(version: 2019_05_14_072010) do
     t.index ["tn"], name: "index_users_on_tn"
   end
 
+  add_foreign_key "answer_attachments", "answers"
   add_foreign_key "answers", "tickets"
   add_foreign_key "services", "categories"
   add_foreign_key "ticket_tags", "tags"

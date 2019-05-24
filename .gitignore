@@ -35,3 +35,4 @@ config/environments/shestakov.rb
 db/sphinx
 .env
 .ruby-version
+/public/uploads
