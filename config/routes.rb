@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       resources :dashboard, only: :index do
         # Глобальный поиск
         get :search, to: :search, on: :collection
+        get :deep_search, to: :deep_search, on: :collection
       end
       resources :categories, only: %i[index show] do
         resources :services, only: :show
