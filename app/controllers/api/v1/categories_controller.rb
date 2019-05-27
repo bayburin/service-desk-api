@@ -8,7 +8,7 @@ module Api
       end
 
       def show
-        render json: Category.find(params[:id]), include: 'services,faq.answers'
+        render json: Category.find(params[:id]), include: 'services,faq.answers.attachments'
       end
     end
   end

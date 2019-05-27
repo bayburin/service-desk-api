@@ -50,10 +50,10 @@ module Api
           expect(response.body).to have_json_path('services')
         end
 
-        it 'has :answers for :faq attribute' do
+        it 'has :attachments attribute' do
           get :show, params: { id: category.id }, format: :json
 
-          expect(response.body).to have_json_path('faq/0/answers')
+          expect(response.body).to have_json_path('faq/0/answers/0/attachments')
         end
 
         it 'runs CategorySerializer' do
