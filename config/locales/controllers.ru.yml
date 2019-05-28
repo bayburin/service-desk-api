@@ -1,0 +1,7 @@
+ru:
+  controllers:
+    app:
+      access_denied: 'Доступ запрещен'
+      unprocessable_entity: 'Ошибка. Обратитесь к администратору, т.84-29'
+    users:
+      cant_load_user_info: 'Не удалось получить данные пользователя'

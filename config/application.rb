@@ -19,12 +19,22 @@ Bundler.require(*Rails.groups)
 
 module ServiceDeskBackend
   class Application < Rails::Application
+    Dotenv::Railtie.load
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
     config.time_zone = 'Krasnoyarsk'
     config.active_record.default_timezone = :local
     config.i18n.default_locale = :ru
+
+    config.autoload_paths << Rails.root.join('lib', 'strategies').to_s
+    config.autoload_paths << Rails.root.join('lib', 'external_services').to_s
+    config.autoload_paths << Rails.root.join('lib', 'resources').to_s
+    config.autoload_paths << Rails.root.join('lib', 'decorators').to_s
+    config.autoload_paths << Rails.root.join('lib', 'modules').to_s
+    config.autoload_paths << Rails.root.join('lib', 'values').to_s
+    config.autoload_paths << Rails.root.join('lib', 'queries').to_s
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -36,11 +46,14 @@ module ServiceDeskBackend
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins '*'
-        resource '*', headers: :any, methods: [:get, :post, :options]
-      end
+    config.generators do |g|
+      g.orm :active_record
+      g.test_framework :rspec,
+                       fixtures: true,
+                       routing_specs: false,
+                       request_specs: false,
+                       controller_spec: true
+      g.fixture_replacement :factory_bot, dir: 'spec/factories'
     end
   end
 end

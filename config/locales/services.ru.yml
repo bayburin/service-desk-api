@@ -1,0 +1,12 @@
+ru:
+  activemodel:
+    errors:
+      messages:
+        incorrent_username_or_password: 'Неверный логин или пароль'
+        authorization_server_error: 'Ошибка на сервере авторизации. Попробуйте позже'
+        unprocessable_entity: 'Необрабатываемый запрос'
+      # models:
+      #   doorkeeper/auth:
+      #     incorrent_username_or_password: 'Неверный логин или пароль'
+      #     authorization_server_error: 'Ошибка на сервере авторизации. Попробуйте позже'
+      #     unprocessable_entity: 'Необрабатываемый запрос'

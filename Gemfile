@@ -1,11 +1,25 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.3.1'
-
+gem 'active_model_serializers'
 gem 'awesome_print'
+gem 'carrierwave'
 gem 'colorize'
+gem 'devise'
+gem 'dotenv-rails'
+gem 'faraday'
+gem 'faraday_middleware'
+gem 'impressionist'
+gem 'mongoid'
+gem 'oj'
+gem 'oj_mimic_json'
+gem 'pundit'
 gem 'rubocop', require: false
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
+gem 'thinking-sphinx'
+gem 'unicorn'
+gem 'virtus'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.2'
@@ -16,7 +30,7 @@ gem 'puma', '~> 3.11'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
+gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -33,6 +47,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rack-cors'
 
 group :development, :test do
+  gem 'fuubar'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
@@ -45,12 +60,16 @@ group :development do
 end
 
 group :test do
-  gem 'factory_bot_rails'
-  gem 'rails-controller-testing'
-  gem 'rspec-rails', '~> 3.8'
-  gem 'rspec-its'
-  gem 'shoulda-matchers'
   gem 'database_cleaner'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'json_spec'
+  gem 'rails-controller-testing'
+  gem 'rspec-its'
+  gem 'rspec-rails', '~> 3.8'
+  gem 'rspec-sidekiq'
+  gem 'shoulda-matchers'
+  gem 'webmock'
 end
 
 
