@@ -1,2 +1,0 @@
-class AuthCenterToken < ApplicationRecord
-end
