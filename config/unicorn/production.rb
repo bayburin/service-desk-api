@@ -1,7 +1,7 @@
 # paths
 app_path = "/var/www/service-desk-api"
-working_directory "#{app_path}"
-pid "#{app_path}/tmp/pids/unicorn.pid"
+working_directory "#{app_path}/current"
+pid               "#{app_path}/current/tmp/pids/unicorn.pid"
 
 # listen
 # Путь к unix сокету, с которым будет работать nginx
