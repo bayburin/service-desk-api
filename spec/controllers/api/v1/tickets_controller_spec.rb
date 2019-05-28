@@ -3,7 +3,7 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe TicketsController, type: :controller do
-      # sign_in_user
+      sign_in_user
 
       # describe 'GET #index' do
       #   let(:service) { create(:service) }

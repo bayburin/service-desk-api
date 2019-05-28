@@ -1,7 +1,7 @@
 module Api
   module V1
     class AuthController < BaseController
-      # skip_before_action :authenticate_user!
+      skip_before_action :authenticate_user!
 
       def token
         response = Api::V1::AuthCenterApi.access_token(params[:code])
