@@ -22,6 +22,16 @@ module Api
         render json: response.body, status: response.status
       end
 
+      def update
+        kase = Case.new(cases_params)
+        authorize kase
+
+        logger.debug "Case before update: #{kase.to_json}"
+        response = CaseApi.update(params[:case_id], kase)
+
+        render json: response.body, status: response.status
+      end
+
       def destroy
         response = case_api_wrapper.destroy(case_id: params[:case_id])
 
@@ -36,6 +46,7 @@ module Api
 
       def cases_params
         params.require(:case).permit(
+          :case_id,
           :id_tn,
           :user_tn,
           :fio,
@@ -48,7 +59,8 @@ module Api
           :without_item,
           :service_id,
           :item_id,
-          :invent_num
+          :invent_num,
+          :rating
         )
       end
     end

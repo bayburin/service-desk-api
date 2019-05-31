@@ -19,7 +19,7 @@ Rails.application.routes.draw do
       # resources :answers, only: [] do
       get 'answers/:id/attachments/:attachment_id', to: 'answers#download_attachment'
       # end
-      resources :cases, param: :case_id
+      resources :cases, only: %i[index create update destroy], param: :case_id
       # Получение данных о пользователе
       resources :users, only: [] do
         collection do

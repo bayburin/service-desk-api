@@ -45,6 +45,24 @@ module Api
           end
         end
 
+        describe '.update' do
+          let(:case_id) { '12345' }
+          let(:kase) { build(:case, case_id: case_id) }
+          let(:astraea_url) { "https://astraea-ui.iss-reshetnev.ru/api/cases/#{case_id}.json" }
+
+          before { stub_request(:put, astraea_url).to_return(status: 200, body: '', headers: {}) }
+
+          it 'sends :put request with kase params' do
+            subject.update(case_id, kase)
+
+            expect(WebMock).to have_requested(:put, astraea_url).with(body: kase.to_json)
+          end
+
+          it 'returns instance of Faraday::Response class' do
+            expect(subject.update(case_id, kase)).to be_instance_of(Faraday::Response)
+          end
+        end
+
         describe '.where' do
           it 'creates and returns new instance of class' do
             expect(subject.where(foo: :bar)).to be_instance_of(CaseApi)
