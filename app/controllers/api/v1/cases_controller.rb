@@ -26,7 +26,7 @@ module Api
         kase = Case.new(cases_params)
         authorize kase
 
-        logger.debug "Case before update: #{kase.to_json}"
+        logger.debug "Case before update: #{kase}"
         response = CaseApi.update(params[:case_id], kase)
 
         render json: response.body, status: response.status

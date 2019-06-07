@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2019_05_23_082951) do
     t.text "reason"
     t.text "answer", null: false
     t.text "link"
+    t.boolean "is_hidden", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ticket_id"], name: "index_answers_on_ticket_id"
@@ -70,7 +71,7 @@ ActiveRecord::Schema.define(version: 2019_05_23_082951) do
   create_table "responsible_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "responseable_type"
     t.bigint "responseable_id"
-    t.integer "tn"
+    t.integer "tn", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["responseable_type", "responseable_id"], name: "index_responsible_users_on_responseable_type_and_responseable_id"

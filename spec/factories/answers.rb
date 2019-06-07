@@ -3,6 +3,7 @@ FactoryBot.define do
     ticket { create(:ticket, without_nested: true) }
     reason { Faker::Quotes::Shakespeare.as_you_like_it_quote }
     answer { Faker::Quotes::Shakespeare.romeo_and_juliet_quote }
+    is_hidden { false }
 
     transient do
       without_nested { false }

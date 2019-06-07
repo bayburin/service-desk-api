@@ -13,6 +13,10 @@ module Api
         all.visible
       end
 
+      def allowed_to_create_case
+        visible.where(has_common_case: true)
+      end
+
       def most_popular
         all.limit(6)
       end

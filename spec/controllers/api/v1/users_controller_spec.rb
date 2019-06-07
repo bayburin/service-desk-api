@@ -38,12 +38,10 @@ module Api
           end
         end
 
-        it 'loads all visible services' do
-          get :owns, format: :json
+        it 'runs :allowed_to_create_case method for ServiceQuery query' do
+          expect_any_instance_of(ServicesQuery).to receive(:allowed_to_create_case).and_call_original
 
-          parse_json(response.body)['services'].each do |service|
-            expect(service['is_hidden']).to be_falsey
-          end
+          get :owns, format: :json
         end
 
         it 'respond with 200 status' do
