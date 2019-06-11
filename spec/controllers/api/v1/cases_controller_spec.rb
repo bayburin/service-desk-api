@@ -117,6 +117,53 @@ module Api
         end
       end
 
+      describe 'PUT #update' do
+        let(:case_id) { '12345' }
+        let(:kase) { build(:case, case_id: case_id, without_item: true) }
+        let(:params) { { case_id: case_id, case: kase.as_json } }
+
+        before do
+          allow(Case).to receive(:new).and_return(kase)
+          stub_request(:put, "https://astraea-ui.iss-reshetnev.ru/api/cases/#{case_id}.json").to_return(status: 200, body: { message: 'updated' }.to_json, headers: {})
+        end
+
+        it 'runs #authorize method' do
+          expect(controller).to receive(:authorize).with(kase)
+
+          post :update, params: params, format: :json
+        end
+
+        it 'runs #update method of Cases::CaseApi' do
+          expect(CaseApi).to receive(:update).with(case_id, kase).and_call_original
+
+          post :update, params: params, format: :json
+        end
+
+        context 'when case was updated' do
+          it 'respond with status 200' do
+            post :update, params: params, format: :json
+
+            expect(response.status).to eq 200
+          end
+
+          it 'respond with kase data' do
+            post :update, params: params, format: :json
+
+            expect(response.body).to have_json_path('message')
+          end
+        end
+
+        context 'when case was not updated' do
+          before { allow_any_instance_of(Faraday::Response).to receive(:status).and_return(422) }
+
+          it 'respond with error status' do
+            post :update, params: params, format: :json
+
+            expect(response.status).to eq 422
+          end
+        end
+      end
+
       describe 'DELETE #destroy' do
         let(:params) { { case_id: 12_345 } }
 

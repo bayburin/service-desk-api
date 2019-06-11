@@ -9,7 +9,7 @@ set :use_sudo,        false
 set :rbenv_ruby,      '2.5.5'
 set :rbenv_map_bins,  fetch(:rbenv_map_bins).to_a.concat(%w[rake gem bundle ruby rails])
 set :linked_files,    %w[config/database.yml config/thinking_sphinx.yml .env]
-set :linked_dirs,     %w[log tmp/pids tmp/cache vendor/bundle]
+set :linked_dirs,     %w[log tmp/pids tmp/cache vendor/bundle storage/uploads storage/sphinx]
 
 namespace :deploy do
   desc 'Restart application'

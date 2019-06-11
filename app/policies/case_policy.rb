@@ -3,6 +3,10 @@ class CasePolicy < ApplicationPolicy
     user_matсh?
   end
 
+  def update?
+    user_matсh?
+  end
+
   class Scope < Scope
     def resolve
       scope.where(user_tn: user.tn)

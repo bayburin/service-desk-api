@@ -5,6 +5,7 @@ class CreateAnswers < ActiveRecord::Migration[5.2]
       t.text :reason
       t.text :answer, null: false
       t.text :link
+      t.boolean :is_hidden, null: false, default: true
       t.timestamps
     end
   end

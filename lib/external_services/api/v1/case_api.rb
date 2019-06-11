@@ -17,6 +17,10 @@ module Api
         connect.post('cases.json', kase.to_json)
       end
 
+      def self.update(case_id, kase)
+        connect.put("cases/#{case_id}.json", kase.to_json)
+      end
+
       def self.where(**args)
         case_api = new
 

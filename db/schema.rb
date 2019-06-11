@@ -25,19 +25,10 @@ ActiveRecord::Schema.define(version: 2019_05_23_082951) do
     t.text "reason"
     t.text "answer", null: false
     t.text "link"
+    t.boolean "is_hidden", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ticket_id"], name: "index_answers_on_ticket_id"
-  end
-
-  create_table "auth_center_tokens", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "resource_owner_id"
-    t.string "token_type"
-    t.integer "expires_in"
-    t.text "access_token"
-    t.text "refresh_token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -77,24 +68,10 @@ ActiveRecord::Schema.define(version: 2019_05_23_082951) do
     t.index ["user_id"], name: "index_impressions_on_user_id"
   end
 
-  create_table "oauth_access_tokens", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "resource_owner_id"
-    t.integer "application_id"
-    t.string "token", null: false
-    t.string "refresh_token"
-    t.integer "expires_in"
-    t.datetime "revoked_at"
-    t.datetime "created_at", null: false
-    t.string "scopes"
-    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
-    t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
-    t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
-  end
-
   create_table "responsible_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "responseable_type"
     t.bigint "responseable_id"
-    t.integer "tn"
+    t.integer "tn", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["responseable_type", "responseable_id"], name: "index_responsible_users_on_responseable_type_and_responseable_id"
@@ -122,6 +99,7 @@ ActiveRecord::Schema.define(version: 2019_05_23_082951) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
   create_table "ticket_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -154,8 +132,8 @@ ActiveRecord::Schema.define(version: 2019_05_23_082951) do
     t.integer "id_tn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["id_tn"], name: "index_users_on_id_tn"
-    t.index ["tn"], name: "index_users_on_tn"
+    t.index ["id_tn"], name: "index_users_on_id_tn", unique: true
+    t.index ["tn"], name: "index_users_on_tn", unique: true
   end
 
   add_foreign_key "answer_attachments", "answers"

@@ -44,6 +44,22 @@ module Api
         end
       end
 
+      describe '#allowed_to_create_case' do
+        before { create_list(:service, 2, has_common_case: false) }
+
+        it 'runs :visible scope' do
+          expect(subject).to receive(:visible).and_call_original
+
+          subject.allowed_to_create_case
+        end
+
+        it 'returns data, which have :has_common_case attribute setted to true' do
+          subject.allowed_to_create_case.each do |service|
+            expect(service.has_common_case).to be_truthy
+          end
+        end
+      end
+
       describe '#most_popular' do
         it 'runs :all method' do
           expect(subject).to receive(:all).and_call_original
