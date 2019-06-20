@@ -8,11 +8,12 @@ module Api
       describe 'GET #index' do
         let(:size) { 10 }
         let!(:services) { create_list(:service, size) }
+        let!(:recommendations) { create_list(:user_recommendation, size) }
         let(:params) { { without_associations: 'true' } }
 
         before { get :index, params: params, format: :json }
 
-        %w[categories services].each do |attr|
+        %w[categories services user_recommendations].each do |attr|
           it "includes #{attr}" do
             expect(response.body).to have_json_path(attr)
           end
@@ -28,6 +29,10 @@ module Api
 
         it 'loads :tickets association for services' do
           expect(response.body).to have_json_path('services/0/tickets')
+        end
+
+        it 'loads all user_recommendation' do
+          expect(response.body).to have_json_size(size).at_path('user_recommendations')
         end
 
         it 'does not load :service association for categories' do

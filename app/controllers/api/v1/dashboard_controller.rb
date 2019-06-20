@@ -6,8 +6,9 @@ module Api
         services = ServicesQuery.new.most_popular.includes(:tickets).each do |service|
           service.tickets.each(&:without_associations!)
         end
+        user_recommendations = UserRecommendation.order(:order)
 
-        render json: Dashboard.new(categories, services), serializer: DashboardSerializer, include: 'categories,services.tickets'
+        render json: Dashboard.new(categories, services, user_recommendations), serializer: DashboardSerializer, include: 'categories,services.tickets,user_recommendations'
       end
 
       def search
