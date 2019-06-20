@@ -29,7 +29,7 @@ module Api
 
         lasttime = alive? ? time : endtime
 
-        "#{starttime.strftime(DATE_FORMAT)}-#{lasttime.strftime(DATE_FORMAT)}"
+        "#{starttime.strftime(DATE_FORMAT)} - #{lasttime.strftime(DATE_FORMAT)}"
       end
 
       private

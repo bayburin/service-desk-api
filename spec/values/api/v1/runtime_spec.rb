@@ -48,7 +48,7 @@ module Api
           let(:time_s) { DateTime.strptime(time.to_s, '%s').strftime('%d.%m.%Y') }
 
           it 'adds :time to result' do
-            expect(subject.to_s).to eq "#{starttime_s}-#{time_s}"
+            expect(subject.to_s).to eq "#{starttime_s} - #{time_s}"
           end
         end
 
@@ -56,7 +56,7 @@ module Api
           let(:endtime_s) { endtime.strftime('%d.%m.%Y') }
 
           it 'adds :endtime to result' do
-            expect(subject.to_s).to eq "#{starttime_s}-#{endtime_s}"
+            expect(subject.to_s).to eq "#{starttime_s} - #{endtime_s}"
           end
         end
 
