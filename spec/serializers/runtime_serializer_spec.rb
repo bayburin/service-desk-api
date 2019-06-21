@@ -4,17 +4,19 @@ RSpec.describe RuntimeSerializer, type: :model do
   let(:runtime) { Api::V1::Runtime.new(starttime: Time.zone.now - 2.days, endtime: Time.zone.now, time: Time.zone.now.to_i) }
   subject { RuntimeSerializer.new(runtime) }
 
-  %w[starttime endtime time formatted_starttime to_s].each do |attr|
+  %w[starttime endtime time formatted_starttime formatted_endtime formatted_time to_s].each do |attr|
     it "has #{attr} attribute" do
       expect(subject.to_json).to have_json_path(attr)
     end
   end
 
-  describe '#formatted_starttime' do
-    it 'runs :datetime_format_for method for :starttime attribute' do
-      expect(runtime).to receive(:datetime_format_for).with(:starttime)
+  %i[starttime endtime time].each do |attr|
+    describe "#formatted_#{attr}" do
+      it "runs :datetime_format_for method for #{attr} attribute" do
+        expect(runtime).to receive(:datetime_format_for).with(attr)
 
-      subject.to_json
+        subject.send("formatted_#{attr}".to_sym)
+      end
     end
   end
 
