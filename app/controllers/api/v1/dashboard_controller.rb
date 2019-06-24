@@ -12,12 +12,14 @@ module Api
       end
 
       def search
+        ahoy.track 'Search', params[:search]
         tickets = Ticket.search(ThinkingSphinx::Query.escape(params[:search]), order: 'popularity DESC', per_page: 1000, sql: { include: :service }).each { |s| s.without_associations = true }
 
         render json: search_categories.to_a + search_services.to_a + tickets.to_a
       end
 
       def deep_search
+        ahoy.track 'Search', params[:search]
         tickets = Ticket.search(ThinkingSphinx::Query.escape(params[:search]), order: 'popularity DESC', per_page: 1000, sql: { include: [:service, answers: :attachments] })
 
         render json: search_categories.to_a + search_services.to_a + tickets.to_a, include: 'service,answers.attachments'
