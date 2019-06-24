@@ -13,6 +13,8 @@ require "action_cable/engine"
 # require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
+require_relative '../lib/log/log_formatter'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -35,6 +37,7 @@ module ServiceDeskBackend
     config.autoload_paths << Rails.root.join('lib', 'modules').to_s
     config.autoload_paths << Rails.root.join('lib', 'values').to_s
     config.autoload_paths << Rails.root.join('lib', 'queries').to_s
+    config.autoload_paths << Rails.root.join('lib', 'log').to_s
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -55,5 +58,7 @@ module ServiceDeskBackend
                        controller_spec: true
       g.fixture_replacement :factory_bot, dir: 'spec/factories'
     end
+
+    config.log_formatter = MessageFormatter.new
   end
 end
