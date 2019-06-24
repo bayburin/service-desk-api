@@ -7,6 +7,7 @@ class Ahoy::Store < Ahoy::DatabaseStore
   end
 end
 
+Ahoy.api_only = true
+Ahoy.geocode = false
 # set to true for JavaScript tracking
 Ahoy.api = false
-Ahoy.api_only = true
