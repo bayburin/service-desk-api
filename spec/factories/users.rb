@@ -6,5 +6,11 @@ FactoryBot.define do
     tel { '41-85' }
     dept { 714 }
     email { 'fortochkina' }
+
+    after(:build) do |user, ev|
+      unless ev.role
+        user.role = Role.find_by(name: :guest) || create(:guest)
+      end
+    end
   end
 end

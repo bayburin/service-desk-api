@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_24_031038) do
+ActiveRecord::Schema.define(version: 2019_06_24_080255) do
 
   create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "visit_id"
@@ -108,6 +108,14 @@ ActiveRecord::Schema.define(version: 2019_06_24_031038) do
     t.index ["tn"], name: "index_responsible_users_on_tn"
   end
 
+  create_table "roles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "short_description"
+    t.text "long_description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "services", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "category_id", null: false
     t.bigint "form_id"
@@ -166,11 +174,13 @@ ActiveRecord::Schema.define(version: 2019_06_24_031038) do
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "role_id", null: false
     t.integer "tn"
     t.integer "id_tn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id_tn"], name: "index_users_on_id_tn", unique: true
+    t.index ["role_id"], name: "index_users_on_role_id"
     t.index ["tn"], name: "index_users_on_tn", unique: true
   end
 
@@ -180,4 +190,5 @@ ActiveRecord::Schema.define(version: 2019_06_24_031038) do
   add_foreign_key "ticket_tags", "tags"
   add_foreign_key "ticket_tags", "tickets"
   add_foreign_key "tickets", "services"
+  add_foreign_key "users", "roles"
 end
