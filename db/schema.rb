@@ -10,7 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_19_091033) do
+ActiveRecord::Schema.define(version: 2019_06_24_080255) do
+
+  create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "visit_id"
+    t.bigint "user_id"
+    t.string "name"
+    t.json "properties"
+    t.timestamp "time"
+    t.index ["name", "time"], name: "index_ahoy_events_on_name_and_time"
+    t.index ["user_id"], name: "index_ahoy_events_on_user_id"
+    t.index ["visit_id"], name: "index_ahoy_events_on_visit_id"
+  end
+
+  create_table "ahoy_visits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "visit_token"
+    t.string "visitor_token"
+    t.bigint "user_id"
+    t.integer "user_tn"
+    t.string "user_fio"
+    t.string "ip"
+    t.text "user_agent"
+    t.text "referrer"
+    t.string "referring_domain"
+    t.text "landing_page"
+    t.string "browser"
+    t.string "os"
+    t.string "device_type"
+    t.timestamp "started_at"
+    t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
+    t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
+  end
 
   create_table "answer_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "answer_id", null: false
@@ -78,6 +108,14 @@ ActiveRecord::Schema.define(version: 2019_06_19_091033) do
     t.index ["tn"], name: "index_responsible_users_on_tn"
   end
 
+  create_table "roles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "short_description"
+    t.text "long_description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "services", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "category_id", null: false
     t.bigint "form_id"
@@ -136,11 +174,13 @@ ActiveRecord::Schema.define(version: 2019_06_19_091033) do
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "role_id", null: false
     t.integer "tn"
     t.integer "id_tn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id_tn"], name: "index_users_on_id_tn", unique: true
+    t.index ["role_id"], name: "index_users_on_role_id"
     t.index ["tn"], name: "index_users_on_tn", unique: true
   end
 
@@ -150,4 +190,5 @@ ActiveRecord::Schema.define(version: 2019_06_19_091033) do
   add_foreign_key "ticket_tags", "tags"
   add_foreign_key "ticket_tags", "tickets"
   add_foreign_key "tickets", "services"
+  add_foreign_key "users", "roles"
 end

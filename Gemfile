@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'active_model_serializers'
+gem 'ahoy_matey'
 gem 'awesome_print'
 gem 'carrierwave'
 gem 'colorize'
