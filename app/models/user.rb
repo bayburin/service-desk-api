@@ -8,5 +8,5 @@ class User < ApplicationRecord
 
   belongs_to :role
 
-  validates :tn, :id_tn, uniqueness: true
+  validates :tn, :id_tn, uniqueness: true, allow_nil: true
 end

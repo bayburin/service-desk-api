@@ -7,10 +7,12 @@ FactoryBot.define do
     dept { 714 }
     email { 'fortochkina' }
 
+    transient do
+      role_name { :guest }
+    end
+
     after(:build) do |user, ev|
-      unless ev.role
-        user.role = Role.find_by(name: :guest) || create(:guest)
-      end
+      user.role = Role.find_by(name: ev.role_name) || create(ev.role_name.to_sym)
     end
   end
 end
