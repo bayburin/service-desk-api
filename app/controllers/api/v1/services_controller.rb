@@ -1,8 +1,6 @@
 module Api
   module V1
     class ServicesController < BaseController
-      impressionist
-
       def index
         services = Service.includes(:category, tickets: :answers)
 
