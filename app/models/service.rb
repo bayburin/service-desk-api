@@ -1,8 +1,6 @@
 class Service < ApplicationRecord
   include Associatable
 
-  is_impressionable
-
   has_many :tickets, dependent: :destroy
   has_many :responsible_users, as: :responseable, dependent: :destroy
 

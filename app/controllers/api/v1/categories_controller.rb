@@ -1,8 +1,6 @@
 module Api
   module V1
     class CategoriesController < BaseController
-      impressionist
-
       def index
         render json: CategoriesQuery.new.all.includes(:services), include: 'services'
       end

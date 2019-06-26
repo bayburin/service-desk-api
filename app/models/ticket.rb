@@ -1,8 +1,6 @@
 class Ticket < ApplicationRecord
   include Associatable
 
-  is_impressionable
-
   has_many :answers, dependent: :destroy
   has_many :ticket_tags, dependent: :destroy
   has_many :tags, through: :ticket_tags
