@@ -15,4 +15,16 @@ FactoryBot.define do
       user.role = Role.find_by(name: ev.role_name) || create(ev.role_name.to_sym)
     end
   end
+
+  factory :guest_user, class: User do
+    after(:build) do |user, _ev|
+      user.role = Role.find_by(name: :guest) || create(:guest)
+    end
+  end
+
+  factory :service_responsible_user, class: User do
+    after(:build) do |user, _ev|
+      user.role = Role.find_by(name: :service_responsible) || create(:service_responsible)
+    end
+  end
 end
