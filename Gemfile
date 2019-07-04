@@ -18,6 +18,7 @@ gem 'pundit'
 gem 'rubocop', require: false
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
+gem 'sneakers'
 gem 'thinking-sphinx'
 gem 'unicorn'
 gem 'virtus'
