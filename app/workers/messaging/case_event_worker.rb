@@ -1,6 +1,7 @@
 module Messaging
   class CaseEventWorker
     include Sneakers::Worker
+    include Api::V1::ActionCableBroadcast
 
     from_queue :case_event_receiver
 
@@ -8,12 +9,21 @@ module Messaging
       msg = JSON.parse(msg)
       Rails.logger.tagged('RabbitMQ') { Rails.logger.debug { "Received message: #{msg}" } }
 
-      # TODO: Записать в базу и отправить сообщение пользователю
-      # ActionCable.server.broadcast "case/current_user_#{msg['user_tn']}", message: msg['message']
+      save_message(msg)
       ack!
     rescue StandardError => e
       Rails.logger.tagged('RabbitMQ') { Rails.logger.error { "CaseEventWorker received error: #{e.message}" } }
       reject!
+    end
+
+    private
+
+    def save_message(msg)
+      if EventLog.create(event_type: :case, body: msg)
+        broadcast_to_user(msg['user_tn'], msg)
+      else
+        raise 'Не удалось сохранить сообщение в БД'
+      end
     end
   end
 end
