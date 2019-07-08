@@ -1,5 +1,5 @@
 class ServiceResponsibleUserStrategy < LocalStrategy
-  def process_checking_access(user_data)
+  def process_searching_user(user_data)
     return unless ::ResponsibleUser.exists?(tn: user_data['tn'])
 
     Rails.logger.debug { "It's a responsible User".cyan }

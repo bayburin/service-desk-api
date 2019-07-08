@@ -7,7 +7,7 @@ module Api
       def token
         response = Api::V1::AuthCenterApi.access_token(params[:code])
 
-        if response.status == 200
+        if response.success?
           render json: response.body
         else
           render json: { message: 'Ошибка авторизации' }, status: response.status

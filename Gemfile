@@ -18,6 +18,7 @@ gem 'pundit'
 gem 'rubocop', require: false
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
+gem 'sneakers'
 gem 'thinking-sphinx'
 gem 'unicorn'
 gem 'virtus'
@@ -64,6 +65,7 @@ group :development do
   gem 'capistrano-rails', require: false
   gem 'capistrano-rbenv', require: false
   gem 'capistrano-sidekiq', require: false
+  gem 'capistrano-sneakers', require: false
   gem 'capistrano3-unicorn', require: false
 end
 

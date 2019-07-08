@@ -56,6 +56,7 @@ GEM
       safely_block (>= 0.2.1)
     airbrussh (1.3.1)
       sshkit (>= 1.6.1, != 1.7.0)
+    amq-protocol (2.3.0)
     arel (9.0.0)
     ast (2.4.0)
     awesome_print (1.8.0)
@@ -68,6 +69,8 @@ GEM
       msgpack (~> 1.0)
     bson (4.4.2)
     builder (3.2.3)
+    bunny (2.14.2)
+      amq-protocol (~> 2.3, >= 2.3.0)
     byebug (11.0.1)
     capistrano (3.11.0)
       airbrussh (>= 1.0.0)
@@ -85,6 +88,9 @@ GEM
     capistrano-sidekiq (1.0.2)
       capistrano (>= 3.9.0)
       sidekiq (>= 3.4)
+    capistrano-sneakers (1.2.0)
+      capistrano (>= 3.9.0)
+      sneakers (>= 2.6)
     capistrano3-unicorn (0.2.1)
       capistrano (~> 3.1, >= 3.1.0)
     carrierwave (1.3.1)
@@ -296,6 +302,8 @@ GEM
     safe_yaml (1.0.5)
     safely_block (0.2.1)
       errbase
+    serverengine (2.0.7)
+      sigdump (~> 0.2.2)
     shoulda-matchers (4.0.1)
       activesupport (>= 4.2.0)
     sidekiq (5.2.7)
@@ -308,6 +316,13 @@ GEM
       rufus-scheduler (~> 3.2)
       sidekiq (>= 3)
       tilt (>= 1.4.0)
+    sigdump (0.2.4)
+    sneakers (2.11.0)
+      bunny (~> 2.12)
+      concurrent-ruby (~> 1.0)
+      rake
+      serverengine (~> 2.0.5)
+      thor
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-watcher-listen (2.0.1)
@@ -368,6 +383,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rbenv
   capistrano-sidekiq
+  capistrano-sneakers
   capistrano3-unicorn
   carrierwave
   colorize
@@ -399,6 +415,7 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq
   sidekiq-scheduler
+  sneakers
   spring
   spring-watcher-listen (~> 2.0.0)
   thinking-sphinx
