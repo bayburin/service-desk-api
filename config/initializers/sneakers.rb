@@ -1,5 +1,5 @@
 Sneakers.configure  amqp: "amqp://#{ENV['BUNNY_AMQP_USERNAME']}:#{ENV['BUNNY_AMQP_PASSWORD']}@#{ENV['BUNNY_AMQP_HOST']}",
-                    daemonize: false,
+                    daemonize: true,
                     durable: true,
                     workers: ENV['SNEAKERS_WORKERS'].to_i,
                     threads: ENV['SNEAKERS_THREADS'].to_i,
