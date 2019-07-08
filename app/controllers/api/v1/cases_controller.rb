@@ -4,7 +4,7 @@ module Api
       def index
         response = case_api_wrapper.query(filters: params[:filters])
 
-        if response.status == 200
+        if response.success?
           render json: CaseDashboard.new(response.body), serializer: CaseDashboardSerializer, include: 'cases.service,cases.ticket,statuses'
         else
           render json: response.body, status: response.status
@@ -26,7 +26,7 @@ module Api
         kase = Case.new(cases_params)
         authorize kase
 
-        logger.debug "Case before update: #{kase}"
+        logger.debug { "Case before update: #{kase}" }
         response = CaseApi.update(params[:case_id], kase)
 
         render json: response.body, status: response.status
