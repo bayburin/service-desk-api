@@ -12,7 +12,7 @@ module Api
         processing_service
         processing_responsibles
 
-        ::Rails.logger.debug "Case after decorate: #{@kase.to_json}"
+        ::Rails.logger.debug { "Case after decorate: #{@kase.to_json}" }
       end
 
       protected

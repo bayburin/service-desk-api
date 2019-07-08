@@ -9,4 +9,21 @@ class User < ApplicationRecord
   belongs_to :role
 
   validates :tn, :id_tn, uniqueness: true, allow_nil: true
+
+  def self.authenticate(user_attrs)
+    strategy = UserStrategy.new(
+      ServiceResponsibleUserStrategy.new(
+        GuestUserStrategy.new
+      )
+    )
+
+    finded_user = strategy.search_user(user_attrs)
+    finded_user.merge_attrs(user_attrs)
+    finded_user
+  end
+
+  def merge_attrs(user_attrs)
+    attributes = user_attrs.select { |key, _val| respond_to?(key.to_sym) }
+    assign_attributes(attributes)
+  end
 end

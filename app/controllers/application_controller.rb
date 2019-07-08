@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
   protected
 
   def log_ip
-    logger.info "Request from IP: #{request.env['HTTP_X_FORWARDED_FOR']}".cyan
+    logger.info { "Request from IP: #{request.env['HTTP_X_FORWARDED_FOR']}".cyan }
   end
 
   def track_action

@@ -31,7 +31,6 @@ module ServiceDeskBackend
     config.i18n.default_locale = :ru
 
     config.autoload_paths << Rails.root.join('lib', 'strategies').to_s
-    config.eager_load_paths << Rails.root.join('lib', 'strategies').to_s
     config.autoload_paths << Rails.root.join('lib', 'external_services').to_s
     config.autoload_paths << Rails.root.join('lib', 'resources').to_s
     config.autoload_paths << Rails.root.join('lib', 'decorators').to_s
