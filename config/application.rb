@@ -60,5 +60,6 @@ module ServiceDeskBackend
     end
 
     config.log_formatter = MessageFormatter.new
+    config.action_cable.disable_request_forgery_protection = true
   end
 end
