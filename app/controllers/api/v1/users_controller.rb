@@ -4,6 +4,7 @@ module Api
   module V1
     class UsersController < BaseController
       def info
+        # notification_count = EventLog.where('JSON_EXTRACT(body, "$.user_tn") = 17664').left_outer_joins(:readers).where(event_log_readers: { tn: nil }).count
         render json: current_user
       end
 

@@ -19,8 +19,8 @@ module Messaging
     private
 
     def save_message(msg)
-      if event = EventLog.create(event_type: :case, body: msg)
-        broadcast_to_user(msg['user_tn'], event)
+      if event = EventLog.create(event_type: :case, tn: msg['user_tn'], body: msg)
+        broadcast_notification_to_user(msg['user_tn'], event)
       else
         raise 'Не удалось сохранить сообщение в БД'
       end

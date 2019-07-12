@@ -27,4 +27,14 @@ RSpec.describe User, type: :model do
       expect(subject.authenticate(user_attrs).tn).to eq user_attrs[:tn]
     end
   end
+
+  describe '#new_notifications' do
+    let!(:event_logs) { create_list(:event_log, 3, tn: subject.tn) }
+    let!(:readed_event) { create(:event_log, tn: subject.tn) }
+    let!(:reader) { create(:event_log_reader, user: subject, tn: subject.tn, event_log: readed_event) }
+
+    it 'returns all EventLog records witch does not have associated EventLogReader records' do
+      expect(subject.new_notifications).to eq event_logs
+    end
+  end
 end

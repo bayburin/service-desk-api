@@ -26,4 +26,8 @@ class User < ApplicationRecord
     attributes = user_attrs.select { |key, _val| respond_to?(key.to_sym) }
     assign_attributes(attributes)
   end
+
+  def new_notifications
+    EventLog.where(tn: tn).left_outer_joins(:readers).where(event_log_readers: { tn: nil })
+  end
 end
