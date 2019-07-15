@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :event_log do
+  factory :notification do
     event_type { :case }
     body { { user_tn: 17_664, message: 'Test' }.as_json }
   end

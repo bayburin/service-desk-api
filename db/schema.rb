@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_12_014714) do
+ActiveRecord::Schema.define(version: 2019_07_15_050613) do
 
   create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "visit_id"
@@ -72,25 +72,6 @@ ActiveRecord::Schema.define(version: 2019_07_12_014714) do
     t.index ["popularity"], name: "index_categories_on_popularity"
   end
 
-  create_table "event_log_readers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.integer "tn", null: false
-    t.bigint "event_log_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["event_log_id"], name: "index_event_log_readers_on_event_log_id"
-    t.index ["user_id"], name: "index_event_log_readers_on_user_id"
-  end
-
-  create_table "event_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "event_type"
-    t.integer "tn"
-    t.json "body"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["event_type"], name: "index_event_logs_on_event_type"
-  end
-
   create_table "impressions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "impressionable_type"
     t.integer "impressionable_id"
@@ -115,6 +96,25 @@ ActiveRecord::Schema.define(version: 2019_07_12_014714) do
     t.index ["impressionable_type", "impressionable_id", "session_hash"], name: "poly_session_index"
     t.index ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", length: { message: 255 }
     t.index ["user_id"], name: "index_impressions_on_user_id"
+  end
+
+  create_table "notification_readers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "tn", null: false
+    t.bigint "notification_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notification_id"], name: "index_notification_readers_on_notification_id"
+    t.index ["user_id"], name: "index_notification_readers_on_user_id"
+  end
+
+  create_table "notifications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "event_type"
+    t.integer "tn"
+    t.json "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_type"], name: "index_notifications_on_event_type"
   end
 
   create_table "responsible_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

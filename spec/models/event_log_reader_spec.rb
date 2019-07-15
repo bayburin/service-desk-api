@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe EventLogReader, type: :model do
+RSpec.describe NotificationReader, type: :model do
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:event_log) }
+  it { is_expected.to belong_to(:notification) }
 end

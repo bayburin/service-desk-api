@@ -27,7 +27,11 @@ class User < ApplicationRecord
     assign_attributes(attributes)
   end
 
+  def notifications
+    Notification.where(tn: tn).or(Notification.where(tn: nil))
+  end
+
   def new_notifications
-    EventLog.where(tn: tn).left_outer_joins(:readers).where(event_log_readers: { tn: nil })
+    notifications.left_outer_joins(:readers).where(notification_readers: { tn: nil })
   end
 end
