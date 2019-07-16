@@ -26,12 +26,4 @@ class User < ApplicationRecord
     attributes = user_attrs.select { |key, _val| respond_to?(key.to_sym) }
     assign_attributes(attributes)
   end
-
-  def notifications
-    Notification.where(tn: tn).or(Notification.where(tn: nil))
-  end
-
-  def new_notifications
-    notifications.left_outer_joins(:readers).where(notification_readers: { tn: nil })
-  end
 end

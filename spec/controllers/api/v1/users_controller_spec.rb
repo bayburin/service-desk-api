@@ -53,33 +53,24 @@ module Api
 
       describe 'GET #notifications' do
         let!(:notifications) { create_list(:notification, 6, tn: subject.current_user.tn) }
+        let(:params) { { limit: '5' } }
 
-        it 'runs #notifications method for current_user' do
-          expect(subject.current_user).to receive(:notifications).and_call_original
+        it 'creates instance of NotificationsQuery class' do
+          expect(NotificationsQuery).to receive(:new).with(subject.current_user).and_call_original
 
-          get :notifications, format: :json
+          get :notifications, params: params, format: :json
         end
 
-        it 'orders notifications' do
-          get :notifications, format: :json
+        it 'runs last_notifications for NotificationsQuery instance' do
+          expect_any_instance_of(NotificationsQuery).to receive(:last_notifications).with(params[:limit]).and_call_original
 
-          expect(parse_json(response.body).map { |el| el['id'] }).to eq notifications.pluck(:id).reverse
+          get :notifications, params: params, format: :json
         end
 
-        context 'with limit parameter' do
-          it 'returns required number of notifications' do
-            get :notifications, params: { limit: 5 }, format: :json
+        it 'respond with 200 status' do
+          get :notifications, params: params, format: :json
 
-            expect(response.body).to have_json_size(5)
-          end
-        end
-
-        context 'without limit parameter' do
-          it 'returns all notifications belongs to user' do
-            get :notifications, format: :json
-
-            expect(response.body).to have_json_size(6)
-          end
+          expect(response.status).to eq 200
         end
       end
     end

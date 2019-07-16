@@ -15,7 +15,7 @@ module Api
       end
 
       def notifications
-        render json: current_user.notifications.order(id: :desc).limit(params[:limit])
+        render json: NotificationsQuery.new(current_user).last_notifications(params[:limit])
       end
     end
   end

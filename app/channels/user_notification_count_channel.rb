@@ -6,6 +6,6 @@ class UserNotificationCountChannel < ApplicationCable::Channel
   end
 
   def get
-    transmit(current_user.new_notifications.count)
+    transmit(Api::V1::NotificationsQuery.new(current_user).unread.count)
   end
 end

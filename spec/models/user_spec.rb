@@ -27,23 +27,4 @@ RSpec.describe User, type: :model do
       expect(subject.authenticate(user_attrs).tn).to eq user_attrs[:tn]
     end
   end
-
-  describe '#notifications' do
-    let!(:notifications) { create_list(:notification, 3, tn: subject.tn) + create_list(:notification, 2, event_type: :broadcast) }
-    before { create(:notification_reader, user: subject, tn: subject.tn, notification: notifications.first) }
-
-    it 'returns all associated Notification records' do
-      expect(subject.notifications).to eq notifications
-    end
-  end
-
-  describe '#new_notifications' do
-    let!(:notifications) { create_list(:notification, 3, tn: subject.tn) + create_list(:notification, 2, event_type: :broadcast) }
-    let!(:readed_event) { create(:notification, tn: subject.tn) }
-    let!(:reader) { create(:notification_reader, user: subject, tn: subject.tn, notification: readed_event) }
-
-    it 'returns all Notification records witch does not have associated NotificationReader records' do
-      expect(subject.new_notifications).to eq notifications
-    end
-  end
 end
