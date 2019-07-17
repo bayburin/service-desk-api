@@ -10,10 +10,11 @@ module Api
         scope
           .where(event_type: :case, tn: current_user.tn)
           .or(Notification.where(event_type: :broadcast, tn: nil))
+          .order(id: :desc)
       end
 
       def unread
-        all.left_outer_joins(:readers).where(notification_readers: { tn: nil })
+        all.order(id: :desc).left_outer_joins(:readers).where(notification_readers: { tn: nil })
       end
 
       def last_notifications(limit = nil)

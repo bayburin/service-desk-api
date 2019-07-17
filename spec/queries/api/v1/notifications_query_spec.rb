@@ -33,6 +33,10 @@ module Api
         it 'returns all notifications for user' do
           expect(subject.all.count).to eq notification_count
         end
+
+        it 'orders notifications' do
+          expect(subject.unread.pluck(:id)).to eq broadcast_notifications.pluck(:id).reverse + user_notifications.pluck(:id).reverse
+        end
       end
 
       describe '#unread' do
@@ -40,6 +44,10 @@ module Api
 
         it 'returns all Notification records witch does not have associated NotificationReader records' do
           expect(subject.unread.count).to eq notification_count - 1
+        end
+
+        it 'orders notifications' do
+          expect(subject.unread.pluck(:id)).to eq broadcast_notifications.pluck(:id).reverse + user_notifications.pluck(:id).drop(1).reverse
         end
 
         it 'does not have any associated readers' do
