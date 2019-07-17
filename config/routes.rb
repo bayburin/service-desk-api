@@ -26,6 +26,8 @@ Rails.application.routes.draw do
         collection do
           get :info, to: :info
           get :owns, to: :owns
+          get :notifications, to: :notifications
+          get :new_notifications, to: :new_notifications
         end
       end
 

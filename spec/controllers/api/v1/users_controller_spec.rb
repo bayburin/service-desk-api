@@ -50,6 +50,92 @@ module Api
           expect(response.status).to eq 200
         end
       end
+
+      describe 'GET #notifications' do
+        let!(:notifications) { create_list(:notification, 6, tn: subject.current_user.tn) }
+        let(:params) { { limit: '5' } }
+        let(:query) { NotificationsQuery.new(subject.current_user) }
+        before { allow(NotificationsQuery).to receive(:new).with(subject.current_user).and_return(query) }
+
+        it 'creates instance of UserDecorator' do
+          expect(UserDecorator).to receive(:new).with(subject.current_user).and_call_original
+
+          get :notifications, params: params, format: :json
+        end
+
+        it 'runs #read_notifications method for UserDecorator' do
+          expect_any_instance_of(UserDecorator).to receive(:read_notifications)
+
+          get :notifications, params: params, format: :json
+        end
+
+        it 'creates instance of NotificationsQuery class' do
+          expect(NotificationsQuery).to receive(:new).with(subject.current_user)
+
+          get :notifications, params: params, format: :json
+        end
+
+        it 'runs #last_notifications for NotificationsQuery instance' do
+          expect(query).to receive(:last_notifications).with(params[:limit]).and_call_original
+
+          get :notifications, params: params, format: :json
+        end
+
+        it 'respond with notifications' do
+          get :notifications, params: params, format: :json
+
+          expect(response.body).to have_json_size(params[:limit].to_i)
+        end
+
+        it 'respond with 200 status' do
+          get :notifications, params: params, format: :json
+
+          expect(response.status).to eq 200
+        end
+      end
+
+      describe 'GET #new_notifications' do
+        let!(:notifications) { create_list(:notification, 6, tn: subject.current_user.tn) }
+        let(:params) { { limit: '5' } }
+        let(:query) { NotificationsQuery.new(subject.current_user) }
+        before { allow(NotificationsQuery).to receive(:new).with(subject.current_user).and_return(query) }
+
+        it 'creates instance of UserDecorator' do
+          expect(UserDecorator).to receive(:new).with(subject.current_user).and_call_original
+
+          get :notifications, params: params, format: :json
+        end
+
+        it 'runs #read_notifications method for UserDecorator' do
+          expect_any_instance_of(UserDecorator).to receive(:read_notifications)
+
+          get :notifications, params: params, format: :json
+        end
+
+        context 'when limit is set' do
+          it 'respond with limited notifications' do
+            get :notifications, params: params, format: :json
+
+            expect(response.body).to have_json_size(params[:limit].to_i)
+          end
+        end
+
+        context 'when limit is not set' do
+          let(:params) { {} }
+
+          it 'respond with all notifications' do
+            get :notifications, params: params, format: :json
+
+            expect(response.body).to have_json_size(notifications.size)
+          end
+        end
+
+        it 'respond with 200 status' do
+          get :notifications, params: params, format: :json
+
+          expect(response.status).to eq 200
+        end
+      end
     end
   end
 end

@@ -13,6 +13,23 @@ module Api
 
         render json: UserOwns.new(items, services), serializer: UserOwnsSerializer
       end
+
+      def notifications
+        read_notifications
+
+        render json: NotificationsQuery.new(current_user).last_notifications(params[:limit])
+      end
+
+      def new_notifications
+        render json: read_notifications.first(params[:limit].to_i || nil)
+      end
+
+      private
+
+      def read_notifications
+        decorated_user = UserDecorator.new(current_user)
+        decorated_user.read_notifications
+      end
     end
   end
 end
