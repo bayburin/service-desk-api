@@ -23,3 +23,6 @@ namespace :deploy do
 
   after :publishing, :restart
 end
+
+after 'deploy:publishing', 'thinking_sphinx:configure'
+after 'thinking_sphinx:configure', 'thinking_sphinx:rebuild'
