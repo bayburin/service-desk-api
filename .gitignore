@@ -36,3 +36,4 @@ db/sphinx
 .env
 .ruby-version
 /public/uploads
+coverage

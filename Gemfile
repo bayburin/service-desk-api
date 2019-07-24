@@ -81,6 +81,7 @@ group :test do
   gem 'rspec-rails', '~> 3.8'
   gem 'rspec-sidekiq'
   gem 'shoulda-matchers'
+  gem 'simplecov', require: false
   gem 'webmock'
 end
 
