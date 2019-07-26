@@ -1,6 +1,8 @@
 module Api
   module V1
     class UserDecorator < SimpleDelegator
+      NOTIFICATION_MAX_LENGTH = 100
+
       def initialize(user)
         __setobj__ user
       end

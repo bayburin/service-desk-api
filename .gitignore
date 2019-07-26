@@ -30,6 +30,7 @@ config/database.yml
 config/redis.yml
 config/secrets.yml
 config/development.sphinx.conf
+config/test.sphinx.conf
 config/thinking_sphinx.yml
 config/environments/shestakov.rb
 db/sphinx

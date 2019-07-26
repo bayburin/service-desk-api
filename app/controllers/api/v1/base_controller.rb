@@ -5,10 +5,8 @@ module Api
 
       before_action :authenticate_user!
 
-      protected
-
-      def access_token
-        request.headers['Authorization'].to_s.remove('Bearer ')
+      def welcome
+        render :nothing
       end
     end
   end

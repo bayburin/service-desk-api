@@ -1,5 +1,3 @@
-require 'net/http'
-
 module Api
   module V1
     class UsersController < BaseController
@@ -21,7 +19,8 @@ module Api
       end
 
       def new_notifications
-        render json: read_notifications.first(params[:limit].to_i || nil)
+        limit = params[:limit].to_i.zero? ? UserDecorator::NOTIFICATION_MAX_LENGTH : params[:limit].to_i
+        render json: read_notifications.first(limit)
       end
 
       private

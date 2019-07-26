@@ -26,6 +26,22 @@ RSpec.describe Case, type: :model do
     end
   end
 
+  describe '#runtime=' do
+    let!(:current_time) { Time.zone.now }
+    let!(:starttime) { current_time - 10.days }
+    let!(:endtime) { current_time + 10.days }
+    let!(:time) { current_time.change(usec: 0) }
+    let!(:runtime) { Api::V1::Runtime.new(starttime: starttime, endtime: endtime, time: time.to_i) }
+
+    before { subject.runtime = runtime }
+
+    %i[starttime endtime time].each do |attr|
+      it "changes :#{attr} attribute" do
+        expect(subject.send(attr)).to eq send(attr)
+      end
+    end
+  end
+
   describe '#ticket' do
     context 'when ticket_id is defined' do
       let(:ticket) { create(:ticket) }

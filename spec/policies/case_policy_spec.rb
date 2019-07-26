@@ -3,6 +3,18 @@ require 'rails_helper'
 RSpec.describe CasePolicy do
   subject { CasePolicy }
 
+  permissions '.scope' do
+    let(:user) { build(:user) }
+    let(:scope) { double(:scope) }
+    subject(:policy_scope) { CasePolicy::Scope.new(user, scope).resolve }
+
+    it 'loads only cases in which user is creator' do
+      expect(scope).to receive(:where).with(user_tn: user.tn)
+
+      policy_scope
+    end
+  end
+
   permissions :create? do
     context 'when tn is matched' do
       let(:kase) { build(:case) }

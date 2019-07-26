@@ -5,7 +5,7 @@ development:
   channel_prefix: service-desk-api_dev
 
 test:
-  adapter: async
+  adapter: test
 
 production:
   adapter: redis

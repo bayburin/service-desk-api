@@ -103,18 +103,18 @@ module Api
         it 'creates instance of UserDecorator' do
           expect(UserDecorator).to receive(:new).with(subject.current_user).and_call_original
 
-          get :notifications, params: params, format: :json
+          get :new_notifications, params: params, format: :json
         end
 
         it 'runs #read_notifications method for UserDecorator' do
-          expect_any_instance_of(UserDecorator).to receive(:read_notifications)
+          expect_any_instance_of(UserDecorator).to receive(:read_notifications).and_call_original
 
-          get :notifications, params: params, format: :json
+          get :new_notifications, params: params, format: :json
         end
 
         context 'when limit is set' do
           it 'respond with limited notifications' do
-            get :notifications, params: params, format: :json
+            get :new_notifications, params: params, format: :json
 
             expect(response.body).to have_json_size(params[:limit].to_i)
           end
@@ -124,14 +124,14 @@ module Api
           let(:params) { {} }
 
           it 'respond with all notifications' do
-            get :notifications, params: params, format: :json
+            get :new_notifications, params: params, format: :json
 
             expect(response.body).to have_json_size(notifications.size)
           end
         end
 
         it 'respond with 200 status' do
-          get :notifications, params: params, format: :json
+          get :new_notifications, params: params, format: :json
 
           expect(response.status).to eq 200
         end

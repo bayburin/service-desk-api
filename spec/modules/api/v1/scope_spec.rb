@@ -8,7 +8,6 @@ module Api
       describe '#by_priority' do
         before { create_list(:service, 3) }
 
-
         it 'return instance of ActiveRecord::Relation' do
           expect(subject.by_popularity).to be_kind_of(ActiveRecord::Relation)
         end
