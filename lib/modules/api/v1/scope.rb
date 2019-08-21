@@ -8,6 +8,10 @@ module Api
       def visible
         where(is_hidden: false)
       end
+
+      def by_responsible(user)
+        where(responsible_users: user.responsible_users)
+      end
     end
   end
 end

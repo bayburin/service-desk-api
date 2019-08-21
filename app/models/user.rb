@@ -5,6 +5,9 @@ class User < ApplicationRecord
   attr_accessor :surname, :firstname, :middlename, :initials_family, :family_with_initials, :is_chief
 
   has_many :visits, class_name: 'Ahoy::Visit', dependent: :nullify
+  has_many :responsible_users, foreign_key: :tn, primary_key: :tn
+  has_many :services, through: :responsible_users, source: :responseable, source_type: 'Service'
+  has_many :tickets, through: :responsible_users, source: :responseable, source_type: 'Ticket'
 
   belongs_to :role
 
@@ -25,5 +28,9 @@ class User < ApplicationRecord
   def merge_attrs(user_attrs)
     attributes = user_attrs.select { |key, _val| respond_to?(key.to_sym) }
     assign_attributes(attributes)
+  end
+
+  def role?(role_name)
+    role.name.to_sym == role_name.to_sym
   end
 end

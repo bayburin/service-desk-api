@@ -11,4 +11,8 @@ class CategorySerializer < ActiveModel::Serializer
   def include_associations?
     !object.without_associations
   end
+
+  def services
+    ServicePolicy::Scope.new(current_user, object.services).resolve
+  end
 end

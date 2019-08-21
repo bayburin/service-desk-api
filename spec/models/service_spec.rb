@@ -17,4 +17,39 @@ RSpec.describe Service, type: :model do
       expect(service.calculate_popularity).to eq service.tickets.pluck(:popularity).reduce(:+)
     end
   end
+
+  describe '#belongs_to?' do
+    subject { create(:service) }
+    let(:user) { create(:user) }
+
+    context 'when service belongs to user' do
+      before { user.services << subject }
+
+      it 'returns true' do
+        expect(subject.belongs_to?(user)).to be_truthy
+      end
+    end
+
+    it 'returns false' do
+      expect(subject.belongs_to?(user)).to be_falsey
+    end
+  end
+
+  describe '#belongs_by_tickets_to?' do
+    subject { create(:service) }
+    let(:ticket) { create(:ticket, service: subject) }
+    let(:user) { create(:user) }
+
+    context 'when ticket belongs to user' do
+      before { user.tickets << ticket }
+
+      it 'returns true' do
+        expect(subject.belongs_by_tickets_to?(user)).to be_truthy
+      end
+    end
+
+    it 'returns false' do
+      expect(subject.belongs_by_tickets_to?(user)).to be_falsey
+    end
+  end
 end

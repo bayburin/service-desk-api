@@ -1,8 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe TicketSerializer, type: :model do
+RSpec.describe CategorySerializer, type: :model do
+  let(:current_user) { create(:guest_user) }
   let(:category) { create(:category) }
-  subject { CategorySerializer.new(category) }
+  subject { CategorySerializer.new(category, scope: current_user, scope_name: :current_user) }
 
   %w[id name short_description icon_name popularity services faq].each do |attr|
     it "has #{attr} attribute" do
@@ -53,6 +54,20 @@ RSpec.describe TicketSerializer, type: :model do
 
     it 'runs :visible method' do
       expect_any_instance_of(Api::V1::QuestionsQuery).to receive(:most_popular)
+
+      subject.to_json
+    end
+  end
+
+  describe '#services' do
+    it 'creates instance of ServicePolicy' do
+      expect(ServicePolicy::Scope).to receive(:new).with(current_user, category.services).and_call_original
+
+      subject.to_json
+    end
+
+    it 'calls :resolve method' do
+      expect_any_instance_of(ServicePolicy::Scope).to receive(:resolve)
 
       subject.to_json
     end

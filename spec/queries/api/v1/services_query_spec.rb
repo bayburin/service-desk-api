@@ -71,6 +71,33 @@ module Api
           expect(subject.most_popular.count).to eq 6
         end
       end
+
+      describe '#search_by_responsible' do
+        let!(:new_service) { create(:service) }
+        let!(:hidden_service) { create(:service, is_hidden: true) }
+        let!(:user) { create(:service_responsible_user, services: [new_service]) }
+        let!(:service_with_ticket) { create(:service, is_hidden: true) }
+        let(:ticket) { create(:ticket, service: service_with_ticket) }
+        let(:result) { subject.search_by_responsible(user) }
+        before { user.tickets << ticket }
+
+        it 'return all visible services' do
+          expect(result.length).to eq 12
+          expect(result).to include(*services)
+        end
+
+        it 'does not return hidden services in which user is not responsible' do
+          expect(result).not_to include(hidden_service)
+        end
+
+        it 'returns services in which user is responsible' do
+          expect(result).to include(new_service)
+        end
+
+        it 'returns services in which there is any ticket in which user is responsible' do
+          expect(result).to include(service_with_ticket)
+        end
+      end
     end
   end
 end

@@ -3,7 +3,7 @@ module Api
     class DashboardController < BaseController
       def index
         categories = CategoriesQuery.new.all.limit(9)
-        services = ServicesQuery.new.most_popular.includes(:tickets).each do |service|
+        services = ServicesQuery.new(policy_scope(Service)).most_popular.includes(:tickets).each do |service|
           service.tickets.each(&:without_associations!)
         end
         user_recommendations = UserRecommendation.order(:order)
@@ -42,7 +42,13 @@ module Api
       end
 
       def search_services
-        Service.search(ThinkingSphinx::Query.escape(params[:search]), order: 'popularity DESC', per_page: 1000).each { |s| s.without_associations = true }
+        services = Service.search(
+          ThinkingSphinx::Query.escape(params[:search]),
+          order: 'popularity DESC',
+          per_page: 1000,
+          sql: { include: :responsible_users }
+        ).each { |s| s.without_associations = true }
+        ServicePolicy::SphinxScope.new(current_user, services).resolve
       end
     end
   end

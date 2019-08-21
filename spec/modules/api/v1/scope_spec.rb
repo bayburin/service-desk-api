@@ -31,6 +31,15 @@ module Api
           subject.visible.each { |service| expect(service.is_hidden).to be_falsey }
         end
       end
+
+      describe '#by_responsible' do
+        let(:service) { create(:service) }
+        let(:user) { create(:service_responsible_user, services: [service]) }
+
+        it 'return services belongs to user' do
+          expect(subject.by_responsible(user).first).to eq service
+        end
+      end
     end
   end
 end

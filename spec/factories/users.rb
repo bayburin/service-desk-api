@@ -16,15 +16,27 @@ FactoryBot.define do
     end
   end
 
-  factory :guest_user, class: User do
+  factory :guest_user, parent: :user do
     after(:build) do |user, _ev|
       user.role = Role.find_by(name: :guest) || create(:guest)
     end
   end
 
-  factory :service_responsible_user, class: User do
+  factory :service_responsible_user, parent: :user do
     after(:build) do |user, _ev|
       user.role = Role.find_by(name: :service_responsible) || create(:service_responsible)
+    end
+  end
+
+  factory :operator_user, parent: :user do
+    after(:build) do |user, _ev|
+      user.role = Role.find_by(name: :operator) || create(:operator)
+    end
+  end
+
+  factory :content_manager_user, parent: :user do
+    after(:build) do |user, _ev|
+      user.role = Role.find_by(name: :content_manager) || create(:content_manager)
     end
   end
 end

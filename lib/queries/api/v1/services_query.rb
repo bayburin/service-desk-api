@@ -1,16 +1,14 @@
 module Api
   module V1
     class ServicesQuery < ApplicationQuery
+      delegate :visible, to: :all
+
       def initialize(scope = Service.all)
-        @scope = scope.extend(Scope)
+        @scope = scope.extend(ServiceScope)
       end
 
       def all
-        scope.by_popularity
-      end
-
-      def visible
-        all.visible
+        scope.by_popularity.extend(ServiceScope)
       end
 
       def allowed_to_create_case
@@ -19,6 +17,12 @@ module Api
 
       def most_popular
         all.limit(6)
+      end
+
+      def search_by_responsible(user)
+        all.includes(:tickets).by_responsible(user)
+          .or(visible.includes(:tickets))
+          .or(all.by_tickets_responsible(user))
       end
     end
   end
