@@ -12,6 +12,10 @@ RSpec.describe Ticket, type: :model do
     expect(subject.singleton_class.ancestors).to include(Associatable)
   end
 
+  it 'includes Belongable module' do
+    expect(subject.singleton_class.ancestors).to include(Belongable)
+  end
+
   describe '#calculate_popularity' do
     let!(:popularity) { subject.popularity + 1 }
 

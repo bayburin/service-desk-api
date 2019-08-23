@@ -1,5 +1,6 @@
 class Ticket < ApplicationRecord
   include Associatable
+  include Belongable
 
   has_many :answers, dependent: :destroy
   has_many :ticket_tags, dependent: :destroy
