@@ -9,7 +9,7 @@ module Api
         let!(:categories) { create_list(:category, 3) }
 
         it 'runs :all method for CategoriesQuery instance' do
-          expect_any_instance_of(CategoriesQuery).to receive_message_chain(:all, :includes)
+          expect_any_instance_of(CategoriesQuery).to receive(:all)
 
           get :index, format: :json
         end

@@ -3,8 +3,10 @@ require 'rails_helper'
 RSpec.describe ServiceSerializer, type: :model do
   let(:service) { create(:service) }
   let!(:ticket) { create(:ticket, service: service) }
+  let(:current_user) { create(:user) }
+  # before { allow(subject).to receive(:current_user).and_return(current_user) }
 
-  subject { ServiceSerializer.new(service) }
+  subject { ServiceSerializer.new(service, scope: current_user, scope_name: :current_user) }
 
   %w[id category_id name short_description install popularity is_hidden has_common_case popularity category tickets].each do |attr|
     it "has #{attr} attribute" do

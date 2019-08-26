@@ -2,7 +2,7 @@ module Api
   module V1
     class ServicesController < BaseController
       def index
-        services = Service.includes(:category, tickets: :answers)
+        services = policy_scope(Service.includes(:category, tickets: :answers))
 
         render json: services, include: 'category,tickets.answers.attachments'
       end

@@ -10,7 +10,7 @@ class ServiceSerializer < ActiveModel::Serializer
   end
 
   def tickets
-    scope = Api::V1::TicketsQuery.new(object.tickets).visible
+    scope = TicketPolicy::Scope.new(current_user, object.tickets).resolve(object)
     scope = scope.includes(answers: :attachments) unless object.tickets.any?(&:without_associations)
     scope
   end

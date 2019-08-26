@@ -7,7 +7,7 @@ FactoryBot.define do
     to_approve { false }
     sla { 2 }
     popularity { Faker::Number.number(3) }
-    responsible_users { build_list(:responsible_user, 2, responseable: nil) }
+    # responsible_users { build_list(:responsible_user, 2, responseable: nil) }
 
     transient do
       without_nested { false }

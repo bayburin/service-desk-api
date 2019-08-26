@@ -2,7 +2,7 @@ module Api
   module V1
     class CategoriesController < BaseController
       def index
-        render json: CategoriesQuery.new.all.includes(:services), include: 'services'
+        render json: CategoriesQuery.new.all, include: 'services'
       end
 
       def show
