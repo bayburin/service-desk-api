@@ -56,16 +56,20 @@ module Api
           expect(parse_json(response.body)['id']).to eq service.id
         end
 
-        it 'has :category attribute' do
-          get :show, params: params, format: :json
+        %w[category responsible_users].each do |attr|
+          it "has :#{attr} attribute" do
+            get :show, params: params, format: :json
 
-          expect(response.body).to have_json_path('category')
+            expect(response.body).to have_json_path('category')
+          end
         end
 
-        it 'has :answers attribute for :tickets attribute' do
-          get :show, params: params, format: :json
+        %w[answers responsible_users].each do |attr|
+          it "has :#{attr} attribute for :tickets attribute" do
+            get :show, params: params, format: :json
 
-          expect(response.body).to have_json_path('tickets/0/answers')
+            expect(response.body).to have_json_path("tickets/0/#{attr}")
+          end
         end
 
         it 'has :attachments attribute for :answers attribute' do

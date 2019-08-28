@@ -24,7 +24,7 @@ RSpec.describe ServiceSerializer, type: :model do
         subject.to_json
       end
 
-      %w[tickets category].each do |attr|
+      %w[tickets category responsible_users].each do |attr|
         it "does not have :#{attr} attribute" do
           expect(subject.to_json).not_to have_json_path(attr)
         end
@@ -40,7 +40,7 @@ RSpec.describe ServiceSerializer, type: :model do
         subject.to_json
       end
 
-      %w[tickets category].each do |attr|
+      %w[tickets category responsible_users].each do |attr|
         it "has :#{attr} attribute" do
           expect(subject.to_json).to have_json_path(attr)
         end
