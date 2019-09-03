@@ -15,7 +15,7 @@ Rails.application.routes.draw do
         resources :services, only: :show
       end
       resources :services, only: :index do
-        resources :tickets, only: :show
+        resources :tickets, except: :index
       end
       # resources :answers, only: [] do
       get 'answers/:id/attachments/:attachment_id', to: 'answers#download_attachment'

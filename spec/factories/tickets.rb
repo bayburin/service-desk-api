@@ -3,6 +3,7 @@ FactoryBot.define do
     service { create(:service, without_nested: true) }
     name { Faker::Restaurant.name }
     ticket_type { :question }
+    state { :draft }
     is_hidden { false }
     to_approve { false }
     sla { 2 }

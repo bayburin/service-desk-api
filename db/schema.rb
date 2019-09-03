@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_16_062919) do
+ActiveRecord::Schema.define(version: 2019_09_03_011845) do
 
   create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "visit_id"
@@ -145,8 +145,10 @@ ActiveRecord::Schema.define(version: 2019_07_16_062919) do
 
   create_table "tickets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "service_id", null: false
+    t.integer "original_id"
     t.string "name", null: false
     t.integer "ticket_type", null: false
+    t.integer "state", null: false
     t.boolean "is_hidden", default: true, null: false
     t.integer "sla", limit: 2
     t.boolean "to_approve", default: false, null: false
@@ -154,8 +156,10 @@ ActiveRecord::Schema.define(version: 2019_07_16_062919) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "delta", default: true
+    t.index ["original_id"], name: "index_tickets_on_original_id"
     t.index ["popularity"], name: "index_tickets_on_popularity"
     t.index ["service_id"], name: "index_tickets_on_service_id"
+    t.index ["state"], name: "index_tickets_on_state"
     t.index ["ticket_type"], name: "index_tickets_on_ticket_type"
   end
 

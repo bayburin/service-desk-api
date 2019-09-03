@@ -5,43 +5,6 @@ module Api
     RSpec.describe TicketsController, type: :controller do
       sign_in_user
 
-      # describe 'GET #index' do
-      #   let(:service) { create(:service) }
-      #   let!(:tickets) { create_list(:ticket, 3, service: service) }
-      #   let!(:common_case) { create(:ticket, service: service, ticket_type: :common_case, is_hidden: true) }
-      #   let(:ticket_count) { tickets.size }
-      #   let(:params) { { service_id: service.id } }
-
-      #   before { get :index, params: params, format: :json }
-
-      #   it 'loads tickets with specified service_id' do
-      #     expect(response.body).to have_json_size(ticket_count)
-      #     parse_json(response.body).each do |t|
-      #       expect(t['service_id']).to eq service.id
-      #     end
-      #   end
-
-      #   it 'loads only visible tickets' do
-      #     parse_json(response.body).each do |t|
-      #       expect(t['is_hidden']).to be_falsey
-      #     end
-      #   end
-
-      #   %w[id service_id name popularity answers service].each do |attr|
-      #     it "has #{attr} attribute" do
-      #       expect(response.body).to have_json_path("0/#{attr}")
-      #     end
-      #   end
-
-      #   it 'includes :category attribute into service' do
-      #     expect(response.body).to have_json_path('0/service/category')
-      #   end
-
-      #   it 'respond with 200 status' do
-      #     expect(response.status).to eq 200
-      #   end
-      # end
-
       describe 'GET #show' do
         let(:service) { create(:service) }
         let(:tickets) { create_list(:ticket, 3, service: service) }
@@ -78,6 +41,56 @@ module Api
           get :show, params: params, format: :json
 
           expect(response.status).to eq 200
+        end
+      end
+
+      describe 'POST #create' do
+        let!(:service) { create(:service) }
+        let(:ticket_attrs) { attributes_for(:ticket, service_id: service.id) }
+        let(:params) { { service_id: service.id, ticket: ticket_attrs } }
+
+        it 'creates new ticket' do
+          expect { post :create, params: params, format: :json }.to change { Ticket.count }.by(1)
+        end
+
+        it 'sets default params' do
+          post :create, params: params, format: :json
+
+          expect(Ticket.last.ticket_type).to eq 'question'
+          expect(Ticket.last.state).to eq 'draft'
+          expect(Ticket.last.to_approve).to be_falsey
+        end
+
+        it 'response with created ticket' do
+          post :create, params: params, format: :json
+
+          expect(parse_json(response.body)['id']).to eq Ticket.last.id
+        end
+
+        it 'response with success status' do
+          post :create, params: params, format: :json
+
+          expect(response.status).to eq 200
+        end
+
+        context 'when ticket has errors' do
+          before { ticket_attrs[:service_id] = nil }
+
+          it 'does not save ticket' do
+            expect { post :create, params: params, format: :json }.not_to change { Ticket.count }
+          end
+
+          it 'response with errors status' do
+            post :create, params: params, format: :json
+
+            expect(response.status).to eq 422
+          end
+
+          # it 'response with ticket errors' do
+          #   post :create, params: params, format: :json
+
+          #   p response.body
+          # end
         end
       end
     end

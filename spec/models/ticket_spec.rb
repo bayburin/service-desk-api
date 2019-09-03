@@ -5,8 +5,11 @@ RSpec.describe Ticket, type: :model do
   it { is_expected.to have_many(:ticket_tags).dependent(:destroy) }
   it { is_expected.to have_many(:tags).through(:ticket_tags) }
   it { is_expected.to have_many(:responsible_users).dependent(:destroy) }
+  it { is_expected.to have_one(:correction).class_name('Ticket').with_foreign_key(:original_id).dependent(:nullify) }
   it { is_expected.to belong_to(:service) }
+  it { is_expected.to belong_to(:original).class_name('Ticket') }
   it { is_expected.to validate_presence_of(:name) }
+  # it { is_expected.to validate_presence_of(:answers) }
 
   it 'includes Associatable module' do
     expect(subject.singleton_class.ancestors).to include(Associatable)
