@@ -33,7 +33,8 @@ module Api
           :parent_id,
           :name,
           :is_hidden,
-          answers: %i[id ticket_id reason answer link]
+          tags_attributes: %i[id name],
+          answers_attributes: %i[id ticket_id reason answer link]
         )
       end
     end

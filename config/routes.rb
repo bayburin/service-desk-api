@@ -30,6 +30,7 @@ Rails.application.routes.draw do
           get :new_notifications, to: :new_notifications
         end
       end
+      resources :tags, only: :index
 
       get 'welcome', to: 'base#welcome'
       post 'auth/token'

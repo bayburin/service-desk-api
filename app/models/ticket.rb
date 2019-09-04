@@ -19,6 +19,15 @@ class Ticket < ApplicationRecord
   enum state: { draft: 1, published: 2 }, _suffix: true
 
   accepts_nested_attributes_for :answers, reject_if: proc { |attr| attr['answer'].blank? }, allow_destroy: true
+  accepts_nested_attributes_for :tags
+
+  # Смотри: https://github.com/rails/rails/issues/7256
+  def tags_attributes=(attributes)
+    tag_ids = attributes.map { |tag| tag[:id] }.compact
+    tags << Tag.find(tag_ids)
+
+    super(attributes)
+  end
 
   def calculate_popularity
     self.popularity += 1
