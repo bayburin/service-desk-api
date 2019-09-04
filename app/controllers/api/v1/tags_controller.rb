@@ -10,6 +10,17 @@ module Api
 
         render json: tags
       end
+
+      def popularity
+        tags = Tag
+                 .select('tags.*, COUNT(tags.id) as popularity')
+                 .left_outer_joins(:tickets)
+                 .where(tickets: { service_id: params[:service_id] })
+                 .group('tags.id')
+                 .order(popularity: :desc)
+
+        render json: tags, each_serializer: TagExtendedSerializer
+      end
     end
   end
 end

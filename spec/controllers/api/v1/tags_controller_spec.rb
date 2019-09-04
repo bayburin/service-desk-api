@@ -34,6 +34,37 @@ module Api
           end
         end
       end
+
+      describe 'GET #popularity' do
+        let!(:service) { create(:service) }
+        let!(:ticket) { service.tickets.first }
+        let!(:first_tag) { create(:tag, name: 'main tag') }
+        let!(:second_tag) { create(:tag, name: 'second tag') }
+        let(:params) { { service_id: service.id } }
+
+        before do
+          service.tickets.first.tags.push(first_tag, second_tag)
+          service.tickets.last.tags << second_tag
+        end
+
+        it 'respond with tags ordered by popularity' do
+          get :popularity, params: params, format: :json
+
+          expect(parse_json(response.body).map { |el| el['id'] }).to eq [second_tag.id, first_tag.id]
+        end
+
+        it 'adds :popularity attribute to response' do
+          get :popularity, params: params, format: :json
+
+          expect(response.body).to have_json_path('0/popularity')
+        end
+
+        it 'respond with success status' do
+          get :popularity, params: params, format: :json
+
+          expect(response.status).to eq 200
+        end
+      end
     end
   end
 end
