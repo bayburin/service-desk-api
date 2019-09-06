@@ -20,7 +20,7 @@ module Api
         if ticket.save
           render json: ticket
         else
-          render json: ticket.errors.details, status: :unprocessable_entity
+          render json: ticket.errors, status: :unprocessable_entity
         end
       end
 
@@ -34,7 +34,7 @@ module Api
           :name,
           :is_hidden,
           tags_attributes: %i[id name],
-          answers_attributes: %i[id ticket_id reason answer link]
+          answers_attributes: %i[id ticket_id reason answer link is_hidden]
         )
       end
     end

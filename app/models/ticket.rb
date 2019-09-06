@@ -11,8 +11,8 @@ class Ticket < ApplicationRecord
   belongs_to :service
   belongs_to :original, class_name: 'Ticket', optional: true
 
-  # :answers
   validates :name, :ticket_type, presence: true
+  validates :answers, presence: true, if: -> { published_state? }
   validates :is_hidden, :to_approve, inclusion: { in: [true, false] }
 
   enum ticket_type: { question: 1, case: 2, common_case: 3 }, _suffix: :ticket

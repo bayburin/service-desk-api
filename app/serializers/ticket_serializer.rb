@@ -1,5 +1,5 @@
 class TicketSerializer < ActiveModel::Serializer
-  attributes :id, :service_id, :name, :ticket_type, :is_hidden, :sla, :popularity
+  attributes :id, :service_id, :name, :ticket_type, :state, :is_hidden, :sla, :popularity
 
   has_many :answers, if: :include_associations?
   has_many :responsible_users, if: :include_associations?

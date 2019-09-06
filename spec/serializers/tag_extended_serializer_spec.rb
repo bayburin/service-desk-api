@@ -11,7 +11,6 @@ RSpec.describe TagExtendedSerializer, type: :model do
 
   %w[id name popularity].each do |attr|
     it "has #{attr} attribute" do
-      p subject
       expect(subject).to have_json_path(attr)
     end
   end
