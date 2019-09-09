@@ -46,8 +46,9 @@ module Api
 
       describe 'POST #create' do
         let!(:service) { create(:service) }
-        let(:ticket_attrs) { attributes_for(:ticket, service_id: service.id) }
+        let(:ticket_attrs) { attributes_for(:ticket, service_id: service.id, state: :draft) }
         let(:params) { { service_id: service.id, ticket: ticket_attrs } }
+        before { allow(subject).to receive(:authorize).and_return(true) }
 
         it 'creates new ticket' do
           expect { post :create, params: params, format: :json }.to change { Ticket.count }.by(1)

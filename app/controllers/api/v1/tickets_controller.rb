@@ -13,6 +13,8 @@ module Api
 
       def create
         ticket = Ticket.new(ticket_params)
+        authorize ticket
+
         ticket.ticket_type = :question
         ticket.state = :draft
         ticket.to_approve = false

@@ -7,6 +7,14 @@ class TicketPolicy < ApplicationPolicy
     end
   end
 
+  def create?
+    if user.role? :service_responsible
+      record.service.belongs_to?(user) || ticket_in_allowed_pool?
+    else
+      false
+    end
+  end
+
   class Scope < Scope
     # метод вызывается из сервиса
     def resolve(service = nil)
