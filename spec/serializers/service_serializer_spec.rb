@@ -56,7 +56,7 @@ RSpec.describe ServiceSerializer, type: :model do
     end
 
     it 'runs :visible method' do
-      expect_any_instance_of(Api::V1::TicketsQuery).to receive_message_chain(:visible, :includes)
+      expect_any_instance_of(Api::V1::TicketsQuery).to receive_message_chain(:visible, :published_state, :includes)
 
       subject.to_json
     end
