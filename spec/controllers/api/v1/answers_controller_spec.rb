@@ -6,7 +6,8 @@ module Api
       sign_in_user
 
       describe 'GET #download_attachment' do
-        let!(:answer) { create(:answer) }
+        let(:ticket) { create(:ticket) }
+        let!(:answer) { ticket.answers.first }
         let(:attachment) { answer.attachments.first }
         let(:params) { { id: answer.id, attachment_id: attachment.id } }
 

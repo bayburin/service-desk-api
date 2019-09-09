@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     after(:build) do |ticket, ev|
-      ticket.answers = build_list(:answer, 2) unless ev.without_nested
+      ticket.answers = build_list(:answer, 2, ticket: ticket) unless ev.without_nested
     end
   end
 end

@@ -9,8 +9,8 @@ FactoryBot.define do
       without_nested { false }
     end
 
-    after(:create) do |answer, ev|
-      create_list(:answer_attachment, 2, answer: answer) unless ev.without_nested
+    after(:build) do |answer, ev|
+      answer.attachments = build_list(:answer_attachment, 2, answer: answer) unless ev.without_nested
     end
   end
 end
