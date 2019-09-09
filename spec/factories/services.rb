@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :service do
-    category { create(:category, without_nested: true) }
+    category { build(:category, without_nested: true) }
     name { Faker::Restaurant.name }
     short_description { Faker::Restaurant.description }
     is_hidden { false }

@@ -8,33 +8,6 @@ RSpec.describe TicketPolicy do
   let(:service) { create(:service) }
 
   permissions :show? do
-    context 'for user with :guest role' do
-      context 'and when ticket is hidden' do
-        let(:ticket) { create(:ticket, is_hidden: true) }
-
-        it 'denies access' do
-          expect(subject).not_to permit(guest, ticket)
-        end
-      end
-
-      context 'and when ticket is not hidden' do
-        let!(:ticket) { create(:ticket) }
-
-        it 'grants access' do
-          expect(subject).to permit(guest, ticket)
-        end
-      end
-
-      context 'and when service is hidden' do
-        let(:ticket) { service.tickets.first }
-        before { service.is_hidden = true }
-
-        it 'denies access' do
-          expect(subject).not_to permit(guest, ticket)
-        end
-      end
-    end
-
     context 'for user with :service_responsible role' do
       context 'and when ticket is hidden' do
         let(:ticket) { create(:ticket, is_hidden: true) }
@@ -92,7 +65,23 @@ RSpec.describe TicketPolicy do
             expect(subject).not_to permit(responsible, ticket)
           end
 
-          context 'and user responsible for ticket' do
+          context 'and when ticket belongs to user' do
+            before { responsible.tickets << ticket }
+
+            it 'grants access' do
+              expect(subject).to permit(responsible, ticket)
+            end
+          end
+        end
+
+        context 'and when ticket has :draft state' do
+          before { ticket.state = :draft }
+
+          it 'denies access' do
+            expect(subject).not_to permit(responsible, ticket)
+          end
+
+          context 'and when ticket belongs to user' do
             before { responsible.tickets << ticket }
 
             it 'grants access' do
@@ -104,10 +93,37 @@ RSpec.describe TicketPolicy do
     end
 
     context 'for user with another role' do
-      let(:ticket) { service.tickets.first }
+      context 'and when ticket is hidden' do
+        let(:ticket) { create(:ticket, is_hidden: true) }
 
-      it 'grants access' do
-        expect(subject).to permit(operator, ticket)
+        it 'denies access' do
+          expect(subject).not_to permit(guest, ticket)
+        end
+      end
+
+      context 'and when ticket is not hidden' do
+        let!(:ticket) { create(:ticket) }
+
+        it 'grants access' do
+          expect(subject).to permit(guest, ticket)
+        end
+      end
+
+      context 'and when service is hidden' do
+        let(:ticket) { service.tickets.first }
+        before { service.is_hidden = true }
+
+        it 'denies access' do
+          expect(subject).not_to permit(guest, ticket)
+        end
+      end
+
+      context 'and when ticket has :draft state' do
+        let(:ticket) { create(:ticket, state: :draft) }
+
+        it 'denies access' do
+          expect(subject).not_to permit(guest, ticket)
+        end
       end
     end
   end
@@ -115,29 +131,44 @@ RSpec.describe TicketPolicy do
   permissions '.scope' do
     let(:scope) { service.tickets }
     let!(:hidden_ticket) { create(:ticket, is_hidden: true, service: service) }
-
-    context 'for user with :guest role' do
-      subject(:policy_scope) { TicketPolicy::Scope.new(guest, scope).resolve }
-
-      it 'loads all visible tickets' do
-        expect(policy_scope.length).to eq 2
-        policy_scope.each do |ticket|
-          expect(ticket.is_hidden).to be_falsey
-        end
-      end
-    end
+    let!(:draft_ticet) { create(:ticket, state: :draft, service: service) }
 
     context 'for user with :service_responsible role' do
-      let!(:ticket) { create(:ticket, is_hidden: true, service: service) }
+      let!(:ticket) { service.tickets.first }
+      let!(:draft_ticket) { create(:ticket, is_hidden: false, state: :draft, service: service) }
       let!(:extra_service) { create(:service) }
       let!(:extra_ticket) { create(:ticket, service: extra_service) }
       subject(:policy_scope) { TicketPolicy::Scope.new(responsible, scope).resolve(service) }
-      before { responsible.tickets << ticket }
 
-      it 'loads all tickets in current service' do
+      it 'loads only visible and published tickets' do
+        expect(policy_scope.length).to eq(2)
         expect(policy_scope).to include(ticket)
-        expect(policy_scope).to include(hidden_ticket)
+        expect(policy_scope).not_to include(hidden_ticket)
+        expect(policy_scope).not_to include(draft_ticket)
         expect(policy_scope).not_to include(extra_ticket)
+      end
+
+      context 'and when one of ticket in service belongs to user' do
+        before { responsible.tickets << ticket }
+
+        it 'loads all tickets in current service' do
+          expect(policy_scope).to include(ticket)
+          expect(policy_scope).to include(hidden_ticket)
+          expect(policy_scope).to include(draft_ticket)
+          expect(policy_scope).not_to include(extra_ticket)
+        end
+      end
+
+      context 'and when service belongs to user' do
+        subject(:policy_scope) { TicketPolicy::Scope.new(guest, scope).resolve }
+
+        it 'loads all visible tickets' do
+          expect(policy_scope.length).to eq 2
+          policy_scope.each do |ticket|
+            expect(ticket.is_hidden).to be_falsey
+            expect(ticket.state).to eq 'published'
+          end
+        end
       end
     end
 
@@ -145,7 +176,7 @@ RSpec.describe TicketPolicy do
       subject(:policy_scope) { TicketPolicy::Scope.new(operator, scope).resolve }
 
       it 'loads all services' do
-        expect(policy_scope.length).to eq 3
+        expect(policy_scope.length).to eq 2
       end
     end
   end
@@ -153,25 +184,7 @@ RSpec.describe TicketPolicy do
   permissions '.sphinx_scope' do
     let(:scope) { service.tickets.to_a }
     let!(:hidden_ticket) { create(:ticket, is_hidden: true, service: service) }
-
-    context 'for user with :guest role' do
-      subject(:policy_scope) { TicketPolicy::SphinxScope.new(guest, scope).resolve }
-
-      it 'loads only visible tickets' do
-        policy_scope.each do |ticket|
-          expect(ticket.is_hidden).to be_falsey
-        end
-      end
-
-      context 'when service is hidden' do
-        subject(:policy_scope) { TicketPolicy::SphinxScope.new(guest, scope).resolve }
-        before { service.is_hidden = true }
-
-        it 'does not load tickets' do
-          expect(policy_scope).to be_empty
-        end
-      end
-    end
+    let!(:draft_ticket) { create(:ticket, state: :draft, service: service) }
 
     context 'for user with :service_responsible role' do
       let(:extra_service) { create(:service) }
@@ -221,10 +234,27 @@ RSpec.describe TicketPolicy do
     end
 
     context 'for user with any another role' do
-      subject(:policy_scope) { TicketPolicy::SphinxScope.new(operator, scope).resolve }
+      subject(:policy_scope) { TicketPolicy::SphinxScope.new(guest, scope).resolve }
 
-      it 'loads all services' do
-        expect(policy_scope.length).to eq 3
+      it 'loads only visible tickets' do
+        policy_scope.each do |ticket|
+          expect(ticket.is_hidden).to be_falsey
+        end
+      end
+
+      it 'loads tickets only with published state' do
+        policy_scope.each do |ticket|
+          expect(ticket.published_state?).to be_truthy
+        end
+      end
+
+      context 'when service is hidden' do
+        subject(:policy_scope) { TicketPolicy::SphinxScope.new(guest, scope).resolve }
+        before { service.is_hidden = true }
+
+        it 'does not load tickets' do
+          expect(policy_scope).to be_empty
+        end
       end
     end
   end

@@ -1,47 +1,47 @@
 class TicketPolicy < ApplicationPolicy
   def show?
-    if user.role? :guest
-      ticket_not_hidden?
-    elsif user.role? :service_responsible
-      ticket_not_hidden? ||
-        record.belongs_to?(user) ||
-        record.service.belongs_to?(user) ||
-        ticket_in_allowed_pool?
+    if user.role? :service_responsible
+      show_for_service_responsible?
     else
-      true
+      show_for_guest?
     end
   end
 
   class Scope < Scope
     # метод вызывается из сервиса
     def resolve(service = nil)
-      if user.role? :guest
-        Api::V1::TicketsQuery.new(scope).visible
-      elsif user.role? :service_responsible
+      if user.role?(:service_responsible) && scope_for_service_responsible?(service)
         Api::V1::TicketsQuery.new(scope).all_in_service(service)
       else
-        scope
+        Api::V1::TicketsQuery.new(scope).visible.published_state
       end
+    end
+
+    protected
+
+    def scope_for_service_responsible?(service)
+      service.belongs_to?(user) || service.belongs_by_tickets_to?(user)
     end
   end
 
   class SphinxScope < Scope
     def resolve
-      if user.role? :guest
-        scope.select { |ticket| ticket_not_hidden?(ticket) }
-      elsif user.role? :service_responsible
+      if user.role? :service_responsible
         scope.select do |ticket|
           ticket_not_hidden?(ticket) ||
-            ticket.belongs_to?(user) ||
-            ticket.service.belongs_to?(user) ||
+            ticket_belongs_to_user?(ticket, user) ||
             ticket_in_allowed_pool?(ticket, user)
         end
       else
-        scope
+        scope.select { |ticket| ticket_not_hidden?(ticket) && ticket.published_state? }
       end
     end
 
     protected
+
+    def ticket_belongs_to_user?(ticket, user)
+      ticket.belongs_to?(user) || ticket.service.belongs_to?(user)
+    end
 
     def ticket_not_hidden?(ticket)
       !ticket.service.is_hidden && !ticket.is_hidden
@@ -53,6 +53,18 @@ class TicketPolicy < ApplicationPolicy
   end
 
   protected
+
+  def show_for_guest?
+    ticket_not_hidden? && record.published_state?
+  end
+
+  def show_for_service_responsible?
+    show_for_guest? || record_belongs_to_user? || ticket_in_allowed_pool?
+  end
+
+  def record_belongs_to_user?
+    record.belongs_to?(user) || record.service.belongs_to?(user)
+  end
 
   def ticket_not_hidden?
     !record.service.is_hidden && !record.is_hidden

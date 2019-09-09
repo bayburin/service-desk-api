@@ -19,6 +19,8 @@ module Api
         all.where(service: service)
       end
 
+      # visible.or(where())
+
       private
 
       def tickets
