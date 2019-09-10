@@ -23,8 +23,18 @@ class Ticket < ApplicationRecord
 
   # Смотри: https://github.com/rails/rails/issues/7256
   def tags_attributes=(attributes)
+    # id присланных тегов
     tag_ids = attributes.map { |tag| tag[:id] }.compact
-    tags << Tag.find(tag_ids)
+    # Массив имен тегов, у которых отсутствует id
+    tag_names = attributes.reject { |tag| tag[:id] }.map { |el| el[:name] }
+    # id тегов, найденных по имени, но пришедших без id
+    existing_tag_ids = Tag.where(name: tag_names).pluck(:id)
+    tags << Tag.find(tag_ids + existing_tag_ids)
+    attributes.each do |tag|
+      next if tag[:id]
+
+      tag[:id] = Tag.find_by(name: tag[:name]).try(:id)
+    end
 
     super(attributes)
   end

@@ -32,4 +32,30 @@ RSpec.describe Ticket, type: :model do
       expect(subject.calculate_popularity).to eq popularity
     end
   end
+
+  describe '#tags_attributes' do
+    let(:new_tag_attr) { attributes_for(:tag) }
+    let!(:existing_tag) { create(:tag) }
+    let(:existing_tag_attr) { existing_tag.as_json(only: %i[id name]) }
+    subject { build(:ticket, tags_attributes: [new_tag_attr, existing_tag_attr].map(&:symbolize_keys)) }
+
+    it 'creates new tags' do
+      expect { subject.save }.to change { Tag.count }.by(1)
+    end
+
+    it 'adds references on existing tags' do
+      subject.save
+
+      expect(subject.tags).to include(existing_tag)
+    end
+
+    context 'when id not set but tag exists' do
+      let!(:new_tag) { Tag.create(new_tag_attr) }
+
+      it 'add references on existing tag' do
+        expect { subject.save }.not_to change { Tag.count }
+        expect(subject.tags).to include(new_tag, existing_tag)
+      end
+    end
+  end
 end
