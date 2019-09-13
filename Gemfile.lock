@@ -102,6 +102,7 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
+    carrierwave-i18n (0.2.0)
     case_transform (0.2)
       activesupport
     coercible (1.0.0)
@@ -408,6 +409,7 @@ DEPENDENCIES
   capistrano-sneakers
   capistrano3-unicorn
   carrierwave
+  carrierwave-i18n
   colorize
   database_cleaner
   devise

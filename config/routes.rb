@@ -17,9 +17,6 @@ Rails.application.routes.draw do
       resources :services, only: :index do
         resources :tickets, except: :index
       end
-      # resources :answers, only: [] do
-      get 'answers/:id/attachments/:attachment_id', to: 'answers#download_attachment'
-      # end
       resources :cases, only: %i[index create update destroy], param: :case_id
       # Получение данных о пользователе
       resources :users, only: [] do
@@ -32,6 +29,9 @@ Rails.application.routes.draw do
       end
       resources :tags, only: :index do
         get :popularity, to: :popularity, on: :collection
+      end
+      resources :answers, only: [] do
+        resources :answer_attachments, only: %i[show create]
       end
 
       get 'welcome', to: 'base#welcome'

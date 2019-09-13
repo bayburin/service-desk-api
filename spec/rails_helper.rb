@@ -59,6 +59,12 @@ RSpec.configure do |config|
   #   end
   # end
 
+  config.after(:each) do
+    if Rails.env.test? || Rails.env.cucumber?
+      FileUtils.rm_rf(Dir["#{Rails.root}/spec/uploads/answer_attachment"])
+    end
+  end
+
   config.before(:each, transactional: true) do
     # Default to transaction strategy for all specs
     DatabaseCleaner.strategy = :transaction
