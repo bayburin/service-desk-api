@@ -3,6 +3,7 @@ class TicketSerializer < ActiveModel::Serializer
 
   has_many :answers, if: :include_associations?
   has_many :responsible_users, if: :include_associations?
+  has_many :tags, if: :include_associations?
 
   belongs_to :service
 

@@ -10,19 +10,29 @@ module Api
       end
 
       def create
-        answer = Answer.find(params[:answer_id]).attachments.new(attachments_params)
+        attachment = Answer.find(params[:answer_id]).attachments.new(attachments_params)
 
-        if answer.save
-          render json: answer
+        if attachment.save
+          render json: attachment
         else
-          render json: answer.errors, status: :unprocessable_entity
+          render json: attachment.errors, status: :unprocessable_entity
+        end
+      end
+
+      def destroy
+        attachment = Answer.find(params[:answer_id]).attachments.find(params[:id])
+
+        if attachment.destroy
+          render json: attachment
+        else
+          render json: attachment.errors, status: :unprocessable_entity
         end
       end
 
       protected
 
       def attachments_params
-        params.permit(:id, :answer_id, :document)
+        params.permit(:answer_id, :document)
       end
     end
   end

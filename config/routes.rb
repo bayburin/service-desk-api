@@ -15,7 +15,7 @@ Rails.application.routes.draw do
         resources :services, only: :show
       end
       resources :services, only: :index do
-        resources :tickets, except: :index
+        resources :tickets
       end
       resources :cases, only: %i[index create update destroy], param: :case_id
       # Получение данных о пользователе
@@ -31,7 +31,7 @@ Rails.application.routes.draw do
         get :popularity, to: :popularity, on: :collection
       end
       resources :answers, only: [] do
-        resources :answer_attachments, only: %i[show create]
+        resources :answer_attachments, only: %i[show create destroy]
       end
 
       get 'welcome', to: 'base#welcome'

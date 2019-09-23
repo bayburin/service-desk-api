@@ -19,7 +19,7 @@ class Ticket < ApplicationRecord
   enum state: { draft: 1, published: 2 }, _suffix: true
 
   accepts_nested_attributes_for :answers, reject_if: proc { |attr| attr['answer'].blank? }, allow_destroy: true
-  accepts_nested_attributes_for :tags
+  accepts_nested_attributes_for :tags, reject_if: proc { |attr| attr['name'].blank? }
 
   # Смотри: https://github.com/rails/rails/issues/7256
   def tags_attributes=(attributes)

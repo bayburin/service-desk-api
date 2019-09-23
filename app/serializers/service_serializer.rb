@@ -11,8 +11,9 @@ class ServiceSerializer < ActiveModel::Serializer
   end
 
   def tickets
-    scope = TicketPolicy::Scope.new(current_user, object.tickets).resolve(object)
-    scope = scope.includes(:responsible_users, answers: :attachments) unless object.tickets.any?(&:without_associations)
+    # scope = TicketPolicy::Scope.new(current_user, object.tickets).resolve(object)
+    scope = Api::V1::TicketsQuery.new(object.tickets).visible.published_state
+    scope = scope.includes(:responsible_users, :tags, answers: :attachments) unless object.tickets.any?(&:without_associations)
     scope
   end
 end

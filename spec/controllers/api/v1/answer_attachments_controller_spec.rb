@@ -4,10 +4,10 @@ module Api
   module V1
     RSpec.describe AnswerAttachmentsController, type: :controller do
       sign_in_user
+      let(:ticket) { create(:ticket) }
+      let!(:answer) { ticket.answers.first }
 
       describe 'GET #show' do
-        let(:ticket) { create(:ticket) }
-        let!(:answer) { ticket.answers.first }
         let(:attachment) { answer.attachments.first }
         let(:params) { { answer_id: answer.id, id: attachment.id } }
 
@@ -25,8 +25,6 @@ module Api
       end
 
       describe 'POST #create' do
-        let(:ticket) { create(:ticket) }
-        let!(:answer) { ticket.answers.first }
         let(:attachment) { attributes_for(:answer_attachment, answer_id: answer.id) }
 
         it 'creates answer_attachment' do
@@ -35,6 +33,21 @@ module Api
 
         it 'respond with status 200' do
           post :create, params: attachment
+
+          expect(response.status).to eq 200
+        end
+      end
+
+      describe 'DELETE #destroy' do
+        let!(:attachment) { answer.attachments.first }
+        let(:params) { { id: attachment.id, answer_id: attachment.answer_id } }
+
+        it 'destroys answer_attachment' do
+          expect { delete :destroy, params: params }.to change { AnswerAttachment.count }.by(-1)
+        end
+
+        it 'respond with status 200' do
+          delete :destroy, params: params, format: :json
 
           expect(response.status).to eq 200
         end
