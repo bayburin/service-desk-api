@@ -61,8 +61,8 @@ module Api
       end
 
       describe '#most_popular' do
-        it 'runs :all method' do
-          expect(subject).to receive(:all).and_call_original
+        it 'runs :visible method' do
+          expect(subject).to receive(:visible).and_call_original
 
           subject.most_popular
         end

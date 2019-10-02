@@ -16,7 +16,7 @@ module Api
       end
 
       def most_popular
-        all.limit(6)
+        visible.limit(6)
       end
 
       def search_by_responsible(user)
