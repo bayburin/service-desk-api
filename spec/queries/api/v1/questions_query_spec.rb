@@ -5,6 +5,7 @@ module Api
     RSpec.describe QuestionsQuery, type: :model do
       let!(:tickets) { create_list(:ticket, 7) }
       let!(:ticket) { create(:ticket, ticket_type: :common_case) }
+      let!(:correction) { create(:ticket, original: tickets.first, state: :draft) }
 
       it 'inherits from TicketsQuery class' do
         expect(QuestionsQuery).to be < TicketsQuery

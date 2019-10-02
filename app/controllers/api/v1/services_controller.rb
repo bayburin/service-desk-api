@@ -11,7 +11,7 @@ module Api
         service = Service.find_by(id: params[:id], category_id: params[:category_id])
         authorize service
 
-        render json: service, include: 'category,responsible_users,tickets.answers.attachments,tickets.responsible_users,tickets.tags'
+        render json: service, include: 'category,responsible_users,tickets.answers.attachments,tickets.responsible_users,tickets.tags,tickets.correction.*,tickets.correction.answers.attachments'
       end
     end
   end

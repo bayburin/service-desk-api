@@ -15,7 +15,9 @@ Rails.application.routes.draw do
         resources :services, only: :show
       end
       resources :services, only: :index do
-        resources :tickets
+        resources :tickets do
+          post :raise_rating, to: :raise_rating, on: :member
+        end
       end
       resources :cases, only: %i[index create update destroy], param: :case_id
       # Получение данных о пользователе

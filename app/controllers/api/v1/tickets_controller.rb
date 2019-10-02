@@ -2,27 +2,22 @@ module Api
   module V1
     class TicketsController < BaseController
       def index
-        service = Service.find(params[:service_id])
         tickets = Api::V1::QuestionsQuery.new
-                    .all_in_service(service)
-                    .includes(:responsible_users, :tags, answers: :attachments)
+                    .all_in_service(Service.find(params[:service_id]))
+                    .includes(:correction, :responsible_users, :tags, answers: :attachments)
         tickets = tickets.where(state: params[:state]) if params[:state]
 
-        render json: tickets, include: 'responsible_users,tags,answers.attachments'
+        render json: tickets, include: 'correction,responsible_users,tags,answers.attachments,correction.*,correction.answers.attachments'
       end
 
       def show
-        ticket = Ticket.find_by(service_id: params[:service_id], id: params[:id])
-        authorize ticket
+        ticket = Service.find(params[:service_id]).tickets.find(params[:id])
 
-        ticket.calculate_popularity
-        ticket.save
-
-        render json: ticket, include: ''
+        render json: ticket
       end
 
       def create
-        ticket = Ticket.new(ticket_params)
+        ticket = Ticket.new(attributive_params)
         authorize ticket
 
         ticket.ticket_type = :question
@@ -36,6 +31,24 @@ module Api
         end
       end
 
+      def update
+        ticket = Service.find(params[:service_id]).tickets.find(params[:id])
+
+        if ticket.update_by_state(attributive_params)
+          render json: ticket
+        else
+          render json: ticket.errors, status: :unprocessable_entity
+        end
+      end
+
+      def raise_rating
+        ticket = Ticket.find_by(service_id: params[:service_id], id: params[:id])
+        # authorize ticket, :show?
+
+        ticket.calculate_popularity
+        ticket.save
+      end
+
       protected
 
       def ticket_params
@@ -45,10 +58,18 @@ module Api
           :parent_id,
           :name,
           :is_hidden,
-          answers_attributes: %i[id ticket_id reason answer link is_hidden],
-          tags_attributes: %i[id name],
-          responsible_users_attributes: %i[id tn]
+          answers: %i[id _destroy ticket_id reason answer link is_hidden],
+          tags: %i[id name _destroy],
+          responsible_users: %i[id tn]
         )
+      end
+
+      def attributive_params
+        attributive_params = ticket_params
+        attributive_params[:answers_attributes] = attributive_params.delete(:answers) || []
+        attributive_params[:tags_attributes] = attributive_params.delete(:tags) || []
+        # attributive_params[:responsible_users_attributes] = attributive_params.delete(:responsible_users)
+        attributive_params
       end
     end
   end

@@ -24,16 +24,19 @@ class Ticket < ApplicationRecord
   # Смотри: https://github.com/rails/rails/issues/7256
   def tags_attributes=(attributes)
     # id присланных тегов
-    tag_ids = attributes.map { |tag| tag[:id] }.compact
-    # Массив имен тегов, у которых отсутствует id
-    tag_names = attributes.reject { |tag| tag[:id] }.map { |el| el[:name] }
-    # id тегов, найденных по имени, но пришедших без id
-    existing_tag_ids = Tag.where(name: tag_names).pluck(:id)
-    tags << Tag.find(tag_ids + existing_tag_ids)
-    attributes.each do |tag|
-      next if tag[:id]
+    self.tag_ids = attributes.map { |tag| tag[:id] }.compact
 
-      tag[:id] = Tag.find_by(name: tag[:name]).try(:id)
+    if attributes.any? { |tag| !tag[:id] }
+      # Поиск тегов, у которых отсутствует id
+      attributes.each do |tag|
+        next if tag[:id]
+
+        tag_o = Tag.find_by(name: tag[:name])
+        next unless tag_o
+
+        tag[:id] = tag_o.id
+        self.tag_ids = (tag_ids || []) + [tag_o.id]
+      end
     end
 
     super(attributes)
@@ -41,5 +44,17 @@ class Ticket < ApplicationRecord
 
   def calculate_popularity
     self.popularity += 1
+  end
+
+  def update_by_state(attributes)
+    state = published_state? ? Api::V1::Tickets::PublishedState.new(self) : Api::V1::Tickets::DraftState.new(self)
+
+    if state.update(attributes)
+      state.object
+    else
+      errors.merge!(state.object.errors)
+
+      false
+    end
   end
 end
