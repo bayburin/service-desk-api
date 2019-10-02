@@ -15,30 +15,29 @@ class TicketPolicy < ApplicationPolicy
     end
   end
 
-  class Scope < Scope
-    # метод вызывается из сервиса
-    def resolve(service = nil)
-      if user.role?(:service_responsible) && scope_for_service_responsible?(service)
-        Api::V1::TicketsQuery.new(scope).all_in_service(service)
-      else
-        Api::V1::TicketsQuery.new(scope).visible.published_state
-      end
-    end
+  # class Scope < Scope
+  #   # метод вызывается из сервиса
+  #   def resolve(service = nil)
+  #     if user.role?(:service_responsible) && scope_for_service_responsible?(service)
+  #       Api::V1::TicketsQuery.new(scope).all_in_service(service)
+  #     else
+  #       Api::V1::TicketsQuery.new(scope).visible.published_state
+  #     end
+  #   end
 
-    protected
+  #   protected
 
-    def scope_for_service_responsible?(service)
-      service.belongs_to?(user) || service.belongs_by_tickets_to?(user)
-    end
-  end
+  #   def scope_for_service_responsible?(service)
+  #     service.belongs_to?(user) || service.belongs_by_tickets_to?(user)
+  #   end
+  # end
 
   class SphinxScope < Scope
     def resolve
       if user.role? :service_responsible
         scope.select do |ticket|
-          ticket_not_hidden?(ticket) ||
-            ticket_belongs_to_user?(ticket, user) ||
-            ticket_in_allowed_pool?(ticket, user)
+          ticket.published_state? &&
+            (ticket_not_hidden?(ticket) || ticket_belongs_to_user?(ticket, user) || ticket_in_allowed_pool?(ticket, user))
         end
       else
         scope.select { |ticket| ticket_not_hidden?(ticket) && ticket.published_state? }
