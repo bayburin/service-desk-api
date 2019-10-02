@@ -108,9 +108,12 @@ module Api
         let!(:ticket) { create(:ticket) }
         let(:ticket_params) { ticket.as_json(include: %i[answers tags responsible_users]) }
         let(:params) { { service_id: ticket.service.id, id: ticket.id, ticket: ticket_params } }
+        let(:decorator) { TicketDecorator.new(ticket) }
+
+        before { allow(TicketDecorator).to receive(:new).with(ticket).and_return(decorator) }
 
         it 'calls update_by_state method' do
-          expect_any_instance_of(Ticket).to receive(:update_by_state).and_return(true)
+          expect(decorator).to receive(:update_by_state).and_return(true)
 
           put :update, params: params, format: :json
         end
@@ -122,7 +125,7 @@ module Api
         end
 
         context 'when ticket was not updated' do
-          before { allow_any_instance_of(Ticket).to receive(:update_by_state).and_return(false) }
+          before { expect(decorator).to receive(:update_by_state).and_return(false) }
 
           it 'respond with 422 status' do
             put :update, params: params, format: :json

@@ -45,16 +45,4 @@ class Ticket < ApplicationRecord
   def calculate_popularity
     self.popularity += 1
   end
-
-  def update_by_state(attributes)
-    state = published_state? ? Api::V1::Tickets::PublishedState.new(self) : Api::V1::Tickets::DraftState.new(self)
-
-    if state.update(attributes)
-      state.object
-    else
-      errors.merge!(state.object.errors)
-
-      false
-    end
-  end
 end

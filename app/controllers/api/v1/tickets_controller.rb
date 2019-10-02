@@ -33,11 +33,12 @@ module Api
 
       def update
         ticket = Service.find(params[:service_id]).tickets.find(params[:id])
+        decorated_ticket = TicketDecorator.new(ticket)
 
-        if ticket.update_by_state(attributive_params)
-          render json: ticket
+        if decorated_ticket.update_by_state(attributive_params)
+          render json: decorated_ticket
         else
-          render json: ticket.errors, status: :unprocessable_entity
+          render json: decorated_ticket.errors, status: :unprocessable_entity
         end
       end
 
