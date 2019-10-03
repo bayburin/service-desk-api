@@ -10,7 +10,7 @@ module Api
       end
 
       def most_popular
-        visible.published.limit(5)
+        visible.published.by_visible_service.limit(5)
       end
 
       private
