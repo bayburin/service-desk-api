@@ -34,8 +34,9 @@ module Api
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: [:service, answers: :attachments] }
+          sql: { include: [:responsible_users, service: :responsible_users, answers: :attachments] }
         )
+        tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
         render json: search_categories.to_a + search_services.to_a + tickets.to_a, include: 'service,answers.attachments'
       end
