@@ -59,6 +59,20 @@ class TicketPolicy < ApplicationPolicy
     end
   end
 
+  def attributes_for_search
+    if user.role?(:service_responsible)
+      {
+        include: [:responsible_users, service: :responsible_users],
+        serialize: []
+      }
+    else
+      {
+        include: [:service],
+        serialize: []
+      }
+    end
+  end
+
   protected
 
   def show_for_guest?

@@ -17,11 +17,12 @@ module Api
 
       def search
         ahoy.track 'Search', params[:search]
+        policy_hash = policy(Ticket).attributes_for_search
         tickets = Ticket.search(
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: [:responsible_users, service: :responsible_users] }
+          sql: { include: policy_hash[:include] }
         ).each { |s| s.without_associations = true }
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
@@ -50,11 +51,12 @@ module Api
       end
 
       def search_services
+        policy_hash = policy(Service).attributes_for_search
         services = Service.search(
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: :responsible_users }
+          sql: { include: policy_hash[:include] }
         ).each { |s| s.without_associations = true }
         ServicePolicy::SphinxScope.new(current_user, services).resolve
       end

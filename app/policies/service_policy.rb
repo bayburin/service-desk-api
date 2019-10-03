@@ -27,7 +27,6 @@ class ServicePolicy < ApplicationPolicy
     end
   end
 
-  # Атрибуты для сериалайзеров
   def attributes_for_show
     if user.role?(:service_responsible) && belongs_to_user?
       {
@@ -38,6 +37,20 @@ class ServicePolicy < ApplicationPolicy
       {
         include: [answers: :attachments],
         serialize: ['category', 'tickets.answers.attachments']
+      }
+    end
+  end
+
+  def attributes_for_search
+    if user.role?(:service_responsible)
+      {
+        include: [:responsible_users],
+        serialize: []
+      }
+    else
+      {
+        include: [],
+        serialize: []
       }
     end
   end
