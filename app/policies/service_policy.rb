@@ -27,6 +27,21 @@ class ServicePolicy < ApplicationPolicy
     end
   end
 
+  # Атрибуты для сериалайзеров
+  def attributes_for_show
+    if user.role?(:service_responsible) && belongs_to_user?
+      {
+        include: [:correction, :responsible_users, :tags, answers: :attachments],
+        serialize: ['*', 'tickets.*', 'tickets.answers.attachments', 'tickets.correction.*', 'tickets.correction.answers.attachments']
+      }
+    else
+      {
+        include: [answers: :attachments],
+        serialize: ['category', 'tickets.answers.attachments']
+      }
+    end
+  end
+
   protected
 
   def belongs_to_user?

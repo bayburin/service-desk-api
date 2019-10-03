@@ -104,4 +104,12 @@ RSpec.describe ServicePolicy do
       end
     end
   end
+
+  permissions :attributes_for_show do
+    let(:service) { create(:service, is_hidden: true) }
+
+    it 'returns object with :include and :serialize keys' do
+      expect(subject.new(responsible, service).attributes_for_show.keys).to include(:include, :serialize)
+    end
+  end
 end

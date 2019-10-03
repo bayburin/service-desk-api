@@ -10,8 +10,13 @@ module Api
       def show
         service = Service.find_by(id: params[:id], category_id: params[:category_id])
         authorize service
+        policy_hash = policy(service).attributes_for_show
 
-        render json: service, include: 'category,responsible_users,tickets.answers.attachments,tickets.responsible_users,tickets.tags,tickets.correction.*,tickets.correction.answers.attachments'
+        render(
+          json: service,
+          authorize_attributes: policy_hash[:include],
+          include: policy_hash[:serialize]
+        )
       end
     end
   end
