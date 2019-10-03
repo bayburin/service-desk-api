@@ -299,4 +299,10 @@ RSpec.describe TicketPolicy do
       expect(subject.new(responsible, Ticket).attributes_for_search.keys).to include(:include, :serialize)
     end
   end
+
+  permissions :attributes_for_deep_search do
+    it 'returns object with :include and :serialize keys' do
+      expect(subject.new(responsible, Ticket).attributes_for_search.keys).to include(:include, :serialize)
+    end
+  end
 end

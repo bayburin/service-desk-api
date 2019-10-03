@@ -31,11 +31,12 @@ module Api
 
       def deep_search
         ahoy.track 'Deep search', params[:search]
+        policy_hash = policy(Ticket).attributes_for_deep_search
         tickets = Ticket.search(
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: [:responsible_users, service: :responsible_users, answers: :attachments] }
+          sql: { include: policy_hash[:include] }
         )
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 

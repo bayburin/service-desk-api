@@ -73,6 +73,20 @@ class TicketPolicy < ApplicationPolicy
     end
   end
 
+  def attributes_for_deep_search
+    if user.role?(:service_responsible)
+      {
+        include: [:responsible_users, service: :responsible_users, answers: :attachments],
+        serialize: []
+      }
+    else
+      {
+        include: [:service, answers: :attachments],
+        serialize: []
+      }
+    end
+  end
+
   protected
 
   def show_for_guest?
