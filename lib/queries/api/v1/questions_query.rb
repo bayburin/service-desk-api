@@ -10,13 +10,13 @@ module Api
       end
 
       def most_popular
-        visible.limit(5)
+        visible.published.limit(5)
       end
 
       private
 
       def questions
-        scope.where(ticket_type: :question).where(original: nil).extend(Scope)
+        scope.where(ticket_type: :question).where(original: nil).extend(TicketScope)
       end
     end
   end

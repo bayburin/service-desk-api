@@ -38,8 +38,8 @@ module Api
       end
 
       describe '#most_popular' do
-        it 'runs :visible method' do
-          expect(subject).to receive(:visible).and_call_original
+        it 'runs :visible and :published method' do
+          expect(subject).to receive_message_chain(:visible, :published, :limit)
 
           subject.most_popular
         end
