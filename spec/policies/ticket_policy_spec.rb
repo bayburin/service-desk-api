@@ -7,136 +7,19 @@ RSpec.describe TicketPolicy do
   let(:operator) { create(:operator_user) }
   let(:service) { create(:service) }
 
-  permissions :show? do
+  permissions :update? do
+    let(:ticket) { create(:ticket, service: service) }
+
     context 'for user with :service_responsible role' do
-      context 'and when ticket is hidden' do
-        let(:ticket) { create(:ticket, is_hidden: true) }
-
-        it 'denies access' do
-          expect(subject).not_to permit(responsible, ticket)
-        end
-
-        context 'and when user reponsible for this ticket' do
-          before { responsible.tickets << ticket }
-
-          it 'grants access' do
-            expect(subject).to permit(responsible, ticket)
-          end
-        end
-
-        context 'and when user responsible for parent service' do
-          before do
-            ticket.service = service
-            responsible.services << service
-          end
-
-          it 'grants access' do
-            expect(subject).to permit(responsible, ticket)
-          end
-        end
-
-        context 'and when user responsible for another ticket from the same service' do
-          let(:another_ticket) { create(:ticket, service: service) }
-          before do
-            responsible.tickets << another_ticket
-            ticket.service = service
-          end
-
-          it 'grants access' do
-            expect(subject).to permit(responsible, ticket)
-          end
-        end
-      end
-
-      context 'and when ticket is not hidden' do
-        let(:ticket) { create(:ticket) }
+      context 'and when ticket belongs to the user' do
+        before { responsible.tickets << ticket }
 
         it 'grants access' do
           expect(subject).to permit(responsible, ticket)
         end
-
-        context 'and when parent service is hidden' do
-          before do
-            service.tickets << ticket
-            service.is_hidden = true
-          end
-
-          it 'denies access' do
-            expect(subject).not_to permit(responsible, ticket)
-          end
-
-          context 'and when ticket belongs to user' do
-            before { responsible.tickets << ticket }
-
-            it 'grants access' do
-              expect(subject).to permit(responsible, ticket)
-            end
-          end
-        end
-
-        context 'and when ticket has :draft state' do
-          before { ticket.state = :draft }
-
-          it 'denies access' do
-            expect(subject).not_to permit(responsible, ticket)
-          end
-
-          context 'and when ticket belongs to user' do
-            before { responsible.tickets << ticket }
-
-            it 'grants access' do
-              expect(subject).to permit(responsible, ticket)
-            end
-          end
-        end
-      end
-    end
-
-    context 'for user with another role' do
-      context 'and when ticket is hidden' do
-        let(:ticket) { create(:ticket, is_hidden: true) }
-
-        it 'denies access' do
-          expect(subject).not_to permit(guest, ticket)
-        end
       end
 
-      context 'and when ticket is not hidden' do
-        let!(:ticket) { create(:ticket) }
-
-        it 'grants access' do
-          expect(subject).to permit(guest, ticket)
-        end
-      end
-
-      context 'and when service is hidden' do
-        let(:ticket) { service.tickets.first }
-        before { service.is_hidden = true }
-
-        it 'denies access' do
-          expect(subject).not_to permit(guest, ticket)
-        end
-      end
-
-      context 'and when ticket has :draft state' do
-        let(:ticket) { create(:ticket, state: :draft) }
-
-        it 'denies access' do
-          expect(subject).not_to permit(guest, ticket)
-        end
-      end
-    end
-  end
-
-  permissions :create? do
-    let(:ticket) { build(:ticket, state: :draft, service: service) }
-
-    context 'for user with :service_responsible role' do
-      it 'denies access' do
-        expect(subject).not_to permit(guest, ticket)
-      end
-
-      context 'when service belongs to user' do
+      context 'and when service belongs to the user' do
         before { responsible.services << service }
 
         it 'grants access' do
@@ -144,21 +27,192 @@ RSpec.describe TicketPolicy do
         end
       end
 
-      context 'when any ticket in service belongs to user' do
+      context 'and when ticket and service not belongs to the user' do
         before { responsible.tickets << service.tickets.first }
 
-        it 'grants access' do
-          expect(subject).to permit(responsible, ticket)
+        it 'denies access' do
+          expect(subject).not_to permit(responsible, ticket)
         end
       end
     end
 
-    context 'for user with another role' do
+    context 'for user with :another role' do
       it 'denies access' do
         expect(subject).not_to permit(guest, ticket)
       end
     end
   end
+
+  permissions :raise_rating? do
+    context 'when ticket has :published state' do
+      let(:ticket) { create(:ticket, state: :published) }
+
+      it 'grants access' do
+        expect(subject).to permit(guest, ticket)
+      end
+    end
+
+    context 'when ticket has :draft state' do
+      let(:ticket) { create(:ticket, state: :draft) }
+
+      it 'denies access' do
+        expect(subject).not_to permit(guest, ticket)
+      end
+    end
+  end
+
+  # permissions :show? do
+  #   context 'for user with :service_responsible role' do
+  #     context 'and when ticket is hidden' do
+  #       let(:ticket) { create(:ticket, is_hidden: true) }
+
+  #       it 'denies access' do
+  #         expect(subject).not_to permit(responsible, ticket)
+  #       end
+
+  #       context 'and when user reponsible for this ticket' do
+  #         before { responsible.tickets << ticket }
+
+  #         it 'grants access' do
+  #           expect(subject).to permit(responsible, ticket)
+  #         end
+  #       end
+
+  #       context 'and when user responsible for parent service' do
+  #         before do
+  #           ticket.service = service
+  #           responsible.services << service
+  #         end
+
+  #         it 'grants access' do
+  #           expect(subject).to permit(responsible, ticket)
+  #         end
+  #       end
+
+  #       context 'and when user responsible for another ticket from the same service' do
+  #         let(:another_ticket) { create(:ticket, service: service) }
+  #         before do
+  #           responsible.tickets << another_ticket
+  #           ticket.service = service
+  #         end
+
+  #         it 'grants access' do
+  #           expect(subject).to permit(responsible, ticket)
+  #         end
+  #       end
+  #     end
+
+  #     context 'and when ticket is not hidden' do
+  #       let(:ticket) { create(:ticket) }
+
+  #       it 'grants access' do
+  #         expect(subject).to permit(responsible, ticket)
+  #       end
+
+  #       context 'and when parent service is hidden' do
+  #         before do
+  #           service.tickets << ticket
+  #           service.is_hidden = true
+  #         end
+
+  #         it 'denies access' do
+  #           expect(subject).not_to permit(responsible, ticket)
+  #         end
+
+  #         context 'and when ticket belongs to user' do
+  #           before { responsible.tickets << ticket }
+
+  #           it 'grants access' do
+  #             expect(subject).to permit(responsible, ticket)
+  #           end
+  #         end
+  #       end
+
+  #       context 'and when ticket has :draft state' do
+  #         before { ticket.state = :draft }
+
+  #         it 'denies access' do
+  #           expect(subject).not_to permit(responsible, ticket)
+  #         end
+
+  #         context 'and when ticket belongs to user' do
+  #           before { responsible.tickets << ticket }
+
+  #           it 'grants access' do
+  #             expect(subject).to permit(responsible, ticket)
+  #           end
+  #         end
+  #       end
+  #     end
+  #   end
+
+  #   context 'for user with another role' do
+  #     context 'and when ticket is hidden' do
+  #       let(:ticket) { create(:ticket, is_hidden: true) }
+
+  #       it 'denies access' do
+  #         expect(subject).not_to permit(guest, ticket)
+  #       end
+  #     end
+
+  #     context 'and when ticket is not hidden' do
+  #       let!(:ticket) { create(:ticket) }
+
+  #       it 'grants access' do
+  #         expect(subject).to permit(guest, ticket)
+  #       end
+  #     end
+
+  #     context 'and when service is hidden' do
+  #       let(:ticket) { service.tickets.first }
+  #       before { service.is_hidden = true }
+
+  #       it 'denies access' do
+  #         expect(subject).not_to permit(guest, ticket)
+  #       end
+  #     end
+
+  #     context 'and when ticket has :draft state' do
+  #       let(:ticket) { create(:ticket, state: :draft) }
+
+  #       it 'denies access' do
+  #         expect(subject).not_to permit(guest, ticket)
+  #       end
+  #     end
+  #   end
+  # end
+
+  # permissions :create? do
+  #   let(:ticket) { build(:ticket, state: :draft, service: service) }
+
+  #   context 'for user with :service_responsible role' do
+  #     it 'denies access' do
+  #       expect(subject).not_to permit(guest, ticket)
+  #     end
+
+  #     context 'when service belongs to user' do
+  #       before { responsible.services << service }
+
+  #       it 'grants access' do
+  #         expect(subject).to permit(responsible, ticket)
+  #       end
+  #     end
+
+  #     context 'when any ticket in service belongs to user' do
+  #       before { responsible.tickets << service.tickets.first }
+
+  #       it 'grants access' do
+  #         expect(subject).to permit(responsible, ticket)
+  #       end
+  #     end
+  #   end
+
+  #   context 'for user with another role' do
+  #     it 'denies access' do
+  #       expect(subject).not_to permit(guest, ticket)
+  #     end
+  #   end
+  # end
 
   # permissions '.scope' do
   #   let(:scope) { service.tickets }

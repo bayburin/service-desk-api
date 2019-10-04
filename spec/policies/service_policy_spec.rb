@@ -61,6 +61,40 @@ RSpec.describe ServicePolicy do
     end
   end
 
+  permissions :tickets_ctrl_access? do
+    let!(:service) { create(:service) }
+
+    context 'for user with :service_responsible role' do
+      context 'and when service belongs to the user' do
+        before { responsible.services << service }
+
+        it 'grants access' do
+          expect(subject).to permit(responsible, service)
+        end
+      end
+
+      context 'and when any ticket in service belongs to the user' do
+        before { responsible.tickets << service.tickets.first }
+
+        it 'grants access' do
+          expect(subject).to permit(responsible, service)
+        end
+      end
+
+      context 'and when no one ticket in service belongs to the user' do
+        it 'denies access' do
+          expect(subject).not_to permit(responsible, service)
+        end
+      end
+    end
+
+    context 'for user with another role' do
+      it 'denies access' do
+        expect(subject).not_to permit(guest, service)
+      end
+    end
+  end
+
   permissions '.scope' do
     let(:scope) { Service.all }
     let!(:visible_services) { create_list(:service, 2, is_hidden: false) }

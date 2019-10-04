@@ -1,6 +1,8 @@
 module Api
   module V1
     class TicketsController < BaseController
+      before_action :check_access, except: %i[raise_rating update]
+
       def index
         tickets = Api::V1::QuestionsQuery.new
                     .all_in_service(Service.find(params[:service_id]))
@@ -18,8 +20,6 @@ module Api
 
       def create
         ticket = Ticket.new(attributive_params)
-        authorize ticket
-
         ticket.ticket_type = :question
         ticket.state = :draft
         ticket.to_approve = false
@@ -33,6 +33,7 @@ module Api
 
       def update
         ticket = Service.find(params[:service_id]).tickets.find(params[:id])
+        authorize ticket
         decorated_ticket = TicketDecorator.new(ticket)
 
         if decorated_ticket.update_by_state(attributive_params)
@@ -44,7 +45,7 @@ module Api
 
       def raise_rating
         ticket = Ticket.find_by(service_id: params[:service_id], id: params[:id])
-        # authorize ticket, :show?
+        authorize ticket
 
         ticket.calculate_popularity
         ticket.save
@@ -71,6 +72,10 @@ module Api
         attributive_params[:tags_attributes] = attributive_params.delete(:tags) || []
         # attributive_params[:responsible_users_attributes] = attributive_params.delete(:responsible_users)
         attributive_params
+      end
+
+      def check_access
+        authorize Service.find(params[:service_id]), :tickets_ctrl_access?
       end
     end
   end

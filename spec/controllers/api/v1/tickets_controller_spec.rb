@@ -4,6 +4,7 @@ module Api
   module V1
     RSpec.describe TicketsController, type: :controller do
       sign_in_user
+      before { allow(subject).to receive(:authorize) }
 
       describe 'GET #index' do
         let(:service) { create(:service) }

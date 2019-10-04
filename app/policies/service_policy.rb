@@ -7,6 +7,14 @@ class ServicePolicy < ApplicationPolicy
     end
   end
 
+  def tickets_ctrl_access?
+    if user.role? :service_responsible
+      belongs_to_user?
+    else
+      false
+    end
+  end
+
   class Scope < Scope
     def resolve
       if user.role? :service_responsible

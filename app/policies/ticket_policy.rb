@@ -1,19 +1,31 @@
 class TicketPolicy < ApplicationPolicy
-  def show?
+  def update?
     if user.role? :service_responsible
-      show_for_service_responsible?
-    else
-      show_for_guest?
-    end
-  end
-
-  def create?
-    if user.role? :service_responsible
-      record.service.belongs_to?(user) || ticket_in_allowed_pool?
+      record_belongs_to_user?
     else
       false
     end
   end
+
+  def raise_rating?
+    record.published_state?
+  end
+
+  # def show?
+  #   if user.role? :service_responsible
+  #     show_for_service_responsible?
+  #   else
+  #     show_for_guest?
+  #   end
+  # end
+
+  # def create?
+  #   if user.role? :service_responsible
+  #     record.service.belongs_to?(user) || ticket_in_allowed_pool?
+  #   else
+  #     false
+  #   end
+  # end
 
   # class Scope < Scope
   #   # метод вызывается из сервиса
