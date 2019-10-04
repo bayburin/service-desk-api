@@ -38,9 +38,9 @@ class AnswerAttachmentUploader < CarrierWave::Uploader::Base
   #   process resize_to_fit: [50, 50]
   # end
 
-  def extension_whitelist
-    %w[jpg jpeg png pdf doc docx xls xlsx txt]
-  end
+  # def extension_whitelist
+  #   %w[jpg jpeg png pdf doc docx xls xlsx ppt pptx txt zip gif]
+  # end
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.

@@ -6,6 +6,7 @@ module Api
       sign_in_user
       let(:ticket) { create(:ticket) }
       let!(:answer) { ticket.answers.first }
+      before { allow(subject).to receive(:authorize) }
 
       describe 'GET #show' do
         let(:attachment) { answer.attachments.first }
