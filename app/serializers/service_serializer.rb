@@ -11,13 +11,14 @@ class ServiceSerializer < ActiveModel::Serializer
   end
 
   def tickets
-    scope = Api::V1::TicketsQuery.new(object.tickets).visible.published_state
+    scope = if instance_options[:only_public]
+              Api::V1::TicketsQuery.new(object.tickets).visible.published_state
+            else
+              TicketPolicy::Scope.new(current_user, object.tickets).resolve_by(object)
+            end
 
-    if instance_options[:authorize_attributes]
-      scope = scope.includes(*instance_options[:authorize_attributes]) unless object.tickets.any?(&:without_associations)
-    else
-      scope = scope.includes(answers: :attachments) unless object.tickets.any?(&:without_associations)
-    end
+    includes_options = instance_options[:authorize_attributes] || { answers: :attachments }
+    scope = scope.includes(includes_options) unless object.tickets.any?(&:without_associations)
 
     scope
   end

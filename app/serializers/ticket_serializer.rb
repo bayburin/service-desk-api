@@ -11,4 +11,8 @@ class TicketSerializer < ActiveModel::Serializer
   def include_associations?
     !object.without_associations
   end
+
+  def answers
+    AnswerPolicy::Scope.new(current_user, object.answers).resolve_by(object)
+  end
 end

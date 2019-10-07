@@ -5,7 +5,7 @@ class CategorySerializer < ActiveModel::Serializer
   has_many :faq, if: :include_associations?
 
   def faq
-    Api::V1::QuestionsQuery.new(object.tickets).most_popular
+    Api::V1::QuestionsQuery.new(object.tickets).most_popular.includes(:responsible_users, service: :responsible_users)
   end
 
   def include_associations?

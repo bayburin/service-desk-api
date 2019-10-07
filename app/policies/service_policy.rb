@@ -43,7 +43,7 @@ class ServicePolicy < ApplicationPolicy
       }
     else
       {
-        include: [answers: :attachments],
+        include: [],
         serialize: ['category', 'tickets.answers.attachments']
       }
     end

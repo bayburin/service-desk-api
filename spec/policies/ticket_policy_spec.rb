@@ -214,58 +214,56 @@ RSpec.describe TicketPolicy do
   #   end
   # end
 
-  # permissions '.scope' do
-  #   let(:scope) { service.tickets }
-  #   let!(:hidden_ticket) { create(:ticket, is_hidden: true, service: service) }
-  #   let!(:draft_ticet) { create(:ticket, state: :draft, service: service) }
+  permissions '.scope' do
+    let(:scope) { service.tickets }
+    let!(:hidden_ticket) { create(:ticket, is_hidden: true, service: service) }
+    let!(:draft_ticet) { create(:ticket, state: :draft, service: service) }
 
-  #   context 'for user with :service_responsible role' do
-  #     let!(:ticket) { service.tickets.first }
-  #     let!(:draft_ticket) { create(:ticket, is_hidden: false, state: :draft, service: service) }
-  #     let!(:extra_service) { create(:service) }
-  #     let!(:extra_ticket) { create(:ticket, service: extra_service) }
-  #     subject(:policy_scope) { TicketPolicy::Scope.new(responsible, scope).resolve(service) }
+    context 'for user with :service_responsible role' do
+      let!(:ticket) { service.tickets.first }
+      let!(:draft_ticket) { create(:ticket, is_hidden: false, state: :draft, service: service) }
+      let!(:extra_service) { create(:service) }
+      let!(:extra_ticket) { create(:ticket, service: extra_service) }
+      subject(:policy_scope) { TicketPolicy::Scope.new(responsible, scope).resolve_by(service) }
 
-  #     it 'loads only visible and published tickets' do
-  #       expect(policy_scope.length).to eq(2)
-  #       expect(policy_scope).to include(ticket)
-  #       expect(policy_scope).not_to include(hidden_ticket)
-  #       expect(policy_scope).not_to include(draft_ticket)
-  #       expect(policy_scope).not_to include(extra_ticket)
-  #     end
+      it 'loads only visible and published tickets' do
+        expect(policy_scope.length).to eq(2)
+        expect(policy_scope).to include(ticket)
+        expect(policy_scope).not_to include(hidden_ticket)
+        expect(policy_scope).not_to include(draft_ticket)
+        expect(policy_scope).not_to include(extra_ticket)
+      end
 
-  #     context 'and when one of ticket in service belongs to user' do
-  #       before { responsible.tickets << ticket }
+      context 'and when one of ticket in service belongs to user' do
+        before { responsible.tickets << ticket }
 
-  #       it 'loads all tickets in current service' do
-  #         expect(policy_scope).to include(ticket)
-  #         expect(policy_scope).to include(hidden_ticket)
-  #         expect(policy_scope).to include(draft_ticket)
-  #         expect(policy_scope).not_to include(extra_ticket)
-  #       end
-  #     end
+        it 'loads all tickets in current service' do
+          expect(policy_scope).to include(ticket)
+          expect(policy_scope).to include(hidden_ticket)
+          expect(policy_scope).not_to include(extra_ticket)
+        end
+      end
 
-  #     context 'and when service belongs to user' do
-  #       subject(:policy_scope) { TicketPolicy::Scope.new(guest, scope).resolve }
+      context 'and when service belongs to user' do
+        before { responsible.services << service }
 
-  #       it 'loads all visible tickets' do
-  #         expect(policy_scope.length).to eq 2
-  #         policy_scope.each do |ticket|
-  #           expect(ticket.is_hidden).to be_falsey
-  #           expect(ticket.state).to eq 'published'
-  #         end
-  #       end
-  #     end
-  #   end
+        it 'loads all published tickets' do
+          policy_scope.each do |ticket|
+            # expect(ticket.is_hidden).to be_falsey
+            expect(ticket.state).to eq 'published'
+          end
+        end
+      end
+    end
 
-  #   context 'for user with any another role' do
-  #     subject(:policy_scope) { TicketPolicy::Scope.new(operator, scope).resolve }
+    context 'for user with any another role' do
+      subject(:policy_scope) { TicketPolicy::Scope.new(operator, scope).resolve_by(service) }
 
-  #     it 'loads all services' do
-  #       expect(policy_scope.length).to eq 2
-  #     end
-  #   end
-  # end
+      it 'loads all services' do
+        expect(policy_scope.length).to eq 2
+      end
+    end
+  end
 
   permissions '.sphinx_scope' do
     let(:scope) { service.tickets.to_a }

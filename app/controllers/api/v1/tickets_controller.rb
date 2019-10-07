@@ -6,7 +6,7 @@ module Api
       def index
         tickets = Api::V1::QuestionsQuery.new
                     .all_in_service(Service.find(params[:service_id]))
-                    .includes(:correction, :responsible_users, :tags, answers: :attachments)
+                    .includes(:correction, :service, :responsible_users, :tags, answers: :attachments)
         tickets = tickets.where(state: params[:state]) if params[:state]
 
         render json: tickets, include: 'correction,responsible_users,tags,answers.attachments,correction.*,correction.answers.attachments'
