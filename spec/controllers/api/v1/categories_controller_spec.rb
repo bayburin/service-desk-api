@@ -8,14 +8,14 @@ module Api
       describe 'GET #index' do
         let!(:categories) { create_list(:category, 3) }
 
-        it 'runs :all method for CategoriesQuery instance' do
-          expect_any_instance_of(CategoriesQuery).to receive(:all)
+        it 'calls :all method for CategoriesQuery instance' do
+          expect_any_instance_of(CategoriesQuery).to receive(:all).and_call_original
 
           get :index, format: :json
         end
 
-        it 'runs CategorySerializer' do
-          expect(CategorySerializer).to receive(:new).at_least(3).and_call_original
+        it 'calls CategorySerializer' do
+          expect(Categories::CategoryBaseSerializer).to receive(:new).at_least(3).and_call_original
 
           get :index, format: :json
         end
@@ -37,29 +37,37 @@ module Api
         let(:category) { create(:category) }
         let(:service) { create(:service, category: category) }
         let!(:tickets) { create_list(:ticket, 3, service: service) }
+        let(:policy_attributes) do
+          {
+            serializer: Categories::CategoryGuestSerializer,
+            serialize: ['services', 'faq.answers.attachments']
+          }
+        end
+        before { allow_any_instance_of(CategoryPolicy).to receive(:attributes_for_show).and_return(policy_attributes) }
 
-        it 'load category with specified id' do
+        it 'loads category with specified id' do
           get :show, params: { id: category.id }, format: :json
 
           expect(parse_json(response.body)['id']).to eq category.id
         end
 
-        it 'has :services attribute' do
+        it 'calls :attributes_for_show method from policy for loaded category' do
+          expect_any_instance_of(CategoryPolicy).to receive(:attributes_for_show).and_call_original
+
+          get :show, params: { id: category.id }, format: :json
+        end
+
+        it 'renders data with serializer specified in policy' do
+          expect(policy_attributes[:serializer]).to receive(:new).and_call_original
+
+          get :show, params: { id: category.id }, format: :json
+        end
+
+        it 'includes attributes specified in policy' do
           get :show, params: { id: category.id }, format: :json
 
           expect(response.body).to have_json_path('services')
-        end
-
-        it 'has :attachments attribute' do
-          get :show, params: { id: category.id }, format: :json
-
           expect(response.body).to have_json_path('faq/0/answers/0/attachments')
-        end
-
-        it 'runs CategorySerializer' do
-          expect(CategorySerializer).to receive(:new).and_call_original
-
-          get :show, params: { id: category.id }, format: :json
         end
 
         it 'respond with 200 status' do

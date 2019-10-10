@@ -20,9 +20,10 @@ module Api
       end
 
       def search_by_responsible(user)
-        all.includes(:tickets).by_responsible(user)
-          .or(visible.includes(:tickets))
+        all.left_outer_joins(:tickets).by_responsible(user)
+          .or(visible.left_outer_joins(:tickets))
           .or(all.by_tickets_responsible(user))
+          .uniq
       end
     end
   end

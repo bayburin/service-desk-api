@@ -9,13 +9,17 @@ module Api
                     .includes(:correction, :service, :responsible_users, :tags, answers: :attachments)
         tickets = tickets.where(state: params[:state]) if params[:state]
 
-        render json: tickets, include: 'correction,responsible_users,tags,answers.attachments,correction.*,correction.answers.attachments'
+        render(
+          json: tickets,
+          each_serializer: Tickets::TicketResponsibleUserSerializer,
+          include: 'correction,responsible_users,tags,answers.attachments,correction.*,correction.answers.attachments'
+        )
       end
 
       def show
         ticket = Service.find(params[:service_id]).tickets.find(params[:id])
 
-        render json: ticket
+        render json: ticket, serializer: Tickets::TicketResponsibleUserSerializer
       end
 
       def create
@@ -25,7 +29,7 @@ module Api
         ticket.to_approve = false
 
         if ticket.save
-          render json: ticket
+          render json: ticket, serializer: Tickets::TicketResponsibleUserSerializer
         else
           render json: ticket.errors, status: :unprocessable_entity
         end
@@ -37,7 +41,7 @@ module Api
         decorated_ticket = TicketDecorator.new(ticket)
 
         if decorated_ticket.update_by_state(attributive_params)
-          render json: decorated_ticket
+          render json: decorated_ticket, serializer: Tickets::TicketResponsibleUserSerializer
         else
           render json: decorated_ticket.errors, status: :unprocessable_entity
         end

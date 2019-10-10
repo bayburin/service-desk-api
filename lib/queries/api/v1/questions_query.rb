@@ -6,7 +6,7 @@ module Api
       end
 
       def visible
-        questions.visible.includes(answers: :attachments).by_popularity
+        questions.visible.by_popularity
       end
 
       def most_popular

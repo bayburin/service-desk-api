@@ -4,7 +4,7 @@ module Api
       include Scope
 
       def by_tickets_responsible(user)
-        includes(:tickets).where(tickets: { responsible_users: user.responsible_users })
+        left_outer_joins(:tickets).where(tickets: { responsible_users: user.responsible_users })
       end
     end
   end

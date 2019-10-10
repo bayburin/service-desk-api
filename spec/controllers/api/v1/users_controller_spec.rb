@@ -6,13 +6,15 @@ module Api
       sign_in_user
 
       describe 'GET #info' do
-        before { get :info, format: :json }
+        it 'calls UserSerializer' do
+          expect(UserSerializer).to receive(:new).and_call_original
 
-        it 'runs UserSerializer' do
-          expect(response.body).to eq UserSerializer.new(subject.current_user).to_json
+          get :info, format: :json
         end
 
         it 'respond with 200 status' do
+          get :info, format: :json
+
           expect(response.status).to eq 200
         end
       end
@@ -24,7 +26,7 @@ module Api
           stub_request(:get, "#{ENV['SVT_URL']}/user_isses/#{subject.current_user.id_tn}/items").to_return(body: '')
         end
 
-        it 'runs Svt::SvtApi#items method to receive :items' do
+        it 'calls Svt::SvtApi#items method to receive :items' do
           expect(SvtApi).to receive(:items).with(subject.current_user).and_call_original
 
           get :owns, format: :json

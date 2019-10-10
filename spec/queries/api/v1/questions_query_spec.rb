@@ -31,7 +31,7 @@ module Api
         end
 
         it 'runs scope :by_popularity' do
-          expect(subject).to receive_message_chain(:questions, :visible, :includes, :by_popularity)
+          expect(subject).to receive_message_chain(:questions, :visible, :by_popularity)
 
           subject.visible
         end

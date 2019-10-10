@@ -26,7 +26,7 @@ module Api
         ).each { |s| s.without_associations = true }
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
-        render json: search_categories.to_a + search_services.to_a + tickets.to_a
+        render json: search_categories.as_json + search_services.as_json + serialize_tickets(tickets).as_json
       end
 
       def deep_search
@@ -40,15 +40,18 @@ module Api
         )
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
-        render json: search_categories.to_a + search_services.to_a + tickets.to_a, include: 'service,answers.attachments'
+        render(
+          json: search_categories.as_json + search_services.as_json + serialize_tickets(tickets).as_json(include: 'service,answers.attachments')
+        )
       end
 
       protected
 
       def search_categories
-        Category
-          .search(ThinkingSphinx::Query.escape(params[:search]), order: 'popularity DESC', per_page: 1000)
-          .each { |s| s.without_associations = true }
+        categories = Category
+                       .search(ThinkingSphinx::Query.escape(params[:search]), order: 'popularity DESC', per_page: 1000)
+                       .each { |s| s.without_associations = true }
+        ActiveModel::Serializer::CollectionSerializer.new(categories, serializer: Categories::CategoryGuestSerializer)
       end
 
       def search_services
@@ -59,7 +62,12 @@ module Api
           per_page: 1000,
           sql: { include: policy_hash[:include] }
         ).each { |s| s.without_associations = true }
-        ServicePolicy::SphinxScope.new(current_user, services).resolve
+        services = ServicePolicy::SphinxScope.new(current_user, services).resolve
+        ActiveModel::Serializer::CollectionSerializer.new(services, serializer: Services::ServiceGuestSerializer)
+      end
+
+      def serialize_tickets(tickets)
+        ActiveModel::Serializer::CollectionSerializer.new(tickets, serializer: Tickets::TicketGuestSerializer)
       end
     end
   end

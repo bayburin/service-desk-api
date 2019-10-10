@@ -32,8 +32,8 @@ module Api
           expect(response.body).to have_json_path('0/category')
         end
 
-        it 'runs ServiceSerializer' do
-          expect(ServiceSerializer).to receive(:new).at_least(2).and_call_original
+        it 'calls Services::ServiceGuestSerializer' do
+          expect(Services::ServiceGuestSerializer).to receive(:new).at_least(2).and_call_original
 
           get :index, format: :json
         end
@@ -49,6 +49,13 @@ module Api
         let(:services) { create_list(:service, 2, category: create(:category)) }
         let!(:service) { services.first }
         let(:params) { { category_id: service.category.id, id: service.id } }
+        let(:policy_attributes) do
+          {
+            serializer: Services::ServiceGuestSerializer,
+            include: [:tickets],
+            serialize: ['tickets']
+          }
+        end
         before { service.tickets.each { |t| t.correction = create(:ticket, state: :draft) } }
 
         it 'loads service with specified service_id' do
@@ -57,59 +64,28 @@ module Api
           expect(parse_json(response.body)['id']).to eq service.id
         end
 
-        context 'when user responsible for the service' do
-          before do
-            subject.current_user.role = create(:service_responsible)
-            subject.current_user.services << service
-          end
-
-          %w[category responsible_users].each do |attr|
-            it "has :#{attr} attribute" do
-              get :show, params: params, format: :json
-
-              expect(response.body).to have_json_path(attr)
-            end
-          end
-
-          %w[service answers/0/attachments responsible_users tags].each do |attr|
-            it "has :#{attr} attribute for :tickets attribute" do
-              get :show, params: params, format: :json
-
-              expect(response.body).to have_json_path("tickets/0/#{attr}")
-            end
-          end
-
-          %w[service answers/0/attachments responsible_users tags].each do |attr|
-            it "has :#{attr} attribute for :correction attribute" do
-              get :show, params: params, format: :json
-
-              expect(response.body).to have_json_path("tickets/0/correction/#{attr}")
-            end
-          end
-        end
-
-        context 'when user not responsible for the service ' do
-          %w[category tickets/0/answers/0/attachments].each do |attr|
-            it "has :#{attr} attribute" do
-              get :show, params: params, format: :json
-
-              expect(response.body).to have_json_path(attr)
-            end
-          end
-
-          %w[responsible_users tickets/0/correction tickets/0/tags tickets/0/responsible_users].each do |attr|
-            it "does not have :#{attr} attribute" do
-              get :show, params: params, format: :json
-
-              expect(response.body).not_to have_json_path(attr)
-            end
-          end
-        end
-
-        it 'runs ServiceSerializer' do
-          expect(ServiceSerializer).to receive(:new).and_call_original
+        it 'calls :authorize method for loaded service' do
+          expect(subject).to receive(:authorize).with(service).and_call_original
 
           get :show, params: params, format: :json
+        end
+
+        it 'calls :attributes_for_show method from policy for loaded category' do
+          expect_any_instance_of(ServicePolicy).to receive(:attributes_for_show).and_call_original
+
+          get :show, params: params, format: :json
+        end
+
+        it 'renders data with serializer specified in policy' do
+          expect(policy_attributes[:serializer]).to receive(:new).and_call_original
+
+          get :show, params: params, format: :json
+        end
+
+        it 'includes attributes specified in policy' do
+          get :show, params: params, format: :json
+
+          expect(response.body).to have_json_path('tickets')
         end
 
         it 'respond with 200 status' do

@@ -4,7 +4,8 @@ module Api
       def index
         services = policy_scope(Service.includes(:category, tickets: :answers))
 
-        render json: services, include: 'category,tickets.answers.attachments'
+        # FIXME: Тут использовать сериалайзер взависимости от роли
+        render json: services, each_serializer: Services::ServiceGuestSerializer, include: 'category,tickets.answers.attachments'
       end
 
       def show
@@ -14,6 +15,7 @@ module Api
 
         render(
           json: service,
+          serializer: policy_hash[:serializer],
           authorize_attributes: policy_hash[:include],
           include: policy_hash[:serialize]
         )
