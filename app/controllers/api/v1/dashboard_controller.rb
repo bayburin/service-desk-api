@@ -26,7 +26,9 @@ module Api
         ).each { |s| s.without_associations = true }
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
-        render json: search_categories.as_json + search_services.as_json + serialize_tickets(tickets).as_json
+        render(
+          json: search_categories.as_json + search_services.as_json + serialize_tickets(tickets, Tickets::TicketGuestSerializer).as_json
+        )
       end
 
       def deep_search
@@ -41,7 +43,8 @@ module Api
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
         render(
-          json: search_categories.as_json + search_services.as_json + serialize_tickets(tickets).as_json(include: 'service,answers.attachments')
+          json: search_categories.as_json + search_services.as_json + serialize_tickets(tickets, policy_hash.serializer)
+            .as_json(include: 'service,answers.attachments')
         )
       end
 
@@ -66,8 +69,8 @@ module Api
         ActiveModel::Serializer::CollectionSerializer.new(services, serializer: Services::ServiceGuestSerializer)
       end
 
-      def serialize_tickets(tickets)
-        ActiveModel::Serializer::CollectionSerializer.new(tickets, serializer: Tickets::TicketGuestSerializer)
+      def serialize_tickets(tickets, serializer)
+        ActiveModel::Serializer::CollectionSerializer.new(tickets, serializer: serializer)
       end
     end
   end

@@ -214,56 +214,56 @@ RSpec.describe TicketPolicy do
   #   end
   # end
 
-  permissions '.scope' do
-    let(:scope) { service.tickets }
-    let!(:hidden_ticket) { create(:ticket, is_hidden: true, service: service) }
-    let!(:draft_ticet) { create(:ticket, state: :draft, service: service) }
+  # permissions '.scope' do
+  #   let(:scope) { service.tickets }
+  #   let!(:hidden_ticket) { create(:ticket, is_hidden: true, service: service) }
+  #   let!(:draft_ticet) { create(:ticket, state: :draft, service: service) }
 
-    context 'for user with :service_responsible role' do
-      let!(:ticket) { service.tickets.first }
-      let!(:draft_ticket) { create(:ticket, is_hidden: false, state: :draft, service: service) }
-      let!(:extra_service) { create(:service) }
-      let!(:extra_ticket) { create(:ticket, service: extra_service) }
-      subject(:policy_scope) { TicketPolicy::Scope.new(responsible, scope).resolve_by(service) }
+  #   context 'for user with :service_responsible role' do
+  #     let!(:ticket) { service.tickets.first }
+  #     let!(:draft_ticket) { create(:ticket, is_hidden: false, state: :draft, service: service) }
+  #     let!(:extra_service) { create(:service) }
+  #     let!(:extra_ticket) { create(:ticket, service: extra_service) }
+  #     subject(:policy_scope) { TicketPolicy::Scope.new(responsible, scope).resolve_by(service) }
 
-      it 'loads only visible and published tickets' do
-        expect(policy_scope.length).to eq(2)
-        expect(policy_scope).to include(ticket)
-        expect(policy_scope).not_to include(hidden_ticket)
-        expect(policy_scope).not_to include(draft_ticket)
-        expect(policy_scope).not_to include(extra_ticket)
-      end
+  #     it 'loads only visible and published tickets' do
+  #       expect(policy_scope.length).to eq(2)
+  #       expect(policy_scope).to include(ticket)
+  #       expect(policy_scope).not_to include(hidden_ticket)
+  #       expect(policy_scope).not_to include(draft_ticket)
+  #       expect(policy_scope).not_to include(extra_ticket)
+  #     end
 
-      context 'and when one of ticket in service belongs to user' do
-        before { responsible.tickets << ticket }
+  #     context 'and when one of ticket in service belongs to user' do
+  #       before { responsible.tickets << ticket }
 
-        it 'loads all tickets in current service' do
-          expect(policy_scope).to include(ticket)
-          expect(policy_scope).to include(hidden_ticket)
-          expect(policy_scope).not_to include(extra_ticket)
-        end
-      end
+  #       it 'loads all tickets in current service' do
+  #         expect(policy_scope).to include(ticket)
+  #         expect(policy_scope).to include(hidden_ticket)
+  #         expect(policy_scope).not_to include(extra_ticket)
+  #       end
+  #     end
 
-      context 'and when service belongs to user' do
-        before { responsible.services << service }
+  #     context 'and when service belongs to user' do
+  #       before { responsible.services << service }
 
-        it 'loads all published tickets' do
-          policy_scope.each do |ticket|
-            # expect(ticket.is_hidden).to be_falsey
-            expect(ticket.state).to eq 'published'
-          end
-        end
-      end
-    end
+  #       it 'loads all published tickets' do
+  #         policy_scope.each do |ticket|
+  #           # expect(ticket.is_hidden).to be_falsey
+  #           expect(ticket.state).to eq 'published'
+  #         end
+  #       end
+  #     end
+  #   end
 
-    context 'for user with any another role' do
-      subject(:policy_scope) { TicketPolicy::Scope.new(operator, scope).resolve_by(service) }
+  #   context 'for user with any another role' do
+  #     subject(:policy_scope) { TicketPolicy::Scope.new(operator, scope).resolve_by(service) }
 
-      it 'loads all services' do
-        expect(policy_scope.length).to eq 2
-      end
-    end
-  end
+  #     it 'loads all services' do
+  #       expect(policy_scope.length).to eq 2
+  #     end
+  #   end
+  # end
 
   permissions '.sphinx_scope' do
     let(:scope) { service.tickets.to_a }
@@ -320,6 +320,16 @@ RSpec.describe TicketPolicy do
       end
     end
 
+    context 'for user with :operator role' do
+      subject(:policy_scope) { TicketPolicy::SphinxScope.new(operator, scope).resolve }
+
+      it 'loads all published tickets' do
+        policy_scope.each do |ticket|
+          expect(ticket.published_state?).to be_truthy
+        end
+      end
+    end
+
     context 'for user with any another role' do
       subject(:policy_scope) { TicketPolicy::SphinxScope.new(guest, scope).resolve }
 
@@ -349,7 +359,7 @@ RSpec.describe TicketPolicy do
   describe '#attributes_for_search' do
     let(:ticket) { create(:service.tickets.first) }
 
-    context 'for user with service_responsible role' do
+    context 'for user with :service_responsible role' do
       subject(:policy) { TicketPolicy.new(responsible, service).attributes_for_search }
 
       it 'sets :sql_include attribute' do
@@ -357,7 +367,7 @@ RSpec.describe TicketPolicy do
       end
     end
 
-    context 'for user with guest role' do
+    context 'for user with any another role' do
       subject(:policy) { TicketPolicy.new(guest, service).attributes_for_search }
 
       it 'sets :sql_include attribute' do
@@ -369,16 +379,36 @@ RSpec.describe TicketPolicy do
   describe '#attributes_for_deep_search' do
     let(:ticket) { create(:service.tickets.first) }
 
-    context 'for user with service_responsible role' do
+    context 'for user with :service_responsible role' do
       subject(:policy) { TicketPolicy.new(responsible, service).attributes_for_deep_search }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Tickets::TicketBaseSerializer
+      end
 
       it 'sets :sql_include attribute' do
         expect(policy.sql_include).to eq [:responsible_users, service: :responsible_users, answers: :attachments]
       end
     end
 
-    context 'for user with guest role' do
+    context 'for user with :operator role' do
+      subject(:policy) { TicketPolicy.new(operator, service).attributes_for_deep_search }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Tickets::TicketResponsibleUserSerializer
+      end
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:service, answers: :attachments]
+      end
+    end
+
+    context 'for user with any another role' do
       subject(:policy) { TicketPolicy.new(guest, service).attributes_for_deep_search }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Tickets::TicketGuestSerializer
+      end
 
       it 'sets :sql_include attribute' do
         expect(policy.sql_include).to eq [:service, answers: :attachments]

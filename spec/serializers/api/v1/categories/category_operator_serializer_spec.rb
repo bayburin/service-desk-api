@@ -3,13 +3,13 @@ require 'rails_helper'
 module Api
   module V1
     module Categories
-      RSpec.describe CategoryResponsibleUserSerializer, type: :model do
-        let(:current_user) { create(:service_responsible_user) }
+      RSpec.describe CategoryOperatorSerializer, type: :model do
+        let(:current_user) { create(:operator_user) }
         let(:category) { create(:category) }
-        subject { CategoryResponsibleUserSerializer.new(category, scope: current_user, scope_name: :current_user) }
+        subject { CategoryOperatorSerializer.new(category, scope: current_user, scope_name: :current_user) }
 
         it 'inherits from CategoryBaseSerializer class' do
-          expect(CategoryResponsibleUserSerializer).to be < CategoryBaseSerializer
+          expect(CategoryOperatorSerializer).to be < CategoryBaseSerializer
         end
 
         describe '#services' do
@@ -23,8 +23,8 @@ module Api
         describe '#faq' do
           before { create_list(:service, 2, category: category) }
 
-          it 'calls Tickets::TicketSerializer for :faq association' do
-            expect(Tickets::TicketSerializer).to receive(:new).exactly(5).times.and_call_original
+          it 'calls Tickets::TicketResponsibleUserSerializer for :faq association' do
+            expect(Tickets::TicketResponsibleUserSerializer).to receive(:new).exactly(5).times.and_call_original
 
             subject.to_json
           end

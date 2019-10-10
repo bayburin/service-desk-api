@@ -42,6 +42,14 @@ RSpec.describe ServicePolicy do
       end
     end
 
+    context 'for user with :operator role' do
+      let(:service) { create(:service, is_hidden: true) }
+
+      it 'grants access' do
+        expect(subject).to permit(operator, service)
+      end
+    end
+
     context 'for user with another role' do
       context 'and when service is hidden' do
         let!(:service) { create(:service, is_hidden: true) }
@@ -106,6 +114,14 @@ RSpec.describe ServicePolicy do
       include_examples 'for #service_scope specs with :service_responsible role'
     end
 
+    context 'for user with :operator role' do
+      subject(:policy_scope) { ServicePolicy::Scope.new(operator, scope).resolve }
+
+      it 'loads all services' do
+        expect(policy_scope.count).to eq Service.count
+      end
+    end
+
     context 'for user with any another role' do
       subject(:policy_scope) { ServicePolicy::Scope.new(guest, scope).resolve }
 
@@ -128,6 +144,14 @@ RSpec.describe ServicePolicy do
       include_examples 'for #service_scope specs with :service_responsible role'
     end
 
+    context 'for user with :operator role' do
+      subject(:policy_scope) { ServicePolicy::SphinxScope.new(operator, scope).resolve }
+
+      it 'loads all services' do
+        expect(policy_scope.count).to eq Service.count
+      end
+    end
+
     context 'for user with any another role' do
       subject(:policy_scope) { ServicePolicy::SphinxScope.new(guest, scope).resolve }
 
@@ -142,7 +166,7 @@ RSpec.describe ServicePolicy do
   describe '#attributes_for_show' do
     let(:service) { create(:service) }
 
-    context 'for user with service_responsible role' do
+    context 'for user with :service_responsible role' do
       subject(:policy) { ServicePolicy.new(responsible, service).attributes_for_show }
 
       context 'and when any service belongs to user' do
@@ -172,9 +196,27 @@ RSpec.describe ServicePolicy do
       end
     end
 
-    context 'for user with guest role' do
+    context 'for user with :operator role' do
+      subject(:policy) { ServicePolicy.new(operator, service).attributes_for_show }
+
       it 'sets :serializer attribute' do
-        expect(subject.new(guest, service).attributes_for_show.serializer).to eq Api::V1::Services::ServiceGuestSerializer
+        expect(policy.serializer).to eq Api::V1::Services::ServiceResponsibleUserSerializer
+      end
+
+      it 'sets :serialize attribute' do
+        expect(policy.serialize).to eq ['category', 'tickets.answers.attachments']
+      end
+    end
+
+    context 'for user with any another role' do
+      subject(:policy) { ServicePolicy.new(guest, service).attributes_for_show }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Services::ServiceGuestSerializer
+      end
+
+      it 'sets :serialize attribute' do
+        expect(policy.serialize).to eq ['category', 'tickets.answers.attachments']
       end
     end
   end
@@ -182,7 +224,7 @@ RSpec.describe ServicePolicy do
   describe '#attributes_for_search' do
     let(:service) { create(:service) }
 
-    context 'for user with service_responsible role' do
+    context 'for user with :service_responsible role' do
       subject(:policy) { ServicePolicy.new(responsible, service).attributes_for_search }
 
       it 'sets :sql_include attribute' do
@@ -190,7 +232,7 @@ RSpec.describe ServicePolicy do
       end
     end
 
-    context 'for user with guest role' do
+    context 'for user with any another role' do
       subject(:policy) { ServicePolicy.new(guest, service).attributes_for_search }
 
       it 'does not set any attribute' do

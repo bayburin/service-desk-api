@@ -27,36 +27,39 @@ class TicketPolicy < ApplicationPolicy
   #   end
   # end
 
-  class Scope < Scope
-    # метод вызывается из сервиса
-    def resolve_by(service)
-      if user.role?(:service_responsible) && scope_for_service_responsible?(service)
-        Api::V1::TicketsQuery.new(scope).all.published_state
-      else
-        Api::V1::TicketsQuery.new(scope).visible.published_state
-      end
-    end
+  # class Scope < Scope
+  #   # метод вызывается из сервиса
+  #   def resolve_by(service)
+  #     if user.role?(:service_responsible) && scope_for_service_responsible?(service)
+  #       Api::V1::TicketsQuery.new(scope).all.published_state
+  #     else
+  #       Api::V1::TicketsQuery.new(scope).visible.published_state
+  #     end
+  #   end
 
-    protected
+  #   protected
 
-    def scope_for_service_responsible?(service)
-      service.belongs_to?(user) || service.belongs_by_tickets_to?(user)
-    end
-  end
+  #   def scope_for_service_responsible?(service)
+  #     service.belongs_to?(user) || service.belongs_by_tickets_to?(user)
+  #   end
+  # end
 
   class SphinxScope < Scope
     def resolve
       if user.role? :service_responsible
-        scope.select do |ticket|
-          ticket.published_state? &&
-            (ticket_not_hidden?(ticket) || ticket_belongs_to_user?(ticket) || ticket_in_allowed_pool?(ticket))
-        end
+        scope.select { |ticket| allow_to_show_to_responsible?(ticket) }
+      elsif user.role? :operator
+        scope.select(&:published_state?)
       else
         scope.select { |ticket| ticket_not_hidden?(ticket) && ticket.published_state? }
       end
     end
 
     protected
+
+    def allow_to_show_to_responsible?(ticket)
+      ticket.published_state? && (ticket_not_hidden?(ticket) || ticket_belongs_to_user?(ticket) || ticket_in_allowed_pool?(ticket))
+    end
 
     def ticket_belongs_to_user?(ticket)
       ticket.belongs_to?(user) || ticket.service.belongs_to?(user)
@@ -80,10 +83,21 @@ class TicketPolicy < ApplicationPolicy
   end
 
   def attributes_for_deep_search
-    if user.role?(:service_responsible)
-      PolicyAttributes.new(sql_include: [:responsible_users, service: :responsible_users, answers: :attachments])
+    if user.role? :service_responsible
+      PolicyAttributes.new(
+        serializer: Api::V1::Tickets::TicketBaseSerializer,
+        sql_include: [:responsible_users, service: :responsible_users, answers: :attachments]
+      )
+    elsif user.role? :operator
+      PolicyAttributes.new(
+        serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
+        sql_include: [:service, answers: :attachments]
+      )
     else
-      PolicyAttributes.new(sql_include: [:service, answers: :attachments])
+      PolicyAttributes.new(
+        serializer: Api::V1::Tickets::TicketGuestSerializer,
+        sql_include: [:service, answers: :attachments]
+      )
     end
   end
 

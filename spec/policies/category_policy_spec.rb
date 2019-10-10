@@ -12,7 +12,7 @@ RSpec.describe CategoryPolicy do
       expect(subject.new(guest, category).attributes_for_show).to be_a PolicyAttributes
     end
 
-    context 'for user with service_responsible role' do
+    context 'for user with :service_responsible role' do
       subject(:policy) { CategoryPolicy.new(responsible, category).attributes_for_show }
 
       context 'and when any service belongs to user' do
@@ -30,7 +30,15 @@ RSpec.describe CategoryPolicy do
       end
     end
 
-    context 'for user with guest role' do
+    context 'for user with :operator role' do
+      subject(:policy) { CategoryPolicy.new(operator, category).attributes_for_show }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Categories::CategoryOperatorSerializer
+      end
+    end
+
+    context 'for user with any another role' do
       subject(:policy) { CategoryPolicy.new(guest, category).attributes_for_show }
 
       it 'sets :serializer attribute' do
