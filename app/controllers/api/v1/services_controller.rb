@@ -15,9 +15,9 @@ module Api
 
         render(
           json: service,
-          serializer: policy_hash[:serializer],
-          authorize_attributes: policy_hash[:include],
-          include: policy_hash[:serialize]
+          serializer: policy_hash.serializer,
+          authorize_attributes: policy_hash.sql_include,
+          include: policy_hash.serialize
         )
       end
     end

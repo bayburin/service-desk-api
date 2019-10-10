@@ -9,7 +9,7 @@ module Api
         category = Category.find(params[:id])
         policy_hash = policy(category).attributes_for_show
 
-        render json: category, serializer: policy_hash[:serializer], include: policy_hash[:serialize]
+        render json: category, serializer: policy_hash.serializer, include: 'services,faq.answers.attachments'
       end
     end
   end

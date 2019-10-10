@@ -37,31 +37,24 @@ class ServicePolicy < ApplicationPolicy
 
   def attributes_for_show
     if user.role?(:service_responsible) && belongs_to_user?
-      {
+      PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
-        include: [:correction, :responsible_users, :tags, answers: :attachments],
+        sql_include: [:correction, :responsible_users, :tags, answers: :attachments],
         serialize: ['*', 'tickets.*', 'tickets.answers.attachments', 'tickets.correction.*', 'tickets.correction.answers.attachments']
-      }
+      )
     else
-      {
+      PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceGuestSerializer,
-        include: [],
         serialize: ['category', 'tickets.answers.attachments']
-      }
+      )
     end
   end
 
   def attributes_for_search
     if user.role?(:service_responsible)
-      {
-        include: [:responsible_users],
-        serialize: []
-      }
+      PolicyAttributes.new(sql_include: [:responsible_users])
     else
-      {
-        include: [],
-        serialize: []
-      }
+      PolicyAttributes.new
     end
   end
 

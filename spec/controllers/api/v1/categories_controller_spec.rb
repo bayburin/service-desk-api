@@ -38,10 +38,10 @@ module Api
         let(:service) { create(:service, category: category) }
         let!(:tickets) { create_list(:ticket, 3, service: service) }
         let(:policy_attributes) do
-          {
+          PolicyAttributes.new(
             serializer: Categories::CategoryGuestSerializer,
             serialize: ['services', 'faq.answers.attachments']
-          }
+          )
         end
         before { allow_any_instance_of(CategoryPolicy).to receive(:attributes_for_show).and_return(policy_attributes) }
 
@@ -58,7 +58,7 @@ module Api
         end
 
         it 'renders data with serializer specified in policy' do
-          expect(policy_attributes[:serializer]).to receive(:new).and_call_original
+          expect(policy_attributes.serializer).to receive(:new).and_call_original
 
           get :show, params: { id: category.id }, format: :json
         end

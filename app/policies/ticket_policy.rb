@@ -73,29 +73,17 @@ class TicketPolicy < ApplicationPolicy
 
   def attributes_for_search
     if user.role?(:service_responsible)
-      {
-        include: [:responsible_users, service: :responsible_users],
-        serialize: []
-      }
+      PolicyAttributes.new(sql_include: [:responsible_users, service: :responsible_users])
     else
-      {
-        include: [:service],
-        serialize: []
-      }
+      PolicyAttributes.new(sql_include: [:service])
     end
   end
 
   def attributes_for_deep_search
     if user.role?(:service_responsible)
-      {
-        include: [:responsible_users, service: :responsible_users, answers: :attachments],
-        serialize: []
-      }
+      PolicyAttributes.new(sql_include: [:responsible_users, service: :responsible_users, answers: :attachments])
     else
-      {
-        include: [:service, answers: :attachments],
-        serialize: []
-      }
+      PolicyAttributes.new(sql_include: [:service, answers: :attachments])
     end
   end
 

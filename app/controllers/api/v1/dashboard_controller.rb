@@ -22,7 +22,7 @@ module Api
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: policy_hash[:include] }
+          sql: { include: policy_hash.sql_include }
         ).each { |s| s.without_associations = true }
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
@@ -36,7 +36,7 @@ module Api
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: policy_hash[:include] }
+          sql: { include: policy_hash.sql_include }
         )
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
@@ -60,7 +60,7 @@ module Api
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: policy_hash[:include] }
+          sql: { include: policy_hash.sql_include }
         ).each { |s| s.without_associations = true }
         services = ServicePolicy::SphinxScope.new(current_user, services).resolve
         ActiveModel::Serializer::CollectionSerializer.new(services, serializer: Services::ServiceGuestSerializer)

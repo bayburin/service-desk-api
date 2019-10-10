@@ -14,7 +14,7 @@ module Api
         end
 
         def include_authorize_attributes_for(tickets_scope)
-          includes_options = instance_options[:authorize_attributes] || {}
+          includes_options = instance_options[:authorize_attributes] || []
           tickets_scope = tickets_scope.includes(includes_options) unless object.tickets.any?(&:without_associations)
 
           tickets_scope

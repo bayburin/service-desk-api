@@ -139,17 +139,65 @@ RSpec.describe ServicePolicy do
     end
   end
 
-  permissions :attributes_for_show do
-    let(:service) { create(:service, is_hidden: true) }
+  describe '#attributes_for_show' do
+    let(:service) { create(:service) }
 
-    it 'returns object with :include and :serialize keys' do
-      expect(subject.new(responsible, service).attributes_for_show.keys).to include(:include, :serialize)
+    context 'for user with service_responsible role' do
+      subject(:policy) { ServicePolicy.new(responsible, service).attributes_for_show }
+
+      context 'and when any service belongs to user' do
+        before { responsible.services << service }
+
+        it 'sets :serializer attribute' do
+          expect(policy.serializer).to eq Api::V1::Services::ServiceResponsibleUserSerializer
+        end
+
+        it 'sets :sql_include attribute' do
+          expect(policy.sql_include).to eq [:correction, :responsible_users, :tags, answers: :attachments]
+        end
+
+        it 'sets :serialize attribute' do
+          expect(policy.serialize).to eq ['*', 'tickets.*', 'tickets.answers.attachments', 'tickets.correction.*', 'tickets.correction.answers.attachments']
+        end
+      end
+
+      context 'and when no one service belongs to user' do
+        it 'sets :serializer attribute' do
+          expect(policy.serializer).to eq Api::V1::Services::ServiceGuestSerializer
+        end
+
+        it 'sets :serialize attribute' do
+          expect(policy.serialize).to eq ['category', 'tickets.answers.attachments']
+        end
+      end
+    end
+
+    context 'for user with guest role' do
+      it 'sets :serializer attribute' do
+        expect(subject.new(guest, service).attributes_for_show.serializer).to eq Api::V1::Services::ServiceGuestSerializer
+      end
     end
   end
 
-  permissions :attributes_for_search do
-    it 'returns object with :include and :serialize keys' do
-      expect(subject.new(responsible, Service).attributes_for_search.keys).to include(:include, :serialize)
+  describe '#attributes_for_search' do
+    let(:service) { create(:service) }
+
+    context 'for user with service_responsible role' do
+      subject(:policy) { ServicePolicy.new(responsible, service).attributes_for_search }
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:responsible_users]
+      end
+    end
+
+    context 'for user with guest role' do
+      subject(:policy) { ServicePolicy.new(guest, service).attributes_for_search }
+
+      it 'does not set any attribute' do
+        expect(policy.serializer).to be_nil
+        expect(policy.sql_include).to be_empty
+        expect(policy.serialize).to be_empty
+      end
     end
   end
 end

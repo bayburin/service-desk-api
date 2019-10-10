@@ -1,17 +1,9 @@
 class CategoryPolicy < ApplicationPolicy
   def attributes_for_show
     if user.role?(:service_responsible) && belongs_to_user_by_service?
-      {
-        serializer: Api::V1::Categories::CategoryResponsibleUserSerializer,
-        include: [],
-        serialize: ['services', 'faq.answers.attachments']
-      }
+      PolicyAttributes.new(serializer: Api::V1::Categories::CategoryResponsibleUserSerializer)
     else
-      {
-        serializer: Api::V1::Categories::CategoryGuestSerializer,
-        include: [],
-        serialize: ['services', 'faq.answers.attachments']
-      }
+      PolicyAttributes.new(serializer: Api::V1::Categories::CategoryGuestSerializer)
     end
   end
 

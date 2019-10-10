@@ -346,15 +346,43 @@ RSpec.describe TicketPolicy do
     end
   end
 
-  permissions :attributes_for_search do
-    it 'returns object with :include and :serialize keys' do
-      expect(subject.new(responsible, Ticket).attributes_for_search.keys).to include(:include, :serialize)
+  describe '#attributes_for_search' do
+    let(:ticket) { create(:service.tickets.first) }
+
+    context 'for user with service_responsible role' do
+      subject(:policy) { TicketPolicy.new(responsible, service).attributes_for_search }
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:responsible_users, service: :responsible_users]
+      end
+    end
+
+    context 'for user with guest role' do
+      subject(:policy) { TicketPolicy.new(guest, service).attributes_for_search }
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:service]
+      end
     end
   end
 
-  permissions :attributes_for_deep_search do
-    it 'returns object with :include and :serialize keys' do
-      expect(subject.new(responsible, Ticket).attributes_for_search.keys).to include(:include, :serialize)
+  describe '#attributes_for_deep_search' do
+    let(:ticket) { create(:service.tickets.first) }
+
+    context 'for user with service_responsible role' do
+      subject(:policy) { TicketPolicy.new(responsible, service).attributes_for_deep_search }
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:responsible_users, service: :responsible_users, answers: :attachments]
+      end
+    end
+
+    context 'for user with guest role' do
+      subject(:policy) { TicketPolicy.new(guest, service).attributes_for_deep_search }
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:service, answers: :attachments]
+      end
     end
   end
 end
