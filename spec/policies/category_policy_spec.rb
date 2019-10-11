@@ -5,6 +5,7 @@ RSpec.describe CategoryPolicy do
   let(:guest) { create(:guest_user) }
   let(:responsible) { create(:service_responsible_user) }
   let(:operator) { create(:operator_user) }
+  let(:content_manager) { create(:content_manager_user) }
   let(:category) { create(:category) }
 
   describe '#attributes_for_show' do
@@ -32,6 +33,14 @@ RSpec.describe CategoryPolicy do
 
     context 'for user with :operator role' do
       subject(:policy) { CategoryPolicy.new(operator, category).attributes_for_show }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Categories::CategoryOperatorSerializer
+      end
+    end
+
+    context 'for user with :content_manager role' do
+      subject(:policy) { CategoryPolicy.new(content_manager, category).attributes_for_show }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Categories::CategoryOperatorSerializer

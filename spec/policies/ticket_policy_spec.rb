@@ -5,6 +5,7 @@ RSpec.describe TicketPolicy do
   let(:guest) { create(:guest_user) }
   let(:responsible) { create(:service_responsible_user) }
   let(:operator) { create(:operator_user) }
+  let(:content_manager) { create(:content_manager_user) }
   let(:service) { create(:service) }
 
   permissions :update? do
@@ -36,7 +37,13 @@ RSpec.describe TicketPolicy do
       end
     end
 
-    context 'for user with :another role' do
+    context 'for user with :content_manager role' do
+      it 'grants access' do
+        expect(subject).to permit(content_manager, ticket)
+      end
+    end
+
+    context 'for user with another role' do
       it 'denies access' do
         expect(subject).not_to permit(guest, ticket)
       end
@@ -322,6 +329,16 @@ RSpec.describe TicketPolicy do
 
     context 'for user with :operator role' do
       subject(:policy_scope) { TicketPolicy::SphinxScope.new(operator, scope).resolve }
+
+      it 'loads all published tickets' do
+        policy_scope.each do |ticket|
+          expect(ticket.published_state?).to be_truthy
+        end
+      end
+    end
+
+    context 'for user with :content_manager role' do
+      subject(:policy_scope) { TicketPolicy::SphinxScope.new(content_manager, scope).resolve }
 
       it 'loads all published tickets' do
         policy_scope.each do |ticket|

@@ -3,7 +3,7 @@ class TicketPolicy < ApplicationPolicy
     if user.role? :service_responsible
       record_belongs_to_user?
     else
-      false
+      user.role? :content_manager
     end
   end
 
@@ -48,7 +48,7 @@ class TicketPolicy < ApplicationPolicy
     def resolve
       if user.role? :service_responsible
         scope.select { |ticket| allow_to_show_to_responsible?(ticket) }
-      elsif user.role? :operator
+      elsif user.role?(:operator) || user.role?(:content_manager)
         scope.select(&:published_state?)
       else
         scope.select { |ticket| ticket_not_hidden?(ticket) && ticket.published_state? }
@@ -88,7 +88,7 @@ class TicketPolicy < ApplicationPolicy
         serializer: Api::V1::Tickets::TicketBaseSerializer,
         sql_include: [:responsible_users, service: :responsible_users, answers: :attachments]
       )
-    elsif user.role? :operator
+    elsif user.role?(:operator) || user.role?(:content_manager)
       PolicyAttributes.new(
         serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
         sql_include: [:service, answers: :attachments]

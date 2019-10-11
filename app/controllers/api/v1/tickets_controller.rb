@@ -1,7 +1,7 @@
 module Api
   module V1
     class TicketsController < BaseController
-      before_action :check_access, except: %i[raise_rating]
+      before_action :check_access, except: %i[raise_rating update]
 
       def index
         tickets = Api::V1::QuestionsQuery.new

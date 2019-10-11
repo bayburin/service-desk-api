@@ -5,6 +5,7 @@ RSpec.describe ServicePolicy do
   let(:guest) { create(:guest_user) }
   let(:responsible) { create(:service_responsible_user) }
   let(:operator) { create(:operator_user) }
+  let(:content_manager) { create(:content_manager_user) }
 
   permissions :show? do
     context 'for user with :service_responsible role' do
@@ -47,6 +48,14 @@ RSpec.describe ServicePolicy do
 
       it 'grants access' do
         expect(subject).to permit(operator, service)
+      end
+    end
+
+    context 'for user with :content_manager role' do
+      let(:service) { create(:service, is_hidden: true) }
+
+      it 'grants access' do
+        expect(subject).to permit(content_manager, service)
       end
     end
 
@@ -96,6 +105,12 @@ RSpec.describe ServicePolicy do
       end
     end
 
+    context 'for user with :content_manager role' do
+      it 'grants access' do
+        expect(subject).to permit(content_manager, service)
+      end
+    end
+
     context 'for user with another role' do
       it 'denies access' do
         expect(subject).not_to permit(guest, service)
@@ -116,6 +131,14 @@ RSpec.describe ServicePolicy do
 
     context 'for user with :operator role' do
       subject(:policy_scope) { ServicePolicy::Scope.new(operator, scope).resolve }
+
+      it 'loads all services' do
+        expect(policy_scope.count).to eq Service.count
+      end
+    end
+
+    context 'for user with :content_manager role' do
+      subject(:policy_scope) { ServicePolicy::Scope.new(content_manager, scope).resolve }
 
       it 'loads all services' do
         expect(policy_scope.count).to eq Service.count
@@ -146,6 +169,14 @@ RSpec.describe ServicePolicy do
 
     context 'for user with :operator role' do
       subject(:policy_scope) { ServicePolicy::SphinxScope.new(operator, scope).resolve }
+
+      it 'loads all services' do
+        expect(policy_scope.count).to eq Service.count
+      end
+    end
+
+    context 'for user with :content_manager role' do
+      subject(:policy_scope) { ServicePolicy::SphinxScope.new(content_manager, scope).resolve }
 
       it 'loads all services' do
         expect(policy_scope.count).to eq Service.count
@@ -198,6 +229,18 @@ RSpec.describe ServicePolicy do
 
     context 'for user with :operator role' do
       subject(:policy) { ServicePolicy.new(operator, service).attributes_for_show }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Services::ServiceResponsibleUserSerializer
+      end
+
+      it 'sets :serialize attribute' do
+        expect(policy.serialize).to eq ['category', 'tickets.answers.attachments']
+      end
+    end
+
+    context 'for user with :content_manager role' do
+      subject(:policy) { ServicePolicy.new(content_manager, service).attributes_for_show }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Services::ServiceResponsibleUserSerializer

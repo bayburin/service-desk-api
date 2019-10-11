@@ -2,7 +2,7 @@ class ServicePolicy < ApplicationPolicy
   def show?
     if user.role? :service_responsible
       !record.is_hidden || belongs_to_user?
-    elsif user.role? :operator
+    elsif user.role?(:operator) || user.role?(:content_manager)
       true
     else
       !record.is_hidden
@@ -13,7 +13,7 @@ class ServicePolicy < ApplicationPolicy
     if user.role? :service_responsible
       belongs_to_user?
     else
-      false
+      user.role? :content_manager
     end
   end
 
@@ -21,7 +21,7 @@ class ServicePolicy < ApplicationPolicy
     def resolve
       if user.role? :service_responsible
         Api::V1::ServicesQuery.new(scope).search_by_responsible(user)
-      elsif user.role? :operator
+      elsif user.role?(:operator) || user.role?(:content_manager)
         Api::V1::ServicesQuery.new(scope).all
       else
         Api::V1::ServicesQuery.new(scope).visible
@@ -33,7 +33,7 @@ class ServicePolicy < ApplicationPolicy
     def resolve
       if user.role? :service_responsible
         scope.select { |service| !service.is_hidden || service.belongs_to?(user) || service.belongs_by_tickets_to?(user) }
-      elsif user.role? :operator
+      elsif user.role?(:operator) || user.role?(:content_manager)
         scope
       else
         scope.reject(&:is_hidden)
@@ -48,7 +48,7 @@ class ServicePolicy < ApplicationPolicy
         sql_include: [:correction, :responsible_users, :tags, answers: :attachments],
         serialize: ['*', 'tickets.*', 'tickets.answers.attachments', 'tickets.correction.*', 'tickets.correction.answers.attachments']
       )
-    elsif user.role? :operator
+    elsif user.role?(:operator) || user.role?(:content_manager)
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
         serialize: ['category', 'tickets.answers.attachments']
