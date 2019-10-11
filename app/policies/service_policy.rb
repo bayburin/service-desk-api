@@ -41,6 +41,25 @@ class ServicePolicy < ApplicationPolicy
     end
   end
 
+  def attributes_for_index
+    if user.role? :service_responsible
+      PolicyAttributes.new(
+        serializer: Api::V1::Services::ServiceBaseSerializer,
+        sql_include: [:category, :responsible_users, tickets: %i[answers responsible_users]]
+      )
+    elsif user.role?(:operator) || user.role?(:content_manager)
+      PolicyAttributes.new(
+        serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
+        sql_include: [:category, tickets: :answers]
+      )
+    else
+      PolicyAttributes.new(
+        serializer: Api::V1::Services::ServiceGuestSerializer,
+        sql_include: [:category, tickets: :answers]
+      )
+    end
+  end
+
   def attributes_for_show
     if user.role?(:service_responsible) && belongs_to_user?
       PolicyAttributes.new(

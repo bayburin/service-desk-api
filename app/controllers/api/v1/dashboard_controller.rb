@@ -17,12 +17,12 @@ module Api
 
       def search
         ahoy.track 'Search', params[:search]
-        policy_hash = policy(Ticket).attributes_for_search
+        policy_attributes = policy(Ticket).attributes_for_search
         tickets = Ticket.search(
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: policy_hash.sql_include }
+          sql: { include: policy_attributes.sql_include }
         ).each { |s| s.without_associations = true }
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
@@ -33,17 +33,17 @@ module Api
 
       def deep_search
         ahoy.track 'Deep search', params[:search]
-        policy_hash = policy(Ticket).attributes_for_deep_search
+        policy_attributes = policy(Ticket).attributes_for_deep_search
         tickets = Ticket.search(
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: policy_hash.sql_include }
+          sql: { include: policy_attributes.sql_include }
         )
         tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
 
         render(
-          json: search_categories.as_json + search_services.as_json + serialize_tickets(tickets, policy_hash.serializer)
+          json: search_categories.as_json + search_services.as_json + serialize_tickets(tickets, policy_attributes.serializer)
             .as_json(include: 'service,answers.attachments')
         )
       end
@@ -58,12 +58,12 @@ module Api
       end
 
       def search_services
-        policy_hash = policy(Service).attributes_for_search
+        policy_attributes = policy(Service).attributes_for_search
         services = Service.search(
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: policy_hash.sql_include }
+          sql: { include: policy_attributes.sql_include }
         ).each { |s| s.without_associations = true }
         services = ServicePolicy::SphinxScope.new(current_user, services).resolve
         ActiveModel::Serializer::CollectionSerializer.new(services, serializer: Services::ServiceGuestSerializer)

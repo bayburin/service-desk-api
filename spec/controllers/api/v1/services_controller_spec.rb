@@ -6,6 +6,7 @@ module Api
       sign_in_user
 
       describe 'GET #index' do
+        let(:policy_attributes) { PolicyAttributes.new(serializer: Services::ServiceGuestSerializer) }
         before { create_list(:service, 2) }
 
         it 'loads all services' do
@@ -32,8 +33,8 @@ module Api
           expect(response.body).to have_json_path('0/category')
         end
 
-        it 'calls Services::ServiceGuestSerializer' do
-          expect(Services::ServiceGuestSerializer).to receive(:new).at_least(2).and_call_original
+        it 'calls serializer specified in policy' do
+          expect(policy_attributes.serializer).to receive(:new).at_least(2).and_call_original
 
           get :index, format: :json
         end
@@ -50,11 +51,11 @@ module Api
         let!(:service) { services.first }
         let(:params) { { category_id: service.category.id, id: service.id } }
         let(:policy_attributes) do
-          {
+          PolicyAttributes.new(
             serializer: Services::ServiceGuestSerializer,
             include: [:tickets],
             serialize: ['tickets']
-          }
+          )
         end
         before { service.tickets.each { |t| t.correction = create(:ticket, state: :draft) } }
 
@@ -77,7 +78,7 @@ module Api
         end
 
         it 'renders data with serializer specified in policy' do
-          expect(policy_attributes[:serializer]).to receive(:new).and_call_original
+          expect(policy_attributes.serializer).to receive(:new).and_call_original
 
           get :show, params: params, format: :json
         end

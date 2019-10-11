@@ -27,22 +27,22 @@ class TicketPolicy < ApplicationPolicy
   #   end
   # end
 
-  # class Scope < Scope
-  #   # метод вызывается из сервиса
-  #   def resolve_by(service)
-  #     if user.role?(:service_responsible) && scope_for_service_responsible?(service)
-  #       Api::V1::TicketsQuery.new(scope).all.published_state
-  #     else
-  #       Api::V1::TicketsQuery.new(scope).visible.published_state
-  #     end
-  #   end
+  class Scope < Scope
+    # метод вызывается из сервиса
+    def resolve_by(service)
+      if (user.role?(:service_responsible) && scope_for_service_responsible?(service)) || user.role?(:operator) || user.role?(:content_manager)
+        Api::V1::TicketsQuery.new(scope).all.published_state
+      else
+        Api::V1::TicketsQuery.new(scope).visible.published_state
+      end
+    end
 
-  #   protected
+    protected
 
-  #   def scope_for_service_responsible?(service)
-  #     service.belongs_to?(user) || service.belongs_by_tickets_to?(user)
-  #   end
-  # end
+    def scope_for_service_responsible?(service)
+      service.belongs_to?(user) || service.belongs_by_tickets_to?(user)
+    end
+  end
 
   class SphinxScope < Scope
     def resolve

@@ -194,6 +194,58 @@ RSpec.describe ServicePolicy do
     end
   end
 
+  describe '#attributes_for_index' do
+    let(:service) { create(:service) }
+
+    context 'for user with :service_responsible role' do
+      subject(:policy) { ServicePolicy.new(responsible, service).attributes_for_index }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Services::ServiceBaseSerializer
+      end
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:category, :responsible_users, tickets: %i[answers responsible_users]]
+      end
+    end
+
+    context 'for user with :operator role' do
+      subject(:policy) { ServicePolicy.new(operator, service).attributes_for_index }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Services::ServiceResponsibleUserSerializer
+      end
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:category, tickets: :answers]
+      end
+    end
+
+    context 'for user with :content_manager role' do
+      subject(:policy) { ServicePolicy.new(content_manager, service).attributes_for_index }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Services::ServiceResponsibleUserSerializer
+      end
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:category, tickets: :answers]
+      end
+    end
+
+    context 'for user with any another role' do
+      subject(:policy) { ServicePolicy.new(content_manager, service).attributes_for_index }
+
+      it 'sets :serializer attribute' do
+        expect(policy.serializer).to eq Api::V1::Services::ServiceResponsibleUserSerializer
+      end
+
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:category, tickets: :answers]
+      end
+    end
+  end
+
   describe '#attributes_for_show' do
     let(:service) { create(:service) }
 
