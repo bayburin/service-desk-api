@@ -14,7 +14,9 @@ module Api
       end
 
       def unread
-        all.order(id: :desc).left_outer_joins(:readers).where(notification_readers: { tn: nil })
+        all.order(id: :desc).left_outer_joins(:readers)
+          .where("notification_readers.notification_id NOT IN (SELECT notification_id from notification_readers WHERE tn = #{current_user.tn}) OR notification_readers.notification_id IS NULL")
+          .uniq
       end
 
       def last_notifications(limit = nil)

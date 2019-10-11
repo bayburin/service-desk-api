@@ -3,9 +3,9 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe NotificationsQuery, type: :model do
-      let(:user) { build(:user) }
+      let(:user) { build(:user, id: 1) }
       let!(:user_notifications) { create_list(:notification, 5, tn: user.tn) }
-      let!(:broadcast_notifications) { create_list(:notification, 3, event_type: :broadcast) }
+      let!(:broadcast_notifications) { create_list(:notification, 3, event_type: :broadcast, tn: nil) }
       let!(:other) { create_list(:notification, 5) }
       let(:notification_count) { (user_notifications + broadcast_notifications).count }
       subject { NotificationsQuery.new(user) }
@@ -42,7 +42,7 @@ module Api
       describe '#unread' do
         let!(:reader) { create(:notification_reader, user: user, tn: user.tn, notification: user_notifications.first) }
 
-        it 'returns all Notification records witch does not have associated NotificationReader records' do
+        it 'returns all notifications witch does not have associated NotificationReader records' do
           expect(subject.unread.count).to eq notification_count - 1
         end
 
@@ -53,6 +53,14 @@ module Api
         it 'does not have any associated readers' do
           subject.unread.each do |event|
             expect(event.readers).to be_empty
+          end
+        end
+
+        context 'when someone read broadcast message' do
+          before { broadcast_notifications.first.readers.create!(tn: -123_123, user_id: user.id) }
+
+          it 'returns all notifications' do
+            expect(subject.unread.count).to eq notification_count - 1
           end
         end
       end
