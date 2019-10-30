@@ -75,28 +75,33 @@ class TicketPolicy < ApplicationPolicy
   end
 
   def attributes_for_search
-    if user.role?(:service_responsible)
-      PolicyAttributes.new(sql_include: [:responsible_users, service: :responsible_users])
-    else
-      PolicyAttributes.new(sql_include: [:service])
-    end
-  end
-
-  def attributes_for_deep_search
-    if user.role? :service_responsible
-      PolicyAttributes.new(
-        serializer: Api::V1::Tickets::TicketBaseSerializer,
-        sql_include: [:responsible_users, service: :responsible_users, answers: :attachments]
-      )
-    elsif user.role?(:operator) || user.role?(:content_manager)
+    if user.role?(:service_responsible) || user.role?(:operator) || user.role?(:content_manager)
       PolicyAttributes.new(
         serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
-        sql_include: [:service, answers: :attachments]
+        sql_include: [:responsible_users, service: :responsible_users],
+        serialize: ['responsible_users', 'service.responsible_users']
       )
     else
       PolicyAttributes.new(
         serializer: Api::V1::Tickets::TicketGuestSerializer,
-        sql_include: [:service, answers: :attachments]
+        sql_include: [:service],
+        serialize: ['service']
+      )
+    end
+  end
+
+  def attributes_for_deep_search
+    if user.role?(:service_responsible) || user.role?(:operator) || user.role?(:content_manager)
+      PolicyAttributes.new(
+        serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
+        sql_include: [:responsible_users, service: :responsible_users, answers: :attachments],
+        serialize: ['responsible_users', 'service.responsible_users', 'answers.attachments']
+      )
+    else
+      PolicyAttributes.new(
+        serializer: Api::V1::Tickets::TicketGuestSerializer,
+        sql_include: [:service, answers: :attachments],
+        serialize: ['answers.attachments', 'service']
       )
     end
   end

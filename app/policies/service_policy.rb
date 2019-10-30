@@ -82,7 +82,10 @@ class ServicePolicy < ApplicationPolicy
 
   def attributes_for_search
     if user.role?(:service_responsible)
-      PolicyAttributes.new(sql_include: [:responsible_users])
+      PolicyAttributes.new(
+        sql_include: [:responsible_users],
+        serialize: ['responsible_users']
+      )
     else
       PolicyAttributes.new
     end

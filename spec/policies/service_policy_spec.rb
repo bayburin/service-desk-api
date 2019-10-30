@@ -325,6 +325,10 @@ RSpec.describe ServicePolicy do
       it 'sets :sql_include attribute' do
         expect(policy.sql_include).to eq [:responsible_users]
       end
+
+      it 'sets :serialize attribute' do
+        expect(policy.serialize).to eq ['responsible_users']
+      end
     end
 
     context 'for user with any another role' do
