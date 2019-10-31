@@ -33,4 +33,8 @@ class User < ApplicationRecord
   def role?(role_name)
     role.name.to_sym == role_name.to_sym
   end
+
+  def one_of_roles?(*roles)
+    roles.include?(role.name.to_sym)
+  end
 end

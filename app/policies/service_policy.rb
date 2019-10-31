@@ -2,7 +2,7 @@ class ServicePolicy < ApplicationPolicy
   def show?
     if user.role? :service_responsible
       !record.is_hidden || belongs_to_user?
-    elsif user.role?(:operator) || user.role?(:content_manager)
+    elsif user.one_of_roles?(:content_manager, :operator)
       true
     else
       !record.is_hidden
@@ -21,7 +21,7 @@ class ServicePolicy < ApplicationPolicy
     def resolve
       if user.role? :service_responsible
         Api::V1::ServicesQuery.new(scope).search_by_responsible(user)
-      elsif user.role?(:operator) || user.role?(:content_manager)
+      elsif user.one_of_roles?(:content_manager, :operator)
         Api::V1::ServicesQuery.new(scope).all
       else
         Api::V1::ServicesQuery.new(scope).visible
@@ -33,7 +33,7 @@ class ServicePolicy < ApplicationPolicy
     def resolve
       if user.role? :service_responsible
         scope.select { |service| !service.is_hidden || service.belongs_to?(user) || service.belongs_by_tickets_to?(user) }
-      elsif user.role?(:operator) || user.role?(:content_manager)
+      elsif user.one_of_roles?(:content_manager, :operator)
         scope
       else
         scope.reject(&:is_hidden)
@@ -47,7 +47,7 @@ class ServicePolicy < ApplicationPolicy
         serializer: Api::V1::Services::ServiceBaseSerializer,
         sql_include: [:category, :responsible_users, tickets: %i[answers responsible_users]]
       )
-    elsif user.role?(:operator) || user.role?(:content_manager)
+    elsif user.one_of_roles?(:content_manager, :operator)
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
         sql_include: [:category, tickets: :answers]
@@ -67,7 +67,7 @@ class ServicePolicy < ApplicationPolicy
         sql_include: [:correction, :responsible_users, :tags, answers: :attachments],
         serialize: ['*', 'tickets.*', 'tickets.answers.attachments', 'tickets.correction.*', 'tickets.correction.answers.attachments']
       )
-    elsif user.role?(:operator) || user.role?(:content_manager)
+    elsif user.one_of_roles?(:content_manager, :operator)
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
         serialize: ['category', 'tickets.answers.attachments']
@@ -81,7 +81,7 @@ class ServicePolicy < ApplicationPolicy
   end
 
   def attributes_for_search
-    if user.role?(:service_responsible)
+    if user.role? :service_responsible
       PolicyAttributes.new(
         sql_include: [:responsible_users],
         serialize: ['responsible_users']

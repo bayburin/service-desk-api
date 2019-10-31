@@ -30,7 +30,7 @@ class TicketPolicy < ApplicationPolicy
   class Scope < Scope
     # метод вызывается из сервиса
     def resolve_by(service)
-      if (user.role?(:service_responsible) && scope_for_service_responsible?(service)) || user.role?(:operator) || user.role?(:content_manager)
+      if (user.role?(:service_responsible) && scope_for_service_responsible?(service)) || user.one_of_roles?(:content_manager, :operator)
         Api::V1::TicketsQuery.new(scope).all.published_state
       else
         Api::V1::TicketsQuery.new(scope).visible.published_state
@@ -48,7 +48,7 @@ class TicketPolicy < ApplicationPolicy
     def resolve
       if user.role? :service_responsible
         scope.select { |ticket| allow_to_show_to_responsible?(ticket) }
-      elsif user.role?(:operator) || user.role?(:content_manager)
+      elsif user.one_of_roles?(:content_manager, :operator)
         scope.select(&:published_state?)
       else
         scope.select { |ticket| ticket_not_hidden?(ticket) && ticket.published_state? }
@@ -75,7 +75,7 @@ class TicketPolicy < ApplicationPolicy
   end
 
   def attributes_for_search
-    if user.role?(:service_responsible) || user.role?(:operator) || user.role?(:content_manager)
+    if user.one_of_roles?(:content_manager, :operator, :service_responsible)
       PolicyAttributes.new(
         serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
         sql_include: [:responsible_users, service: :responsible_users],
@@ -91,7 +91,7 @@ class TicketPolicy < ApplicationPolicy
   end
 
   def attributes_for_deep_search
-    if user.role?(:service_responsible) || user.role?(:operator) || user.role?(:content_manager)
+    if user.one_of_roles?(:content_manager, :operator, :service_responsible)
       PolicyAttributes.new(
         serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
         sql_include: [:responsible_users, service: :responsible_users, answers: :attachments],

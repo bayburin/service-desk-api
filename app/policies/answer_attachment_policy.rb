@@ -1,6 +1,6 @@
 class AnswerAttachmentPolicy < ApplicationPolicy
   def show?
-    if user.role? :service_responsible
+    if user.one_of_roles?(:content_manager, :operator, :service_responsible)
       true
     else
       record.ticket.published_state? && !record.ticket.is_hidden

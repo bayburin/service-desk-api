@@ -3,12 +3,25 @@ require 'rails_helper'
 RSpec.describe AnswerAttachmentPolicy do
   subject { AnswerAttachmentPolicy }
   let(:guest) { create(:guest_user) }
+  let(:manager) { create(:content_manager_user) }
   let(:responsible) { create(:service_responsible_user) }
   let(:operator) { create(:operator_user) }
   let(:ticket) { create(:ticket) }
   let(:attachment) { create(:answer_attachment, answer: ticket.answers.first) }
 
   permissions :show? do
+    context 'for user with :content_manager role' do
+      it 'grants access' do
+        expect(subject).to permit(manager, attachment)
+      end
+    end
+
+    context 'for user with :operator role' do
+      it 'grants access' do
+        expect(subject).to permit(operator, attachment)
+      end
+    end
+
     context 'for user with :service_responsible role' do
       it 'grants access' do
         expect(subject).to permit(responsible, attachment)
