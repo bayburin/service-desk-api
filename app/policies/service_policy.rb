@@ -61,13 +61,13 @@ class ServicePolicy < ApplicationPolicy
   end
 
   def attributes_for_show
-    if user.role?(:service_responsible) && belongs_to_user?
+    if user.role?(:service_responsible) && belongs_to_user? || user.role?(:content_manager)
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
         sql_include: [:correction, :responsible_users, :tags, answers: :attachments],
         serialize: ['*', 'tickets.*', 'tickets.answers.attachments', 'tickets.correction.*', 'tickets.correction.answers.attachments']
       )
-    elsif user.one_of_roles?(:content_manager, :operator)
+    elsif user.role?(:operator)
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
         serialize: ['category', 'tickets.answers.attachments']

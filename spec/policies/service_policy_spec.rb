@@ -279,20 +279,24 @@ RSpec.describe ServicePolicy do
       end
     end
 
-    context 'for user with :operator role' do
-      subject(:policy) { ServicePolicy.new(operator, service).attributes_for_show }
+    context 'for user with :content_manager role' do
+      subject(:policy) { ServicePolicy.new(content_manager, service).attributes_for_show }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Services::ServiceResponsibleUserSerializer
       end
 
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [:correction, :responsible_users, :tags, answers: :attachments]
+      end
+
       it 'sets :serialize attribute' do
-        expect(policy.serialize).to eq ['category', 'tickets.answers.attachments']
+        expect(policy.serialize).to eq ['*', 'tickets.*', 'tickets.answers.attachments', 'tickets.correction.*', 'tickets.correction.answers.attachments']
       end
     end
 
-    context 'for user with :content_manager role' do
-      subject(:policy) { ServicePolicy.new(content_manager, service).attributes_for_show }
+    context 'for user with :operator role' do
+      subject(:policy) { ServicePolicy.new(operator, service).attributes_for_show }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Services::ServiceResponsibleUserSerializer
