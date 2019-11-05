@@ -379,11 +379,25 @@ RSpec.describe TicketPolicy do
     end
   end
 
+  describe '#attributes_for_show' do
+    let(:ticket) { service.tickets.first }
+
+    subject(:policy) { TicketPolicy.new(responsible, ticket).attributes_for_show }
+
+    it 'sets :serializer attribute' do
+      expect(policy.serializer).to eq Api::V1::Tickets::TicketResponsibleUserSerializer
+    end
+
+    it 'sets :serialize attribute' do
+      expect(policy.serialize).to eq ['correction', 'responsible_users', 'tags', 'answers.attachments,correction.*', 'correction.answers.attachments']
+    end
+  end
+
   describe '#attributes_for_search' do
-    let(:ticket) { create(:service.tickets.first) }
+    let(:ticket) { service.tickets.first }
 
     context 'for user with :service_responsible role' do
-      subject(:policy) { TicketPolicy.new(responsible, service).attributes_for_search }
+      subject(:policy) { TicketPolicy.new(responsible, ticket).attributes_for_search }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Tickets::TicketResponsibleUserSerializer
@@ -399,7 +413,7 @@ RSpec.describe TicketPolicy do
     end
 
     context 'for user with :operator role' do
-      subject(:policy) { TicketPolicy.new(operator, service).attributes_for_search }
+      subject(:policy) { TicketPolicy.new(operator, ticket).attributes_for_search }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Tickets::TicketResponsibleUserSerializer
@@ -415,7 +429,7 @@ RSpec.describe TicketPolicy do
     end
 
     context 'for user with :content_manager role' do
-      subject(:policy) { TicketPolicy.new(content_manager, service).attributes_for_search }
+      subject(:policy) { TicketPolicy.new(content_manager, ticket).attributes_for_search }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Tickets::TicketResponsibleUserSerializer
@@ -431,7 +445,7 @@ RSpec.describe TicketPolicy do
     end
 
     context 'for user with any another role' do
-      subject(:policy) { TicketPolicy.new(guest, service).attributes_for_search }
+      subject(:policy) { TicketPolicy.new(guest, ticket).attributes_for_search }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Tickets::TicketGuestSerializer
@@ -448,10 +462,10 @@ RSpec.describe TicketPolicy do
   end
 
   describe '#attributes_for_deep_search' do
-    let(:ticket) { create(:service.tickets.first) }
+    let(:ticket) { service.tickets.first }
 
     context 'for user with :service_responsible role' do
-      subject(:policy) { TicketPolicy.new(responsible, service).attributes_for_deep_search }
+      subject(:policy) { TicketPolicy.new(responsible, ticket).attributes_for_deep_search }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Tickets::TicketResponsibleUserSerializer
@@ -467,7 +481,7 @@ RSpec.describe TicketPolicy do
     end
 
     context 'for user with :operator role' do
-      subject(:policy) { TicketPolicy.new(operator, service).attributes_for_deep_search }
+      subject(:policy) { TicketPolicy.new(operator, ticket).attributes_for_deep_search }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Tickets::TicketResponsibleUserSerializer
@@ -483,7 +497,7 @@ RSpec.describe TicketPolicy do
     end
 
     context 'for user with :content_manager role' do
-      subject(:policy) { TicketPolicy.new(content_manager, service).attributes_for_deep_search }
+      subject(:policy) { TicketPolicy.new(content_manager, ticket).attributes_for_deep_search }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Tickets::TicketResponsibleUserSerializer
@@ -499,7 +513,7 @@ RSpec.describe TicketPolicy do
     end
 
     context 'for user with any another role' do
-      subject(:policy) { TicketPolicy.new(guest, service).attributes_for_deep_search }
+      subject(:policy) { TicketPolicy.new(guest, ticket).attributes_for_deep_search }
 
       it 'sets :serializer attribute' do
         expect(policy.serializer).to eq Api::V1::Tickets::TicketGuestSerializer

@@ -74,6 +74,13 @@ class TicketPolicy < ApplicationPolicy
     end
   end
 
+  def attributes_for_show
+    PolicyAttributes.new(
+      serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
+      serialize: ['correction', 'responsible_users', 'tags', 'answers.attachments,correction.*', 'correction.answers.attachments']
+    )
+  end
+
   def attributes_for_search
     if user.one_of_roles?(:content_manager, :operator, :service_responsible)
       PolicyAttributes.new(

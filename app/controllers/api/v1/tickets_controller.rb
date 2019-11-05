@@ -8,12 +8,9 @@ module Api
                     .all_in_service(Service.find(params[:service_id]))
                     .includes(:correction, :service, :responsible_users, :tags, answers: :attachments)
         tickets = tickets.where(state: params[:state]) if params[:state]
+        policy_attributes = policy(Ticket).attributes_for_show
 
-        render(
-          json: tickets,
-          each_serializer: Tickets::TicketResponsibleUserSerializer,
-          include: 'correction,responsible_users,tags,answers.attachments,correction.*,correction.answers.attachments'
-        )
+        render(json: tickets, each_serializer: policy_attributes.serializer, include: policy_attributes.serialize)
       end
 
       def show
@@ -41,7 +38,9 @@ module Api
         decorated_ticket = TicketDecorator.new(ticket)
 
         if decorated_ticket.update_by_state(attributive_params)
-          render json: decorated_ticket, serializer: Tickets::TicketResponsibleUserSerializer
+          policy_attributes = policy(Ticket).attributes_for_show
+
+          render json: decorated_ticket, serializer: policy_attributes.serializer, include: policy_attributes.serialize
         else
           render json: decorated_ticket.errors, status: :unprocessable_entity
         end
