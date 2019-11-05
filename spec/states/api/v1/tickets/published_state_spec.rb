@@ -5,6 +5,7 @@ module Api
     module Tickets
       RSpec.describe PublishedState do
         let!(:ticket) { create(:ticket, state: :published) }
+        let(:attachments_size) { ticket.answers.inject(0) { |sum, answer| sum + answer.attachments.count } }
         subject { PublishedState.new(ticket) }
 
         it 'inherits from AbstractState' do
@@ -37,6 +38,19 @@ module Api
 
             expect(subject.object.draft_state?).to be_truthy
             expect(subject.object.question_ticket?).to be_truthy
+          end
+
+          context 'when does not changed' do
+            let(:updated_attributes) do
+              attrs = ticket.as_json.deep_symbolize_keys
+              attrs[:answers_attributes] = ticket.answers.map { |answer| answer.as_json.deep_symbolize_keys }
+              attrs
+            end
+
+            it 'clones attachments' do
+              subject.update(updated_attributes)
+              expect { subject.update(updated_attributes) }.to change { AnswerAttachment.count }.by(attachments_size)
+            end
           end
         end
       end
