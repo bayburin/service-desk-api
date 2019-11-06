@@ -260,7 +260,7 @@ RSpec.describe ServicePolicy do
         end
 
         it 'sets :sql_include attribute' do
-          expect(policy.sql_include).to eq [:correction, :responsible_users, :tags, answers: :attachments]
+          expect(policy.sql_include).to eq [:responsible_users, :tags, answers: :attachments, correction: [:responsible_users, :tags, :correction, :service, answers: :attachments]]
         end
 
         it 'sets :serialize attribute' do
@@ -287,7 +287,7 @@ RSpec.describe ServicePolicy do
       end
 
       it 'sets :sql_include attribute' do
-        expect(policy.sql_include).to eq [:correction, :responsible_users, :tags, answers: :attachments]
+        expect(policy.sql_include).to eq [:responsible_users, :tags, answers: :attachments, correction: [:responsible_users, :tags, :correction, :service, answers: :attachments]]
       end
 
       it 'sets :serialize attribute' do

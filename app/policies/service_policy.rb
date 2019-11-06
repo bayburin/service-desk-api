@@ -64,7 +64,12 @@ class ServicePolicy < ApplicationPolicy
     if user.role?(:service_responsible) && belongs_to_user? || user.role?(:content_manager)
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
-        sql_include: [:correction, :responsible_users, :tags, answers: :attachments],
+        sql_include: [
+          :responsible_users,
+          :tags,
+          answers: :attachments,
+          correction: [:responsible_users, :tags, :correction, :service, answers: :attachments]
+        ],
         serialize: ['*', 'tickets.*', 'tickets.answers.attachments', 'tickets.correction.*', 'tickets.correction.answers.attachments']
       )
     elsif user.role?(:operator)
