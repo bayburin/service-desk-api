@@ -6,7 +6,7 @@ module Api
       end
 
       def update_by_state(attributes)
-        state = published_state? ? Api::V1::Tickets::PublishedState.new(self) : Api::V1::Tickets::DraftState.new(self)
+        state = ticket_state
 
         if state.update(attributes)
           state.object
@@ -15,6 +15,16 @@ module Api
 
           false
         end
+      end
+
+      def publish
+        ticket_state.publish
+      end
+
+      protected
+
+      def ticket_state
+        published_state? ? Api::V1::Tickets::PublishedState.new(self) : Api::V1::Tickets::DraftState.new(self)
       end
     end
   end

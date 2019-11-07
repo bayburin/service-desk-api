@@ -39,6 +39,7 @@ Rails.application.routes.draw do
       get 'welcome', to: 'base#welcome'
       post 'auth/token'
       post 'auth/revoke'
+      post 'tickets/publish', to: 'tickets#publish'
     end
   end
 end

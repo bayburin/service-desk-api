@@ -68,6 +68,22 @@ RSpec.describe TicketPolicy do
     end
   end
 
+  permissions :publish? do
+    let(:ticket) { create(:ticket, state: :draft) }
+
+    context 'when user has :content_manager role' do
+      it 'grants access' do
+        expect(subject).to permit(content_manager, ticket)
+      end
+    end
+
+    context 'when user has :another role' do
+      it 'grants access' do
+        expect(subject).not_to permit(responsible, ticket)
+      end
+    end
+  end
+
   # permissions :show? do
   #   context 'for user with :service_responsible role' do
   #     context 'and when ticket is hidden' do

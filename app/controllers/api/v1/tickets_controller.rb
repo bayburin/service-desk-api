@@ -1,7 +1,7 @@
 module Api
   module V1
     class TicketsController < BaseController
-      before_action :check_access, except: %i[raise_rating update]
+      before_action :check_access, except: %i[raise_rating update publish]
 
       def index
         tickets = Api::V1::QuestionsQuery.new
@@ -52,6 +52,19 @@ module Api
 
         ticket.calculate_popularity
         ticket.save
+      end
+
+      def publish
+        authorize Ticket, :publish?
+
+        tickets = QuestionsQuery.new.waiting_for_publish(params[:ids].split(','))
+        published = tickets.map do |ticket|
+          decorated_ticket = TicketDecorator.new(ticket)
+          decorated_ticket.publish ? ticket.reload : nil
+        end
+        policy_attributes = policy(Ticket).attributes_for_show
+
+        render json: published, each_serializer: policy_attributes.serializer, include: policy_attributes.serialize
       end
 
       protected

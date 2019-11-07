@@ -6,7 +6,7 @@ module Api
       sign_in_user
 
       describe 'GET #index' do
-        let(:policy_attributes) { PolicyAttributes.new(serializer: Services::ServiceGuestSerializer) }
+        let(:policy_attributes) { ServicePolicy.new(User.last, Service).attributes_for_index }
         before { create_list(:service, 2) }
 
         it 'loads all services' do
@@ -50,13 +50,7 @@ module Api
         let(:services) { create_list(:service, 2, category: create(:category)) }
         let!(:service) { services.first }
         let(:params) { { category_id: service.category.id, id: service.id } }
-        let(:policy_attributes) do
-          PolicyAttributes.new(
-            serializer: Services::ServiceGuestSerializer,
-            include: [:tickets],
-            serialize: ['tickets']
-          )
-        end
+        let(:policy_attributes) { ServicePolicy.new(User.last, service).attributes_for_index }
         before { service.tickets.each { |t| t.correction = create(:ticket, state: :draft) } }
 
         it 'loads service with specified service_id' do

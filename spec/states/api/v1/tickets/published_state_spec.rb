@@ -53,6 +53,12 @@ module Api
             end
           end
         end
+
+        describe '#publish' do
+          it 'should raise error' do
+            expect { subject.publish }.to raise_error(RuntimeError, 'Вопрос уже опубликован')
+          end
+        end
       end
     end
   end

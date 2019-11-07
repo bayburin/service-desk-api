@@ -48,6 +48,15 @@ module Api
           expect(subject.most_popular.count).to eq 5
         end
       end
+
+      describe '#waiting_for_publish' do
+        it 'should return tickets with draft state and specified id' do
+          subject.waiting_for_publish(correction.id).each do |t|
+            expect(t.draft_state?).to be_truthy
+            expect(t.id).to eq correction.id
+          end
+        end
+      end
     end
   end
 end

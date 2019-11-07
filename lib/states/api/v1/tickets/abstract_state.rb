@@ -11,6 +11,10 @@ module Api
         def update
           raise 'Необходимо реализовать метод update'
         end
+
+        def publish
+          raise 'Необходимо реализовать метод publish'
+        end
       end
     end
   end

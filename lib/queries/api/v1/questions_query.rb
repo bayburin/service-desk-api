@@ -13,6 +13,10 @@ module Api
         visible.published.by_visible_service.limit(5)
       end
 
+      def waiting_for_publish(ids = [])
+        scope.where(state: :draft, id: ids)
+      end
+
       private
 
       def questions

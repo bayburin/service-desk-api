@@ -11,6 +11,10 @@ module Api
           object.save
         end
 
+        def publish
+          raise 'Вопрос уже опубликован'
+        end
+
         protected
 
         def process_attributes(attributes)

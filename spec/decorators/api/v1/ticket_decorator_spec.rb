@@ -49,6 +49,16 @@ module Api
           end
         end
       end
+
+      describe '#publish' do
+        before { ticket.published_state! }
+
+        it 'calls :publish method for instance of state' do
+          expect_any_instance_of(Api::V1::Tickets::PublishedState).to receive(:publish)
+
+          subject.publish
+        end
+      end
     end
   end
 end

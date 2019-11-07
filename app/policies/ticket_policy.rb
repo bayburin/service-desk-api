@@ -11,6 +11,10 @@ class TicketPolicy < ApplicationPolicy
     record.published_state?
   end
 
+  def publish?
+    user.role? :content_manager
+  end
+
   # def show?
   #   if user.role? :service_responsible
   #     show_for_service_responsible?

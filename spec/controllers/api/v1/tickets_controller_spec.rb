@@ -154,6 +154,21 @@ module Api
           expect(response.status).to eq 204
         end
       end
+
+      describe 'POST #publish' do
+        let(:service) { create(:service) }
+        let!(:ticket) { create(:ticket, service: service, state: :draft) }
+        let(:params) { { ids: ticket.id.to_s } }
+
+        it 'change state of specified tickets' do
+          allow_any_instance_of(QuestionsQuery).to receive(:waiting_for_publish).and_return([ticket])
+          # expect(ticket).to receive(:publish).and_call_original
+
+          post :publish, params: params, format: :json
+
+          expect(ticket.reload.published_state?).to be_truthy
+        end
+      end
     end
   end
 end
