@@ -3,7 +3,7 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe TicketDecorator, type: :model do
-      let(:ticket) { build(:ticket) }
+      let!(:ticket) { create(:ticket) }
       subject { TicketDecorator.new(ticket) }
 
       it 'inherits from SimpleDelegator class' do

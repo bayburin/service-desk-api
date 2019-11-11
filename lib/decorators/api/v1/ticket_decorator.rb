@@ -6,15 +6,7 @@ module Api
       end
 
       def update_by_state(attributes)
-        state = ticket_state
-
-        if state.update(attributes)
-          state.object
-        else
-          errors.merge!(state.object.errors)
-
-          false
-        end
+        ticket_state.update(attributes) ? reload : false
       end
 
       def publish

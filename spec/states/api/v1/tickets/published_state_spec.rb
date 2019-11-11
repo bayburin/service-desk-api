@@ -5,7 +5,6 @@ module Api
     module Tickets
       RSpec.describe PublishedState do
         let!(:ticket) { create(:ticket, state: :published) }
-        let(:attachments_size) { ticket.answers.inject(0) { |sum, answer| sum + answer.attachments.count } }
         subject { PublishedState.new(ticket) }
 
         it 'inherits from AbstractState' do
@@ -13,43 +12,35 @@ module Api
         end
 
         describe '#update' do
-          let(:updated_attributes) do
-            attrs = ticket.as_json.deep_symbolize_keys
-            attrs[:answers_attributes] = [attributes_for(:answer)]
-            attrs
+          before { allow_any_instance_of(UpdatePublishedTicket).to receive(:update).and_return(true) }
+
+          it 'calls #update method for UpdatePublishedTicket instance' do
+            expect_any_instance_of(UpdatePublishedTicket).to receive(:update)
+
+            subject.update({})
           end
 
-          it 'creates a new record' do
-            expect { subject.update(updated_attributes) }.to change { Ticket.count }.by(1)
+          it 'returns true' do
+            expect(subject.update({})).to be_truthy
           end
 
-          it 'clones attributes from original' do
-            subject.update(updated_attributes)
-
-            expect(subject.object.service_id).to eq ticket.service_id
-            expect(subject.object.original_id).to eq ticket.id
-            expect(subject.object.popularity).to eq ticket.popularity
-            expect(subject.object.sla).to eq ticket.sla
-            expect(subject.object.to_approve).to eq ticket.to_approve
-          end
-
-          it 'sets :draft state and :question type in created record' do
-            subject.update(updated_attributes)
-
-            expect(subject.object.draft_state?).to be_truthy
-            expect(subject.object.question_ticket?).to be_truthy
-          end
-
-          context 'when does not changed' do
-            let(:updated_attributes) do
-              attrs = ticket.as_json.deep_symbolize_keys
-              attrs[:answers_attributes] = ticket.answers.map { |answer| answer.as_json.deep_symbolize_keys }
-              attrs
+          context 'when UpdatePublishedTicket#update returns false' do
+            let(:custom_error) { 'test error' }
+            let(:update_ticket) { UpdatePublishedTicket.new(ticket) }
+            before do
+              allow(UpdatePublishedTicket).to receive(:new).and_return(update_ticket)
+              allow(update_ticket).to receive(:update).and_return(false)
             end
 
-            it 'clones attachments' do
-              subject.update(updated_attributes)
-              expect { subject.update(updated_attributes) }.to change { AnswerAttachment.count }.by(attachments_size)
+            it 'returns false' do
+              expect(subject.update({})).to be_falsey
+            end
+
+            it 'merge ticket errors with errors of UpdatePublishedTicket instance' do
+              update_ticket.errors.add(:base, custom_error)
+              subject.update({})
+
+              expect(subject.ticket.errors.full_messages).to include(custom_error)
             end
           end
         end

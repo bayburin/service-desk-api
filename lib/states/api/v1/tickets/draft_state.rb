@@ -3,7 +3,7 @@ module Api
     module Tickets
       class DraftState < AbstractState
         def update(attributes)
-          @object = @ticket.update(attributes)
+          ticket.update(attributes)
         end
 
         def publish

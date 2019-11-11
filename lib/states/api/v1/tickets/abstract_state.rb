@@ -2,7 +2,7 @@ module Api
   module V1
     module Tickets
       class AbstractState
-        attr_reader :object
+        attr_reader :ticket
 
         def initialize(ticket)
           @ticket = ticket

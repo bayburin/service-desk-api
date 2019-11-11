@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 module Api
   module V1
     module Tickets
