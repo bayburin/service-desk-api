@@ -20,9 +20,7 @@ module Api
           return unless valid?
 
           cleared_attributes = process_attributes(attributes)
-          @ticket = original.build_correction(cleared_attributes)
-          ticket.state = :draft
-          ticket.ticket_type = :question
+          @ticket = TicketFactory.create(:question, cleared_attributes.merge!(original_id: original.id))
           return true if ticket.save
 
           errors.merge!(ticket.errors)

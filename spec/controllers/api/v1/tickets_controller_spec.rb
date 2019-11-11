@@ -66,16 +66,14 @@ module Api
         let(:params) { { service_id: service.id, ticket: ticket_attrs } }
         before { allow(subject).to receive(:authorize).and_return(true) }
 
-        it 'creates new ticket' do
-          expect { post :create, params: params, format: :json }.to change { Ticket.count }.by(1)
+        it 'calls Tickets::TicketFactory.create method' do
+          expect(Tickets::TicketFactory).to receive(:create).with(:question, any_args).and_call_original
+
+          post :create, params: params, format: :json
         end
 
-        it 'sets default params' do
-          post :create, params: params, format: :json
-
-          expect(Ticket.last.ticket_type).to eq 'question'
-          expect(Ticket.last.state).to eq 'draft'
-          expect(Ticket.last.to_approve).to be_falsey
+        it 'creates new ticket' do
+          expect { post :create, params: params, format: :json }.to change { Ticket.count }.by(1)
         end
 
         it 'response with created ticket' do

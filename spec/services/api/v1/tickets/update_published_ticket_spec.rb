@@ -47,11 +47,10 @@ module Api
             expect(subject.ticket.to_approve).to eq ticket.to_approve
           end
 
-          it 'sets :draft state and :question type in created record' do
-            subject.update(updated_attributes)
+          it 'calls Tickets::TicketFactory.create method' do
+            expect(Tickets::TicketFactory).to receive(:create).with(:question, hash_including(original_id: ticket.id)).and_call_original
 
-            expect(subject.ticket.draft_state?).to be_truthy
-            expect(subject.ticket.question_ticket?).to be_truthy
+            subject.update(updated_attributes)
           end
 
           context 'when answer does not changed' do

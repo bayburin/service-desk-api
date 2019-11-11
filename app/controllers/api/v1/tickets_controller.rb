@@ -20,10 +20,7 @@ module Api
       end
 
       def create
-        ticket = Ticket.new(attributive_params)
-        ticket.ticket_type = :question
-        ticket.state = :draft
-        ticket.to_approve = false
+        ticket = Tickets::TicketFactory.create(:question, attributive_params)
 
         if ticket.save
           render json: ticket, serializer: Tickets::TicketResponsibleUserSerializer
