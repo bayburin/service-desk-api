@@ -9,9 +9,19 @@ module Api
       subject { ResponsibleUserSerializer.new(responsible).to_json }
       before { user.services << service }
 
-      %w[id responseable_type responseable_id tn].each do |attr|
+      %w[id responseable_type responseable_id tn details].each do |attr|
         it "has #{attr} attribute" do
           expect(subject).to have_json_path(attr)
+        end
+      end
+
+      describe '#details' do
+        before { responsible.details = {} }
+
+        it 'creates ActiveModelSerializers::SerializableResource instance' do
+          expect(ActiveModelSerializers::SerializableResource).to receive(:new).with(responsible.details).and_call_original
+
+          subject.to_json
         end
       end
     end

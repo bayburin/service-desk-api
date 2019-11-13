@@ -83,6 +83,9 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
+  config.before(:each) { ReadCache.redis.flushdb }
+  config.after(:each) { ReadCache.redis.quit }
+
   # config.append_after(:suite, sphinx: true) do
   #   ThinkingSphinx::Test.stop
   # end
