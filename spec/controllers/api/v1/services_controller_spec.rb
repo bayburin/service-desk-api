@@ -5,46 +5,46 @@ module Api
     RSpec.describe ServicesController, type: :controller do
       sign_in_user
 
-      describe 'GET #index' do
-        let(:policy_attributes) { ServicePolicy.new(User.last, Service).attributes_for_index }
-        before { create_list(:service, 2) }
+      # describe 'GET #index' do
+      #   let(:policy_attributes) { ServicePolicy.new(User.last, Service).attributes_for_index }
+      #   before { create_list(:service, 2) }
 
-        it 'loads all services' do
-          get :index, format: :json
+      #   it 'loads all services' do
+      #     get :index, format: :json
 
-          expect(response.body).to have_json_size(2)
-        end
+      #     expect(response.body).to have_json_size(2)
+      #   end
 
-        it 'has :answers attribute for :tickets attribute' do
-          get :index, format: :json
+      #   it 'has :answers attribute for :tickets attribute' do
+      #     get :index, format: :json
 
-          expect(response.body).to have_json_path('0/tickets/0/answers')
-        end
+      #     expect(response.body).to have_json_path('0/tickets/0/answers')
+      #   end
 
-        it 'has :attachments attribute for :answers attribute' do
-          get :index, format: :json
+      #   it 'has :attachments attribute for :answers attribute' do
+      #     get :index, format: :json
 
-          expect(response.body).to have_json_path('0/tickets/0/answers/0/attachments')
-        end
+      #     expect(response.body).to have_json_path('0/tickets/0/answers/0/attachments')
+      #   end
 
-        it 'has :category attribute' do
-          get :index, format: :json
+      #   it 'has :category attribute' do
+      #     get :index, format: :json
 
-          expect(response.body).to have_json_path('0/category')
-        end
+      #     expect(response.body).to have_json_path('0/category')
+      #   end
 
-        it 'calls serializer specified in policy' do
-          expect(policy_attributes.serializer).to receive(:new).at_least(2).and_call_original
+      #   it 'calls serializer specified in policy' do
+      #     expect(policy_attributes.serializer).to receive(:new).at_least(2).and_call_original
 
-          get :index, format: :json
-        end
+      #     get :index, format: :json
+      #   end
 
-        it 'respond with 200 status' do
-          get :index, format: :json
+      #   it 'respond with 200 status' do
+      #     get :index, format: :json
 
-          expect(response.status).to eq 200
-        end
-      end
+      #     expect(response.status).to eq 200
+      #   end
+      # end
 
       describe 'GET #show' do
         let(:services) { create_list(:service, 2, category: create(:category)) }

@@ -6,10 +6,6 @@ module Api
           tickets_scope = TicketsQuery.new(serializer.object.tickets).all.published_state
           tickets_scope = serializer.include_authorize_attributes_for(tickets_scope)
 
-          details = LoadResponsibleDetails.new(tickets_scope)
-          details.load_details
-          details.associate_details!
-
           tickets_scope
         end
       end

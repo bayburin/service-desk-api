@@ -14,11 +14,12 @@ Rails.application.routes.draw do
       resources :categories, only: %i[index show] do
         resources :services, only: :show
       end
-      resources :services, only: :index do
+      resources :services, only: [] do
         resources :tickets do
           post :raise_rating, to: :raise_rating, on: :member
         end
       end
+      resources :responsible_users, only: :index
       resources :cases, only: %i[index create update destroy], param: :case_id
       # Получение данных о пользователе
       resources :users, only: [] do

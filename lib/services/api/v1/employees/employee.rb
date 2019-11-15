@@ -9,7 +9,7 @@ module Api
           @counter = 0
         end
 
-        def load_users(tn)
+        def load_users(tns)
           if @counter == STOP_COUNTER
             @counter = 0
             return nil
@@ -17,13 +17,13 @@ module Api
 
           @counter += 1
           @authorize.token || @authorize.authorize
-          response = EmployeeApi.load_users(tn)
+          response = EmployeeApi.load_users(tns.uniq)
           if response.success?
             @counter = 0
             response.body
           else
             @authorize.clear
-            load_users(tn)
+            load_users(tns)
           end
         end
       end
