@@ -7,7 +7,7 @@ module Api
 
       def load_details
         numbers = @tickets.map { |t| t.responsible_users.map(&:tn) }.flatten
-        @details = Employees::Employee.new.load_users(numbers)
+        @details = Employees::Employee.new(:exact).load_users(numbers)
       end
 
       def associate_details!

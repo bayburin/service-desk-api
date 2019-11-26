@@ -19,7 +19,9 @@ Rails.application.routes.draw do
           post :raise_rating, to: :raise_rating, on: :member
         end
       end
-      resources :responsible_users, only: :index
+      resources :responsible_users, only: :index do
+        get :search, to: :search, on: :collection
+      end
       resources :cases, only: %i[index create update destroy], param: :case_id
       # Получение данных о пользователе
       resources :users, only: [] do

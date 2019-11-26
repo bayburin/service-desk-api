@@ -4,12 +4,13 @@ module Api
       class Employee
         STOP_COUNTER = 2
 
-        def initialize
+        def initialize(type)
+          @type = type
           @authorize = Authorize.new
           @counter = 0
         end
 
-        def load_users(tns)
+        def load_users(params)
           if @counter == STOP_COUNTER
             @counter = 0
             return nil
@@ -17,13 +18,13 @@ module Api
 
           @counter += 1
           @authorize.token || @authorize.authorize
-          response = EmployeeApi.load_users(tns.uniq)
+          response = UserRequestChanger.request(@type, params)
           if response.success?
             @counter = 0
             response.body
           else
             @authorize.clear
-            load_users(tns)
+            load_users(params)
           end
         end
       end

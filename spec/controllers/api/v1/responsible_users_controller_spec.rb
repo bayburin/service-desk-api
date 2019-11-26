@@ -10,6 +10,12 @@ module Api
       before { allow_any_instance_of(Employees::Employee).to receive(:load_users).and_return(result) }
 
       describe 'GET #index' do
+        it 'creates instance of Employees::Employee' do
+          expect(Employees::Employee).to receive(:new).with(:exact).and_call_original
+
+          get :index, params: params, format: :json
+        end
+
         it 'calls #load_users method for Employees::Employee instance' do
           expect_any_instance_of(Employees::Employee).to receive(:load_users).and_return(result)
 
@@ -24,6 +30,32 @@ module Api
 
         it 'respond with 200 status' do
           get :index, params: params, format: :json
+
+          expect(response.status).to eq 200
+        end
+      end
+
+      describe 'GET #search' do
+        it 'creates instance of Employees::Employee' do
+          expect(Employees::Employee).to receive(:new).with(:like).and_call_original
+
+          get :search, params: params, format: :json
+        end
+
+        it 'calls #load_users method for Employees::Employee instance' do
+          expect_any_instance_of(Employees::Employee).to receive(:load_users).and_return(result)
+
+          get :search, params: params, format: :json
+        end
+
+        it 'respond with ResponsibleUserDetails serializer called' do
+          expect(ResponsibleUserDetailsSerializer).to receive(:new).exactly(result['data'].length).times.and_call_original
+
+          get :search, params: params, format: :json
+        end
+
+        it 'respond with 200 status' do
+          get :search, params: params, format: :json
 
           expect(response.status).to eq 200
         end

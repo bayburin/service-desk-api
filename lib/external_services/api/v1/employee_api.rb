@@ -12,10 +12,17 @@ module Api
         end
       end
 
-      def self.load_users(tn)
+      def self.load_users(tns)
         connect.get('emp') do |req|
           req.headers['X-Auth-Token'] = Employees::Authorize.new.token
-          req.params['search'] = "personnelNo=in=(#{tn.join(', ')})"
+          req.params['search'] = "personnelNo=in=(#{tns.join(', ')})"
+        end
+      end
+
+      def self.load_users_like(field, str)
+        connect.get('emp') do |req|
+          req.headers['X-Auth-Token'] = Employees::Authorize.new.token
+          req.params['search'] = "#{field}=='*#{str}*'"
         end
       end
     end
