@@ -5,6 +5,7 @@ module Api
     module Tickets
       RSpec.describe UpdatePublishedTicket do
         let!(:ticket) { create(:ticket, state: :published) }
+        let!(:responsible_users) { create_list(:responsible_user, 2, responseable: ticket) }
         subject { UpdatePublishedTicket.new(ticket) }
 
         it 'includes ActiveModel::Validations' do
@@ -15,6 +16,7 @@ module Api
           let(:updated_attributes) do
             attrs = ticket.as_json.deep_symbolize_keys
             attrs[:answers_attributes] = [attributes_for(:answer)]
+            attrs[:responsible_users_attributes] = responsible_users.as_json.map { |u| u.symbolize_keys }
             attrs
           end
 
@@ -47,6 +49,12 @@ module Api
             expect(subject.ticket.to_approve).to eq ticket.to_approve
           end
 
+          it 'clones responsible_users' do
+            subject.update(updated_attributes)
+
+            expect(subject.ticket.responsible_users.pluck(:tn)).to eq responsible_users.pluck(:tn)
+          end
+
           it 'calls Tickets::TicketFactory.create method' do
             expect(Tickets::TicketFactory).to receive(:create).with(:question, hash_including(original_id: ticket.id)).and_call_original
 
@@ -57,6 +65,7 @@ module Api
             let(:updated_attributes) do
               attrs = ticket.as_json.deep_symbolize_keys
               attrs[:answers_attributes] = ticket.answers.map { |answer| answer.as_json.deep_symbolize_keys }
+              attrs[:responsible_users_attributes] = []
               attrs
             end
             let(:attachments_size) { ticket.answers.inject(0) { |sum, answer| sum + answer.attachments.count } }

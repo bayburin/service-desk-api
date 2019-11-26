@@ -75,7 +75,7 @@ module Api
           :is_hidden,
           answers: %i[id _destroy ticket_id reason answer link is_hidden],
           tags: %i[id name _destroy],
-          responsible_users: %i[id tn]
+          responsible_users: %i[id responseable_type responseable_id tn _destroy]
         )
       end
 
@@ -83,7 +83,7 @@ module Api
         attributive_params = ticket_params
         attributive_params[:answers_attributes] = attributive_params.delete(:answers) || []
         attributive_params[:tags_attributes] = attributive_params.delete(:tags) || []
-        # attributive_params[:responsible_users_attributes] = attributive_params.delete(:responsible_users)
+        attributive_params[:responsible_users_attributes] = attributive_params.delete(:responsible_users) || []
         attributive_params
       end
 

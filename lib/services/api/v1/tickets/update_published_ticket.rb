@@ -35,6 +35,10 @@ module Api
                           .select(:id, :answer_id, :document)
 
           attributes[:id] = nil
+          attributes[:responsible_users_attributes].each do |responsible|
+            responsible[:id] = nil
+            responsible[:responseable_id] = nil
+          end
           attributes[:answers_attributes].each do |answer|
             answer[:attachments_attributes] ||= []
             answer[:attachments_attributes] << build_attachments(answer, attachments)

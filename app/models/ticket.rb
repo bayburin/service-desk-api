@@ -20,6 +20,7 @@ class Ticket < ApplicationRecord
 
   accepts_nested_attributes_for :answers, reject_if: proc { |attr| attr['answer'].blank? }, allow_destroy: true
   accepts_nested_attributes_for :tags, reject_if: proc { |attr| attr['name'].blank? }
+  accepts_nested_attributes_for :responsible_users, reject_if: proc { |attr| attr['tn'].blank? }, allow_destroy: true
 
   # Смотри: https://github.com/rails/rails/issues/7256
   def tags_attributes=(attributes)
