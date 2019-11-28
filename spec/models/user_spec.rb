@@ -4,6 +4,9 @@ RSpec.describe User, type: :model do
   subject { build(:user) }
 
   it { is_expected.to have_many(:visits).class_name('Ahoy::Visit').dependent(:nullify) }
+  it { is_expected.to have_many(:responsible_users).with_foreign_key(:tn).with_primary_key(:tn) }
+  it { is_expected.to have_many(:services).through(:responsible_users).source(:responseable) }
+  it { is_expected.to have_many(:tickets).through(:responsible_users).source(:responseable) }
   it { is_expected.to belong_to(:role) }
   it { is_expected.to validate_uniqueness_of(:tn).allow_nil }
   it { is_expected.to validate_uniqueness_of(:id_tn).allow_nil }

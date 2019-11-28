@@ -1,5 +1,6 @@
 class Service < ApplicationRecord
   include Associatable
+  include Belongable
 
   has_many :tickets, dependent: :destroy
   has_many :responsible_users, as: :responseable, dependent: :destroy
@@ -11,5 +12,9 @@ class Service < ApplicationRecord
 
   def calculate_popularity
     tickets.pluck(:popularity).reduce(:+)
+  end
+
+  def belongs_by_tickets_to?(user)
+    tickets.includes(:responsible_users).any? { |ticket| ticket.belongs_to?(user) }
   end
 end

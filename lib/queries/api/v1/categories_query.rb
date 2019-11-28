@@ -8,10 +8,6 @@ module Api
       def all
         scope.by_popularity
       end
-
-      # def visible
-      #   all.visible
-      # end
     end
   end
 end

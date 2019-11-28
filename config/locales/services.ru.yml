@@ -5,8 +5,8 @@ ru:
         incorrent_username_or_password: 'Неверный логин или пароль'
         authorization_server_error: 'Ошибка на сервере авторизации. Попробуйте позже'
         unprocessable_entity: 'Необрабатываемый запрос'
-      # models:
-      #   doorkeeper/auth:
-      #     incorrent_username_or_password: 'Неверный логин или пароль'
-      #     authorization_server_error: 'Ошибка на сервере авторизации. Попробуйте позже'
-      #     unprocessable_entity: 'Необрабатываемый запрос'
+      models:
+        api/v1/tickets/update_published_ticket:
+          attributes:
+            base:
+              correction_already_exists: 'Для текущего вопроса уже существуют изменения, ожидающие публикации'

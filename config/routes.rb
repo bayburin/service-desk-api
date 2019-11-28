@@ -14,12 +14,14 @@ Rails.application.routes.draw do
       resources :categories, only: %i[index show] do
         resources :services, only: :show
       end
-      resources :services, only: :index do
-        resources :tickets, only: :show
+      resources :services, only: [] do
+        resources :tickets do
+          post :raise_rating, to: :raise_rating, on: :member
+        end
       end
-      # resources :answers, only: [] do
-      get 'answers/:id/attachments/:attachment_id', to: 'answers#download_attachment'
-      # end
+      resources :responsible_users, only: :index do
+        get :search, to: :search, on: :collection
+      end
       resources :cases, only: %i[index create update destroy], param: :case_id
       # Получение данных о пользователе
       resources :users, only: [] do
@@ -30,10 +32,17 @@ Rails.application.routes.draw do
           get :new_notifications, to: :new_notifications
         end
       end
+      resources :tags, only: :index do
+        get :popularity, to: :popularity, on: :collection
+      end
+      resources :answers, only: [] do
+        resources :answer_attachments, only: %i[show create destroy]
+      end
 
       get 'welcome', to: 'base#welcome'
       post 'auth/token'
       post 'auth/revoke'
+      post 'tickets/publish', to: 'tickets#publish'
     end
   end
 end

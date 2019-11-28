@@ -11,7 +11,11 @@ class AnswerAttachmentUploader < CarrierWave::Uploader::Base
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
     # "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
-    Rails.root + "storage/uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    if Rails.env.test?
+      Rails.root + "spec/uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    else
+      Rails.root + "storage/uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    end
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -34,9 +38,9 @@ class AnswerAttachmentUploader < CarrierWave::Uploader::Base
   #   process resize_to_fit: [50, 50]
   # end
 
-  def extension_whitelist
-    %w[jpg jpeg png pdf doc docx xls xlsx txt]
-  end
+  # def extension_whitelist
+  #   %w[jpg jpeg png pdf doc docx xls xlsx ppt pptx txt zip gif]
+  # end
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.

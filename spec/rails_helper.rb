@@ -59,6 +59,12 @@ RSpec.configure do |config|
   #   end
   # end
 
+  config.after(:each) do
+    if Rails.env.test? || Rails.env.cucumber?
+      FileUtils.rm_rf(Dir["#{Rails.root}/spec/uploads/answer_attachment"])
+    end
+  end
+
   config.before(:each, transactional: true) do
     # Default to transaction strategy for all specs
     DatabaseCleaner.strategy = :transaction
@@ -76,6 +82,9 @@ RSpec.configure do |config|
   config.append_after(:each) do
     DatabaseCleaner.clean
   end
+
+  config.before(:each) { ReadCache.redis.flushdb }
+  config.after(:each) { ReadCache.redis.quit }
 
   # config.append_after(:suite, sphinx: true) do
   #   ThinkingSphinx::Test.stop

@@ -9,7 +9,7 @@ module Api
         items = SvtApi.items(current_user).body
         services = ServicesQuery.new.allowed_to_create_case
 
-        render json: UserOwns.new(items, services), serializer: UserOwnsSerializer
+        render json: UserOwns.new(items, services)
       end
 
       def notifications

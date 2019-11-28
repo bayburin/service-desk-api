@@ -24,11 +24,24 @@ module Api
         end
 
         it 'return instance of ActiveRecord::Relation' do
-          expect(subject.by_popularity).to be_kind_of(ActiveRecord::Relation)
+          expect(subject.visible).to be_kind_of(ActiveRecord::Relation)
         end
 
         it 'return only record with attribute :is_hidden setted to false' do
           subject.visible.each { |service| expect(service.is_hidden).to be_falsey }
+        end
+      end
+
+      describe '#by_responsible' do
+        let(:service) { create(:service) }
+        let(:user) { create(:service_responsible_user, services: [service]) }
+
+        it 'return instance of ActiveRecord::Relation' do
+          expect(subject.by_responsible(user)).to be_kind_of(ActiveRecord::Relation)
+        end
+
+        it 'return services belongs to user' do
+          expect(subject.by_responsible(user).first).to eq service
         end
       end
     end

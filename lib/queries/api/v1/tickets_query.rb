@@ -1,6 +1,8 @@
 module Api
   module V1
     class TicketsQuery < ApplicationQuery
+      delegate :visible, to: :all
+
       def initialize(scope = Ticket.all)
         @scope = scope
       end
@@ -9,9 +11,15 @@ module Api
         tickets.by_popularity
       end
 
-      def visible
-        tickets.visible.by_popularity
+      def by_responsible(user)
+        all.by_responsible(user).or(visible)
       end
+
+      def all_in_service(service)
+        all.where(service: service)
+      end
+
+      # visible.or(where())
 
       private
 

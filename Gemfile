@@ -5,6 +5,7 @@ gem 'active_model_serializers'
 gem 'ahoy_matey'
 gem 'awesome_print'
 gem 'carrierwave'
+gem 'carrierwave-i18n'
 gem 'colorize'
 gem 'devise'
 gem 'dotenv-rails'
@@ -52,6 +53,8 @@ gem 'rack-cors'
 
 group :development, :test do
   gem 'action-cable-testing'
+  gem 'factory_bot_rails'
+  gem 'faker'
   gem 'fuubar'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -63,6 +66,7 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 
+  gem 'bullet'
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
@@ -74,8 +78,6 @@ end
 
 group :test do
   gem 'database_cleaner'
-  gem 'factory_bot_rails'
-  gem 'faker'
   gem 'json_spec'
   gem 'rails-controller-testing'
   gem 'rspec-its'
