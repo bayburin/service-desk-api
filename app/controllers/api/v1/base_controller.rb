@@ -5,10 +5,12 @@ module Api
 
       before_action :authenticate_user!
 
-      protected
+      def welcome
+        render :nothing
+      end
 
-      def access_token
-        request.headers['Authorization'].to_s.remove('Bearer ')
+      rescue_from Pundit::NotAuthorizedError do |_exception|
+        render json: I18n.t('controllers.app.access_denied'), status: :forbidden
       end
     end
   end

@@ -13,7 +13,8 @@ module Api
       subject { CaseSaveDecorator.new(kase) }
 
       before do
-        stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json').to_return(status: 200, body: '', headers: {})
+        stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json')
+          .to_return(status: 200, body: '', headers: {})
       end
 
       context 'when ticket_id is not defined' do

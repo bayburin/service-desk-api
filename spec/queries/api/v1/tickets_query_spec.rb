@@ -5,7 +5,7 @@ module Api
     RSpec.describe TicketsQuery, type: :model do
       let(:service) { create(:service) }
       let!(:tickets) { create_list(:ticket, 5, service: service) }
-      let!(:ticket) { create(:ticket, ticket_type: :common_case) }
+      let!(:common_ticket) { create(:ticket, ticket_type: :common_case, service: service) }
       let(:scope) { service.tickets }
       subject { TicketsQuery.new(scope) }
 
@@ -29,7 +29,7 @@ module Api
 
       describe '#all' do
         it 'loads all tickets except tickets with :common_case type' do
-          expect(subject.all.count).to eq service.tickets.count
+          expect(subject.all.count).to eq service.tickets.where(ticket_type: :question).count
         end
 
         it 'runs scope :by_popularity' do
@@ -40,16 +40,42 @@ module Api
       end
 
       describe '#visible' do
+        let!(:hidden_ticket) { create(:ticket, is_hidden: true, service: service) }
+
+        it 'loads all tickets except tickets with :common_case type and :is_hidden attribute' do
+          expect(subject.visible.count).to eq service.tickets.where(ticket_type: :question).count - 1
+          expect(subject.visible).not_to include(hidden_ticket)
+        end
+
         it 'runs scope :visible' do
           expect(subject).to receive(:visible).and_call_original
 
           subject.visible
         end
+      end
 
-        it 'runs scope :by_popularity' do
-          expect(subject).to receive_message_chain(:tickets, :visible, :by_popularity)
+      describe '#by_responsible' do
+        let!(:new_ticket) { create(:ticket, service: service, is_hidden: true) }
+        let!(:hidden_ticket) { create(:ticket, is_hidden: true, service: service) }
+        let!(:user) { create(:service_responsible_user, tickets: [new_ticket]) }
 
-          subject.visible
+        it 'returns all records in which user is responsible and all visible records' do
+          expect(subject.by_responsible(user).length).to eq 8
+          expect(subject.by_responsible(user)).to include(new_ticket)
+          expect(subject.by_responsible(user)).not_to include(hidden_ticket)
+        end
+      end
+
+      describe 'all_in_service' do
+        let!(:ticket) { create(:ticket, is_hidden: true, service: service) }
+        let!(:extra_service) { create(:service) }
+        let!(:service_tickets) { service.tickets.where(ticket_type: :question) }
+        let(:result) { subject.all_in_service(service) }
+
+        it 'returns all tickets from specified service' do
+          expect(result.length).to eq service_tickets.count
+          expect(result).to include(*service_tickets, ticket)
+          expect(result).not_to include(*extra_service.tickets)
         end
       end
     end

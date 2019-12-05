@@ -10,11 +10,33 @@ RSpec.describe Service, type: :model do
     expect(subject.singleton_class.ancestors).to include(Associatable)
   end
 
+  it 'includes Belongable module' do
+    expect(subject.singleton_class.ancestors).to include(Belongable)
+  end
+
   describe '#calculate_popularity' do
     let(:service) { create(:service) }
 
     it 'calculate popularity based on nested services' do
       expect(service.calculate_popularity).to eq service.tickets.pluck(:popularity).reduce(:+)
+    end
+  end
+
+  describe '#belongs_by_tickets_to?' do
+    subject { create(:service) }
+    let(:ticket) { create(:ticket, service: subject) }
+    let(:user) { create(:user) }
+
+    context 'when ticket belongs to user' do
+      before { user.tickets << ticket }
+
+      it 'returns true' do
+        expect(subject.belongs_by_tickets_to?(user)).to be_truthy
+      end
+    end
+
+    it 'returns false' do
+      expect(subject.belongs_by_tickets_to?(user)).to be_falsey
     end
   end
 end

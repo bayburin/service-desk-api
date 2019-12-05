@@ -21,8 +21,6 @@ module Api
       end
 
       def api_const
-        const_get(:API_ENDPOINT)
-      rescue NameError
         self.class.const_get(:API_ENDPOINT)
       end
 
@@ -39,8 +37,6 @@ module Api
 
         def api_const
           const_get(:API_ENDPOINT)
-        rescue NameError
-          self.class.const_get(:API_ENDPOINT)
         end
       end
     end

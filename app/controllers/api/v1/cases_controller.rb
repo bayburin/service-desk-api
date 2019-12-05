@@ -12,7 +12,7 @@ module Api
       end
 
       def create
-        kase = Case.new(cases_params)
+        kase = Tickets::TicketFactory.create(:case, cases_params)
         authorize kase
 
         case_decorator = CaseSaveDecorator.new(kase)
@@ -23,7 +23,7 @@ module Api
       end
 
       def update
-        kase = Case.new(cases_params)
+        kase = Tickets::TicketFactory.create(:case, cases_params)
         authorize kase
 
         logger.debug { "Case before update: #{kase}" }

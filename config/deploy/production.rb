@@ -1,6 +1,7 @@
 set :application, 'service-desk-api'
 set :deploy_to, "/var/www/#{fetch(:application)}"
 set :branch, 'master'
+server 'service-desk', user: 'deployer', roles: %w[web app db]
 
 # server-based syntax
 # ======================

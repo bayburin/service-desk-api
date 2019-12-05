@@ -10,11 +10,11 @@ module Api
 
     RSpec.describe Connection do
       describe 'instance method' do
-        subject { FooClass }
+        subject { FooClass.new }
 
         describe '#connect' do
           it 'returns instance of Faraday' do
-            expect(subject.new.connect).to be_instance_of(Faraday::Connection)
+            expect(subject.connect).to be_instance_of(Faraday::Connection)
           end
         end
       end

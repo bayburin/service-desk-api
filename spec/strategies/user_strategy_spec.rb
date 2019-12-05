@@ -22,7 +22,7 @@ RSpec.describe UserStrategy, type: :model do
 
     context 'when tn is nil and in database exists guest user' do
       before do
-        create(:guest_user)
+        create(:guest_user, tn: nil, id_tn: nil)
         allow(user).to receive(:tn).and_return(nil)
       end
 

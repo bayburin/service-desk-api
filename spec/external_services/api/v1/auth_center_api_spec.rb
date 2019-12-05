@@ -25,7 +25,10 @@ module Api
           }
         end
 
-        before { stub_request(:post, 'https://auth-center.iss-reshetnev.ru/oauth/token').to_return(status: 200, body: '', headers: {}) }
+        before do
+          stub_request(:post, 'https://auth-center.iss-reshetnev.ru/oauth/token')
+            .to_return(status: 200, body: '', headers: {})
+        end
 
         it 'sends :post request with required params in body' do
           subject.access_token(auth_code)
@@ -42,7 +45,10 @@ module Api
         let(:access_token) { 'fake_access_token' }
         let(:headers) { { 'Authorization' => "Bearer #{access_token}" } }
 
-        before { stub_request(:get, 'https://auth-center.iss-reshetnev.ru/api/module/main/login_info').to_return(status: 200, body: '', headers: {}) }
+        before do
+          stub_request(:get, 'https://auth-center.iss-reshetnev.ru/api/module/main/login_info')
+            .to_return(status: 200, body: '', headers: {})
+        end
 
         it 'sends :get request with required headers' do
           subject.user_info(access_token)

@@ -1,4 +1,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
+require 'simplecov'
+SimpleCov.start 'rails'
+
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
@@ -10,6 +13,7 @@ require 'webmock/rspec'
 require 'thinking_sphinx/test'
 require 'pundit/rspec'
 require 'sidekiq/testing'
+require 'action_cable/testing/rspec'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
@@ -48,12 +52,43 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
   end
 
-  # start the transaction strategy as examples are run
-  config.around(:each) do |example|
-    DatabaseCleaner.cleaning do
-      example.run
+  # # start the transaction strategy as examples are run
+  # config.around(:each) do |example|
+  #   DatabaseCleaner.cleaning do
+  #     example.run
+  #   end
+  # end
+
+  config.after(:each) do
+    if Rails.env.test? || Rails.env.cucumber?
+      FileUtils.rm_rf(Dir["#{Rails.root}/spec/uploads/answer_attachment"])
     end
   end
+
+  config.before(:each, transactional: true) do
+    # Default to transaction strategy for all specs
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:each, transactional: true) do
+    # For tests tagged with Sphinx, use deletion (or truncation)
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.append_after(:each) do
+    DatabaseCleaner.clean
+  end
+
+  config.before(:each) { ReadCache.redis.flushdb }
+  config.after(:each) { ReadCache.redis.quit }
+
+  # config.append_after(:suite, sphinx: true) do
+  #   ThinkingSphinx::Test.stop
+  # end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -93,5 +128,5 @@ Shoulda::Matchers.configure do |config|
   end
 end
 WebMock.disable_net_connect!
-ThinkingSphinx::Deltas.suspend!
+# ThinkingSphinx::Deltas.suspend!
 Sidekiq::Testing.inline!

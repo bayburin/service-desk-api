@@ -5,6 +5,7 @@ module Api
     RSpec.describe QuestionsQuery, type: :model do
       let!(:tickets) { create_list(:ticket, 7) }
       let!(:ticket) { create(:ticket, ticket_type: :common_case) }
+      let!(:correction) { create(:ticket, original: tickets.first, state: :draft) }
 
       it 'inherits from TicketsQuery class' do
         expect(QuestionsQuery).to be < TicketsQuery
@@ -30,21 +31,30 @@ module Api
         end
 
         it 'runs scope :by_popularity' do
-          expect(subject).to receive_message_chain(:questions, :visible, :includes, :by_popularity)
+          expect(subject).to receive_message_chain(:questions, :visible, :by_popularity)
 
           subject.visible
         end
       end
 
       describe '#most_popular' do
-        it 'runs :visible method' do
-          expect(subject).to receive(:visible).and_call_original
+        it 'runs :visible and :published method' do
+          expect(subject).to receive_message_chain(:visible, :published, :by_visible_service, :limit)
 
           subject.most_popular
         end
 
         it 'limits scope by 5 records' do
           expect(subject.most_popular.count).to eq 5
+        end
+      end
+
+      describe '#waiting_for_publish' do
+        it 'should return tickets with draft state and specified id' do
+          subject.waiting_for_publish(correction.id).each do |t|
+            expect(t.draft_state?).to be_truthy
+            expect(t.id).to eq correction.id
+          end
         end
       end
     end
