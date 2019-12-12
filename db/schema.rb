@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_03_011845) do
+ActiveRecord::Schema.define(version: 2019_12_12_035459) do
 
   create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "visit_id"
@@ -165,7 +165,9 @@ ActiveRecord::Schema.define(version: 2019_09_03_011845) do
 
   create_table "user_recommendations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "title"
+    t.boolean "external", default: false
     t.string "link"
+    t.json "query_params"
     t.integer "order"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
