@@ -274,7 +274,7 @@ RSpec.describe ServicePolicy do
         end
 
         it 'sets :serialize attribute' do
-          expect(policy.serialize).to eq ['category', 'tickets.answers.attachments']
+          expect(policy.serialize).to eq ['category', 'tickets.answers.attachments', 'tickets.service']
         end
       end
     end
@@ -303,7 +303,7 @@ RSpec.describe ServicePolicy do
       end
 
       it 'sets :serialize attribute' do
-        expect(policy.serialize).to eq ['category', 'tickets.answers.attachments']
+        expect(policy.serialize).to eq ['category', 'tickets.answers.attachments', 'tickets.service']
       end
     end
 
@@ -315,7 +315,7 @@ RSpec.describe ServicePolicy do
       end
 
       it 'sets :serialize attribute' do
-        expect(policy.serialize).to eq ['category', 'tickets.answers.attachments']
+        expect(policy.serialize).to eq ['category', 'tickets.answers.attachments', 'tickets.service']
       end
     end
   end
