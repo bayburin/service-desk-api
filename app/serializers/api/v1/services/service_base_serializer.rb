@@ -7,7 +7,7 @@ module Api
         has_many :tickets, if: :include_associations?, serializer: Tickets::TicketSerializer do |serializer|
           TicketPolicy::Scope.new(serializer.current_user, serializer.object.tickets).resolve_by(serializer.object)
         end
-        has_many :responsible_users, if: :include_associations?
+        has_many :responsible_users, if: :include_associations?, serializer: ResponsibleUserSerializer
 
         belongs_to :category, if: :include_associations?, serializer: Categories::CategoryBaseSerializer
 
