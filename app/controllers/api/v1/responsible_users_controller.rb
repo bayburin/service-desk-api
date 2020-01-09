@@ -4,8 +4,14 @@ module Api
       before_action :authorize_ctrl
 
       def index
-        data = Employees::Employee.new(:exact).load_users(tns: JSON.parse(params[:tns]))
-        details = data ? data['data'].map { |detail| Api::V1::ResponsibleUserDetails.new(detail) } : []
+        tns = JSON.parse(params[:tns])
+
+        details = if tns.is_a?(Array) && tns.any?
+                    data = Employees::Employee.new(:exact).load_users(tns: JSON.parse(params[:tns]))
+                    data ? data['data'].map { |detail| Api::V1::ResponsibleUserDetails.new(detail) } : []
+                  else
+                    []
+                  end
 
         render json: details
       end

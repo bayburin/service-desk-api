@@ -33,6 +33,16 @@ module Api
 
           expect(response.status).to eq 200
         end
+
+        context 'when array of params is empty' do
+          let(:params) { { tns: JSON.generate([]) } }
+
+          it 'does not call #load_users method for Employees::Employee instance' do
+            expect_any_instance_of(Employees::Employee).not_to receive(:load_users)
+
+            get :index, params: params, format: :json
+          end
+        end
       end
 
       describe 'GET #search' do
