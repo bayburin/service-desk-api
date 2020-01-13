@@ -8,7 +8,7 @@ module Api
 
         details = if tns.is_a?(Array) && tns.any?
                     data = Employees::Employee.new(:exact).load_users(tns: JSON.parse(params[:tns]))
-                    data ? data['data'].map { |detail| Api::V1::ResponsibleUserDetails.new(detail) } : []
+                    data ? data['data'].map { |detail| Api::V1::UserDetails.new(detail) } : []
                   else
                     []
                   end
@@ -18,7 +18,7 @@ module Api
 
       def search
         data = Employees::Employee.new(:like).load_users(params)
-        details = data ? data['data'].map { |detail| Api::V1::ResponsibleUserDetails.new(detail) } : []
+        details = data ? data['data'].map { |detail| Api::V1::UserDetails.new(detail) } : []
 
         render json: details
       end

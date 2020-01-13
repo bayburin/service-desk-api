@@ -1,10 +1,9 @@
 module Api
   module V1
-    class ResponsibleUserDetails
-      # include ActiveModel::Model
+    class UserDetails
       include ActiveModel::Serialization
 
-      attr_reader :id_tn, :last_name, :first_name, :middle_name, :full_name, :tn, :dept, :phone
+      attr_reader :id_tn, :last_name, :first_name, :middle_name, :full_name, :tn, :dept, :phone, :email
 
       def initialize(attributes)
         @id_tn = attributes['id']
@@ -15,6 +14,7 @@ module Api
         @tn = attributes['personnelNo']
         @dept = attributes['deptForDocs']
         @phone = attributes['phoneText']
+        @email = attributes['emailText']
       end
     end
   end

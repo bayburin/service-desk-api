@@ -22,8 +22,8 @@ module Api
           get :index, params: params, format: :json
         end
 
-        it 'respond with ResponsibleUserDetails serializer called' do
-          expect(ResponsibleUserDetailsSerializer).to receive(:new).exactly(result['data'].length).times.and_call_original
+        it 'respond with UserDetails serializer called' do
+          expect(UserDetailsSerializer).to receive(:new).exactly(result['data'].length).times.and_call_original
 
           get :index, params: params, format: :json
         end
@@ -58,8 +58,8 @@ module Api
           get :search, params: params, format: :json
         end
 
-        it 'respond with ResponsibleUserDetails serializer called' do
-          expect(ResponsibleUserDetailsSerializer).to receive(:new).exactly(result['data'].length).times.and_call_original
+        it 'respond with UserDetails serializer called' do
+          expect(UserDetailsSerializer).to receive(:new).exactly(result['data'].length).times.and_call_original
 
           get :search, params: params, format: :json
         end

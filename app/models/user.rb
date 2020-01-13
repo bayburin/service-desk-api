@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Api::V1::UserDetailable
+
   devise
 
   attr_accessor :dept, :fio, :room, :tel, :email, :comment, :duty, :status, :datereg, :duty_code, :fio_initials, :category, :login, :dept_kadr, :ms, :tn_ms, :adLogin, :mail
@@ -23,6 +25,13 @@ class User < ApplicationRecord
     finded_user = strategy.search_user(user_attrs)
     finded_user.merge_attrs(user_attrs)
     finded_user
+  end
+
+  def self.load_details(tns)
+    return [] if !tns.is_a?(Array) || tns.empty?
+
+    data = Api::V1::Employees::Employee.new(:exact).load_users(tns: tns)
+    data ? data['data'] : []
   end
 
   def merge_attrs(user_attrs)
