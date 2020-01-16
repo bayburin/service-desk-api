@@ -6,6 +6,7 @@ module Api
       sign_in_user
 
       let(:astraea_url) { 'https://astraea-ui.iss-reshetnev.ru/api' }
+      before { allow(subject).to receive(:authorize).and_return(true) }
 
       describe 'GET #index' do
         let(:kase) { attributes_for(:case) }

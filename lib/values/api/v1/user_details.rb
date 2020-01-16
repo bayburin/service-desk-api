@@ -6,6 +6,8 @@ module Api
       attr_reader :id_tn, :last_name, :first_name, :middle_name, :full_name, :tn, :dept, :phone, :email
 
       def initialize(attributes)
+        return unless attributes
+
         @id_tn = attributes['id']
         @last_name = attributes['lastName']
         @first_name = attributes['firstName']

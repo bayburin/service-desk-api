@@ -109,10 +109,19 @@ module Api
         let(:params) { { service_id: ticket.service.id, id: ticket.id, ticket: ticket_params } }
         let(:decorator) { TicketDecorator.new(ticket) }
 
-        before { allow(TicketDecorator).to receive(:new).with(ticket).and_return(decorator) }
+        before do
+          allow(TicketDecorator).to receive(:new).with(ticket).and_return(decorator)
+          allow(NotifyContentManagersWorker).to receive(:perform_async)
+        end
 
         it 'calls update_by_state method' do
           expect(decorator).to receive(:update_by_state).and_return(true)
+
+          put :update, params: params, format: :json
+        end
+
+        it 'calls NotifyContentManagersWorker worker with id of ticket' do
+          expect(NotifyContentManagersWorker).to receive(:perform_async).with(ticket.id, subject.current_user.id)
 
           put :update, params: params, format: :json
         end

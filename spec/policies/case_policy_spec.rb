@@ -17,8 +17,8 @@ RSpec.describe CasePolicy do
 
   permissions :create? do
     context 'when tn is matched' do
-      let(:kase) { build(:case) }
-      let(:user) { build(:user) }
+      let(:user) { create(:user) }
+      let(:kase) { build(:case, user: user) }
 
       it 'grant access' do
         expect(subject).to permit(user, kase)
@@ -27,7 +27,7 @@ RSpec.describe CasePolicy do
 
     context 'when tn is not matched' do
       let(:kase) { build(:case) }
-      let(:user) { build(:user, tn: 1234) }
+      let(:user) { build(:user, tn: -1234) }
 
       it 'deny access' do
         expect(subject).not_to permit(user, kase)
@@ -37,8 +37,8 @@ RSpec.describe CasePolicy do
 
   permissions :update? do
     context 'when tn is matched' do
-      let(:kase) { build(:case) }
-      let(:user) { build(:user) }
+      let(:user) { create(:user) }
+      let(:kase) { build(:case, user: user) }
 
       it 'grant access' do
         expect(subject).to permit(user, kase)
@@ -47,7 +47,7 @@ RSpec.describe CasePolicy do
 
     context 'when tn is not matched' do
       let(:kase) { build(:case) }
-      let(:user) { build(:user, tn: 1234) }
+      let(:user) { build(:user, tn: -1234) }
 
       it 'deny access' do
         expect(subject).not_to permit(user, kase)

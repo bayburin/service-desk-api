@@ -1,11 +1,12 @@
 FactoryBot.define do
   factory :user do
-    id_tn { -110 }
-    tn { 100_123 }
+    id_tn { Faker::Number.number(6) }
+    tn { Faker::Number.number(6) }
     fio { 'Форточкина Клавдия Ивановна' }
     tel { '41-85' }
     dept { 714 }
     email { 'fortochkina' }
+    details { { id: -110, emailText: 'bayburin@iss-reshetnev.ru' }.as_json }
 
     transient do
       role_name { :guest }
