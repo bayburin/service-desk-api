@@ -36,7 +36,7 @@ module Api
 
         if decorated_ticket.update_by_state(attributive_params)
           policy_attributes = policy(Ticket).attributes_for_show
-          NotifyContentManagersWorker.perform_async(decorated_ticket.original.try(:id) || decorated_ticket.id, current_user.id)
+          NotifyContentManagersWorker.perform_async(decorated_ticket.original.try(:id) || decorated_ticket.id, current_user.id) if policy(current_user).send_ticket_notification?
 
           render json: decorated_ticket, serializer: policy_attributes.serializer, include: policy_attributes.serialize
         else
