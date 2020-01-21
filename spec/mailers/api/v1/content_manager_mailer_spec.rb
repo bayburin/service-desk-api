@@ -6,7 +6,7 @@ module Api
       let(:operator) { create(:operator_user) }
       let(:manager) { create(:content_manager_user) }
       let(:ticket) { create(:ticket, correction: create(:ticket)) }
-      let(:mail) { ContentManagerMailer.question_changed_email(manager, ticket, operator) }
+      let(:mail) { ContentManagerMailer.question_updated_email(manager, ticket, operator, '') }
 
       it 'renders the subject' do
         expect(mail.subject).to eq("Портал \"Техподдержка УИВТ\": вопрос №#{ticket.id} изменен")
@@ -17,7 +17,7 @@ module Api
       end
 
       it 'renders the sender email' do
-        expect(mail.from).to eq(['monitoring@iss-reshetnev.ru'])
+        expect(mail.from).to eq(['uivt06@iss-reshetnev.ru'])
       end
     end
   end

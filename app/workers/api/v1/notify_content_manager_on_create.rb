@@ -1,13 +1,13 @@
 module Api
   module V1
-    class NotifyContentManagerWorker
+    class NotifyContentManagerOnCreate
       include Sidekiq::Worker
 
-      def perform(user_id, ticket_id, current_user_id)
+      def perform(user_id, ticket_id, current_user_id, origin)
         delivery_user = User.find(user_id).load_details
         ticket = Ticket.find(ticket_id)
         current_user = User.find(current_user_id).load_details
-        ReportSender.new(delivery_user, ticket, current_user).send_report(Tickets::TicketChangedEmailSender.new)
+        ReportSender.new(delivery_user, ticket, current_user, origin).send_report(Tickets::TicketCreatedEmailSender.new)
       end
     end
   end

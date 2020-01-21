@@ -13,6 +13,10 @@ module Api
         ticket_state.publish
       end
 
+      def link_to_admin_ui(origin)
+        "#{origin}/categories/#{service.category.id}/services/#{service.id}/admin/tickets?ticket=#{id}"
+      end
+
       protected
 
       def ticket_state

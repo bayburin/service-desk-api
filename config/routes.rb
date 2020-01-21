@@ -1,9 +1,14 @@
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+  Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
+
   devise_for :users
 
   root to: 'application#welcome'
 
   mount ActionCable.server => '/cable'
+  # mount Sidekiq::Web => '/sidekiq'
+
   namespace :api, constraints: { format: 'json' } do
     namespace :v1 do
       resources :dashboard, only: :index do

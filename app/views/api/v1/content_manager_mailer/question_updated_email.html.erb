@@ -6,11 +6,11 @@
   <body>
     <p>
       На портале "Техподдержка УИВТ" изменен вопрос:
-      <a href="https://inv-dev.iss-reshetnev.ru:4200/categories/<%= @ticket.service.category.id %>/services/<%= @ticket.service.id %>?ticket=<%= @ticket.id %>">
+      <a href="<%= @ticket.link_to_admin_ui(@origin) %>">
         <%= @ticket.name %>
       </a>
     </p>
     <p>в разделе <strong><%= @ticket.service.category.name %></strong> → <strong><%= @ticket.service.name %></strong></p>
-    <p>ответственным <%= @current_user.details.full_name %> <%= @ticket.correction.updated_at.strftime('%d.%m.%Y %H:%M') %></p>
+    <p>ответственным <%= @current_user.details.full_name %> <%= @updated_date.strftime('%d.%m.%Y %H:%M') %></p>
   </body>
 </html>

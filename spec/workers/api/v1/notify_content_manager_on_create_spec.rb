@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe NotifyContentManagerWorker, type: :worker do
+    RSpec.describe NotifyContentManagerOnUpdate, type: :worker do
       let(:ticket) { create(:ticket) }
       let!(:operator) { create(:operator_user) }
       let!(:manager) { create(:content_manager_user) }
@@ -19,25 +19,25 @@ module Api
       it 'find user with specified id' do
         expect(User).to receive(:find).with(manager.id).and_return(manager)
 
-        subject.perform(manager.id, ticket.id, operator.id)
+        subject.perform(manager.id, ticket.id, operator.id, '')
       end
 
       it 'calls #load_details method for finded user' do
         expect(manager).to receive(:load_details)
 
-        subject.perform(manager.id, ticket.id, operator.id)
+        subject.perform(manager.id, ticket.id, operator.id, '')
       end
 
       it 'creates instance of ReportSender' do
-        expect(ReportSender).to receive(:new).with(manager, ticket, operator).and_return(sender)
+        expect(ReportSender).to receive(:new).with(manager, ticket, operator, '').and_return(sender)
 
-        subject.perform(manager.id, ticket.id, operator.id)
+        subject.perform(manager.id, ticket.id, operator.id, '')
       end
 
       it 'calls #send_report method for ReportSender instance' do
-        expect(sender).to receive(:send_report).with(an_instance_of(Tickets::TicketChangedEmailSender))
+        expect(sender).to receive(:send_report).with(an_instance_of(Tickets::TicketUpdatedEmailSender))
 
-        subject.perform(manager.id, ticket.id, operator.id)
+        subject.perform(manager.id, ticket.id, operator.id, '')
       end
     end
   end
