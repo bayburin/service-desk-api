@@ -15,6 +15,10 @@ module Api
         def publish
           raise 'Необходимо реализовать метод publish'
         end
+
+        def destroy
+          raise 'Необходимо реализовать метод destroy'
+        end
       end
     end
   end

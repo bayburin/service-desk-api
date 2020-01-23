@@ -146,6 +146,35 @@ module Api
         end
       end
 
+      describe 'DELETE #destroy' do
+        let!(:ticket) { create(:ticket) }
+        let(:params) { { service_id: ticket.service.id, id: ticket.id } }
+        let(:decorator) { TicketDecorator.new(ticket) }
+        before { allow(TicketDecorator).to receive(:new).with(ticket).and_return(decorator) }
+
+        it 'calls destroy_by_state method' do
+          expect(decorator).to receive(:destroy_by_state).and_return(true)
+
+          delete :destroy, params: params, format: :json
+        end
+
+        it 'respond with 200 status' do
+          delete :destroy, params: params, format: :json
+
+          expect(response.status).to eq 200
+        end
+
+        context 'when ticket was not updated' do
+          before { expect(decorator).to receive(:destroy_by_state).and_return(false) }
+
+          it 'respond with 422 status' do
+            delete :destroy, params: params, format: :json
+
+            expect(response.status).to eq 422
+          end
+        end
+      end
+
       describe 'POST #raise_rating' do
         let(:service) { create(:service) }
         let(:tickets) { create_list(:ticket, 3, service: service) }

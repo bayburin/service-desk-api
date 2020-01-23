@@ -46,6 +46,18 @@ module Api
         end
       end
 
+      def destroy
+        ticket = Service.find(params[:service_id]).tickets.find(params[:id])
+        authorize ticket
+        decorated_ticket = TicketDecorator.new(ticket)
+
+        if decorated_ticket.destroy_by_state
+          render json: ticket
+        else
+          render json: ticket.errors, status: :unprocessable_entity
+        end
+      end
+
       def raise_rating
         ticket = Ticket.find_by(service_id: params[:service_id], id: params[:id])
         authorize ticket

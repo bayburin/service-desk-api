@@ -50,6 +50,46 @@ module Api
         end
       end
 
+      describe '#destroy_by_state' do
+        context 'when ticket has published state' do
+          before do
+            ticket.state = :published
+            allow_any_instance_of(Api::V1::Tickets::PublishedState).to receive(:destroy).and_return(true)
+          end
+
+          it 'creates Api::V1::Tickets::PublishedState instance' do
+            expect(Api::V1::Tickets::PublishedState).to receive(:new).with(subject).and_call_original
+
+            subject.destroy_by_state
+          end
+
+          it 'calls destroy method for Api::V1::Tickets::PublishedState instance' do
+            expect_any_instance_of(Api::V1::Tickets::PublishedState).to receive(:destroy).and_return(true)
+
+            subject.destroy_by_state
+          end
+        end
+
+        context 'when ticket has draft state' do
+          before do
+            subject.state = :draft
+            allow_any_instance_of(Api::V1::Tickets::DraftState).to receive(:destroy).and_return(true)
+          end
+
+          it 'creates Api::V1::Tickets::DraftState instance' do
+            expect(Api::V1::Tickets::DraftState).to receive(:new).with(subject).and_call_original
+
+            subject.destroy_by_state
+          end
+
+          it 'calls destroy method for Api::V1::Tickets::DraftState instance' do
+            expect_any_instance_of(Api::V1::Tickets::DraftState).to receive(:destroy).and_return(true)
+
+            subject.destroy_by_state
+          end
+        end
+      end
+
       describe '#publish' do
         before { ticket.published_state! }
 

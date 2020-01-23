@@ -9,6 +9,10 @@ module Api
         ticket_state.update(attributes) ? reload : false
       end
 
+      def destroy_by_state
+        ticket_state.destroy
+      end
+
       def publish
         ticket_state.publish
       end
