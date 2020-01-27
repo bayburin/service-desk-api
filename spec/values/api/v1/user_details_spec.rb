@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe ResponsibleUserDetails, type: :model do
+    RSpec.describe UserDetails, type: :model do
       let(:params) do
         {
           id: 123,
@@ -12,10 +12,11 @@ module Api
           fullName: 'Федоров Максим Евгеньевич',
           personnelNo: 876,
           deptForDocs: 999,
-          phoneText: '32-32'
+          phoneText: '32-32',
+          emailText: 'test@iss-reshetnev.ru'
         }.as_json
       end
-      subject { ResponsibleUserDetails.new(params) }
+      subject { UserDetails.new(params) }
 
       it 'fills attributes' do
         expect(subject.id_tn).to eq params['id']
@@ -26,6 +27,7 @@ module Api
         expect(subject.tn).to eq params['personnelNo']
         expect(subject.dept).to eq params['deptForDocs']
         expect(subject.phone).to eq params['phoneText']
+        expect(subject.email).to eq params['emailText']
       end
     end
   end

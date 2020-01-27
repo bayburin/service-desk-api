@@ -1,4 +1,7 @@
-
+:concurrency: 1
+:queues:
+  - default
+  - mailers
 :schedule:
   calculate_popularity_worker:
     # every: ["20s"]
@@ -11,7 +14,3 @@
     every: '60m'
     class: UpdateIndicesWorker
     description: 'Обновление индексов Sphinx'
-
-:queues:
-  - default
-  - mailers

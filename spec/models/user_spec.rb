@@ -11,6 +11,10 @@ RSpec.describe User, type: :model do
   it { is_expected.to validate_uniqueness_of(:tn).allow_nil }
   it { is_expected.to validate_uniqueness_of(:id_tn).allow_nil }
 
+  it 'includes Api::V1::UserDetailable module' do
+    expect(subject.singleton_class.ancestors).to include(Api::V1::UserDetailable)
+  end
+
   describe '::authenticate' do
     let!(:user) { create(:guest_user) }
     let(:user_attrs) { { tn: 17_664 } }

@@ -16,7 +16,7 @@ module Api
       end
 
       describe '#details' do
-        before { responsible.details = {} }
+        before { responsible.details = { dept: 714 } }
 
         it 'creates ActiveModelSerializers::SerializableResource instance' do
           expect(ActiveModelSerializers::SerializableResource).to receive(:new).with(responsible.details).and_call_original

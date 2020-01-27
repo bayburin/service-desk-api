@@ -7,15 +7,19 @@ module Api
         end
 
         def publish
-          if @ticket.original
-            popularity = @ticket.original.popularity
+          if ticket.original
+            popularity = ticket.original.popularity
 
             Ticket.transaction do
-              @ticket.original.destroy && @ticket.update(state: :published, popularity: popularity)
+              ticket.original.destroy && ticket.update(state: :published, popularity: popularity)
             end
           else
-            @ticket.update(state: :published)
+            ticket.update(state: :published)
           end
+        end
+
+        def destroy
+          ticket.destroy
         end
       end
     end

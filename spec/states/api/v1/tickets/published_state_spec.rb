@@ -50,6 +50,31 @@ module Api
             expect { subject.publish }.to raise_error(RuntimeError, 'Вопрос уже опубликован')
           end
         end
+
+        describe '#destroy' do
+          context 'when ticket has correction' do
+            let(:correction) { create(:ticket) }
+            before { ticket.correction = correction }
+
+            it 'destroys correction and ticket' do
+              expect { subject.destroy }.to change { Ticket.count }.by(-2)
+            end
+
+            context 'when correction was not destroyed' do
+              before { allow(correction).to receive(:destroy).and_return(false) }
+
+              it 'does not destroy original' do
+                expect { subject.destroy }.not_to change { Ticket.count }
+              end
+            end
+          end
+
+          context 'when ticket does not have correction' do
+            it 'destroys ticket' do
+              expect { subject.destroy }.to change { Ticket.count }.by(-1)
+            end
+          end
+        end
       end
     end
   end

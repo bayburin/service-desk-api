@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <p>
+      На портал "Техподдержка УИВТ" добавлен вопрос:
+      <a href="<%= @ticket.link_to_admin_ui(@origin) %>">
+        <%= @ticket.name %>
+      </a>
+    </p>
+    <p>в разделе <strong><%= @ticket.service.category.name %></strong> → <strong><%= @ticket.service.name %></strong></p>
+    <p>ответственным <%= @current_user.details.full_name %> <%= @ticket.updated_at.strftime('%d.%m.%Y %H:%M') %></p>
+  </body>
+</html>

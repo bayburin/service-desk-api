@@ -66,6 +66,12 @@ module Api
             end
           end
         end
+
+        describe '#destroy' do
+          it 'destroys ticket' do
+            expect { subject.destroy }.to change { Ticket.count }.by(-1)
+          end
+        end
       end
     end
   end

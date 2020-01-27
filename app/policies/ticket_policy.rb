@@ -7,6 +7,10 @@ class TicketPolicy < ApplicationPolicy
     end
   end
 
+  def destroy?
+    user.role? :content_manager
+  end
+
   def raise_rating?
     record.published_state?
   end
