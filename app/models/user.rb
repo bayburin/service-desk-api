@@ -22,7 +22,7 @@ class User < ApplicationRecord
       )
     )
 
-    finded_user = strategy.search_user(user_attrs)
+    finded_user = strategy.search_user(user_attrs.as_json)
     finded_user.merge_attrs(user_attrs)
     finded_user
   end

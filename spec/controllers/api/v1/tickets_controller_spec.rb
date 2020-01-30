@@ -124,7 +124,7 @@ module Api
 
         it 'calls NotifyContentManagersWorker worker with id of ticket' do
           allow_any_instance_of(UserPolicy).to receive(:send_ticket_notification?).and_return(true)
-          expect(NotifyContentManagersWorker).to receive(:perform_async).with(ticket.id, subject.current_user.id, 'update', nil)
+          expect(NotifyContentManagersWorker).to receive(:perform_async).with(ticket.id, subject.current_user.tn, 'update', nil)
 
           put :update, params: params, format: :json
         end
