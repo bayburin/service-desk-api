@@ -75,7 +75,7 @@ class ServicePolicy < ApplicationPolicy
     elsif user.role?(:operator)
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
-        serialize: ['category', 'tickets.answers.attachments', 'tickets.service']
+        serialize: ['category', 'tickets.answers.attachments', 'tickets.responsible_users', 'tickets.service']
       )
     else
       PolicyAttributes.new(
