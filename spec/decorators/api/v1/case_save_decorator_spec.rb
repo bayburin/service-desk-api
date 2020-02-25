@@ -66,6 +66,18 @@ module Api
           expect(subject.kase.accs).to be_empty
         end
       end
+
+      context 'when files exists' do
+        let(:result) { 'base64_encoded_string' }
+        let(:file) { { filename: 'test.png', file: "data:application/pdf,#{result}" }.as_json }
+        before { kase[:files] = [file] }
+
+        it 'should remove metadata from string encoded by base64' do
+          subject.decorate
+
+          expect(subject.kase[:files].first['file']).to eq result
+        end
+      end
     end
   end
 end

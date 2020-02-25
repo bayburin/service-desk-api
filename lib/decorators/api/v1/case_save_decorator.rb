@@ -11,6 +11,7 @@ module Api
       def decorate
         processing_service
         processing_responsibles
+        processing_files
 
         ::Rails.logger.debug { "Case after decorate: #{@kase.to_json}" }
       end
@@ -28,6 +29,12 @@ module Api
 
       def find_ticket
         @find_ticket ||= kase.ticket_id ? Ticket.find(kase.ticket_id) : Ticket.find_by(ticket_type: :common_case, service_id: kase.service_id)
+      end
+
+      def processing_files
+        kase.files.each do |file|
+          file['file'] = file['file'].split(',')[1]
+        end
       end
     end
   end
