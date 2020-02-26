@@ -5,7 +5,7 @@ module Api
     RSpec.describe CasesController, type: :controller do
       sign_in_user
 
-      let(:astraea_url) { 'https://astraea-ui.iss-reshetnev.ru/api' }
+      let(:astraea_url) { ENV['ASTRAEA_URL'] }
       before { allow(subject).to receive(:authorize).and_return(true) }
 
       describe 'GET #index' do
@@ -70,7 +70,7 @@ module Api
         let(:decorator) { CaseSaveDecorator.new(kase) }
 
         before do
-          stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json')
+          stub_request(:post, "#{astraea_url}/cases.json")
             .to_return(status: 200, body: kase.to_json, headers: {})
           allow(Case).to receive(:new).and_return(kase)
           allow(CaseSaveDecorator).to receive(:new).and_return(decorator)
@@ -132,7 +132,7 @@ module Api
 
         before do
           allow(Case).to receive(:new).and_return(kase)
-          stub_request(:put, "https://astraea-ui.iss-reshetnev.ru/api/cases/#{case_id}.json")
+          stub_request(:put, "#{astraea_url}/cases/#{case_id}.json")
             .to_return(status: 200, body: { message: 'updated' }.to_json, headers: {})
         end
 

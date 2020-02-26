@@ -27,6 +27,7 @@ class Case
   attribute :accs, Array[Integer]
   attribute :runtime, Api::V1::Runtime
   attribute :rating, Integer
+  attribute :files, Array[]
 
   alias_attribute :invent_num, :host_id
 

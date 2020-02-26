@@ -25,6 +25,7 @@ FactoryBot.define do
     without_item { false }
     sla { nil }
     accs { [] }
+    files { [] }
 
     initialize_with { new(attributes) }
 

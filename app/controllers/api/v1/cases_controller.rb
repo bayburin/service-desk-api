@@ -60,7 +60,8 @@ module Api
           :service_id,
           :item_id,
           :invent_num,
-          :rating
+          :rating,
+          files: %i[filename file]
         )
       end
     end
