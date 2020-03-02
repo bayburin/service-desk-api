@@ -23,7 +23,7 @@ module Api
         ticket = Tickets::TicketFactory.create(:question, attributive_params)
 
         if ticket.save
-          NotifyContentManagersWorker.perform_async(ticket.id, current_user.tn, 'create', request.headers['origin']) if policy(current_user).send_ticket_notification?
+          NotifyContentManagersWorker.perform_async(ticket.id, current_user.tn, 'create', request.headers['origin'])
 
           render json: ticket, serializer: Tickets::TicketResponsibleUserSerializer
         else
@@ -38,7 +38,7 @@ module Api
 
         if decorated_ticket.update_by_state(attributive_params)
           policy_attributes = policy(Ticket).attributes_for_show
-          NotifyContentManagersWorker.perform_async(decorated_ticket.original.try(:id) || decorated_ticket.id, current_user.tn, 'update', request.headers['origin']) if policy(current_user).send_ticket_notification?
+          NotifyContentManagersWorker.perform_async(decorated_ticket.original.try(:id) || decorated_ticket.id, current_user.tn, 'update', request.headers['origin'])
 
           render json: decorated_ticket, serializer: policy_attributes.serializer, include: policy_attributes.serialize
         else

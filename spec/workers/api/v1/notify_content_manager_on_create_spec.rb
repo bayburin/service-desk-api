@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe NotifyContentManagerOnUpdate, type: :worker do
+    RSpec.describe NotifyContentManagerOnCreate, type: :worker do
       let(:ticket) { create(:ticket) }
       let!(:operator) { create(:operator_user) }
       let!(:manager) { create(:content_manager_user) }
@@ -36,9 +36,19 @@ module Api
       end
 
       it 'calls #send_report method for ReportSender instance' do
-        expect(sender).to receive(:send_report).with(an_instance_of(Tickets::TicketUpdatedEmailSender))
+        expect(sender).to receive(:send_report).with(an_instance_of(Tickets::TicketCreatedEmailSender))
 
         subject.perform(manager.id, ticket.id, operator.tn, '')
+      end
+
+      context 'when delivery_user and current_user is the same' do
+        before { allow(User).to receive(:authenticate).with(tn: manager.tn).and_return(manager) }
+
+        it 'does not call #send_report method' do
+          expect(sender).not_to receive(:send_report)
+
+          subject.perform(manager.id, ticket.id, manager.tn, '')
+        end
       end
     end
   end

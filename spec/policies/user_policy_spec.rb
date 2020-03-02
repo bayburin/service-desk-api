@@ -32,18 +32,4 @@ RSpec.describe UserPolicy do
       end
     end
   end
-
-  permissions :send_ticket_notification? do
-    context 'for user with :responsible_user role' do
-      it 'grants access' do
-        expect(subject).to permit(responsible)
-      end
-    end
-
-    context 'for another user' do
-      it 'denies access' do
-        expect(subject).not_to permit(content_manager)
-      end
-    end
-  end
 end

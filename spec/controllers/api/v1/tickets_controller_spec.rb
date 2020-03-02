@@ -64,6 +64,7 @@ module Api
         let(:answer) { attributes_for(:answer) }
         let(:ticket_attrs) { attributes_for(:ticket, service_id: service.id, state: :draft, answers: [answer], tags: [{ name: 'test' }]) }
         let(:params) { { service_id: service.id, ticket: ticket_attrs } }
+        let(:ticket) { create(:ticket) }
         before do
           allow(subject).to receive(:authorize).and_return(true)
           allow(NotifyContentManagersWorker).to receive(:perform_async)
@@ -71,6 +72,13 @@ module Api
 
         it 'calls Tickets::TicketFactory.create method' do
           expect(Tickets::TicketFactory).to receive(:create).with(:question, any_args).and_call_original
+
+          post :create, params: params, format: :json
+        end
+
+        it 'calls NotifyContentManagersWorker worker with id of created ticket' do
+          allow(Tickets::TicketFactory).to receive(:create).and_return(ticket)
+          expect(NotifyContentManagersWorker).to receive(:perform_async).with(ticket.id, subject.current_user.tn, 'create', nil)
 
           post :create, params: params, format: :json
         end
@@ -123,7 +131,6 @@ module Api
         end
 
         it 'calls NotifyContentManagersWorker worker with id of ticket' do
-          allow_any_instance_of(UserPolicy).to receive(:send_ticket_notification?).and_return(true)
           expect(NotifyContentManagersWorker).to receive(:perform_async).with(ticket.id, subject.current_user.tn, 'update', nil)
 
           put :update, params: params, format: :json
