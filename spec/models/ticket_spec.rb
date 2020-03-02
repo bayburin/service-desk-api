@@ -14,7 +14,17 @@ RSpec.describe Ticket, type: :model do
   context 'when ticket has published_state' do
     before { subject.state = :published }
 
-    it { is_expected.to validate_presence_of(:answers) }
+    context 'and when ticket is question' do
+      before { subject.ticket_type = :question }
+
+      it { is_expected.to validate_presence_of(:answers) }
+    end
+
+    context 'and when ticket is not question' do
+      before { subject.ticket_type = :case }
+
+      it { is_expected.not_to validate_presence_of(:answers) }
+    end
   end
 
   it 'includes Associatable module' do
