@@ -46,4 +46,8 @@ class Ticket < ApplicationRecord
   def calculate_popularity
     self.popularity += 1
   end
+
+  def responsibles
+    responsible_users.presence || service.responsible_users
+  end
 end

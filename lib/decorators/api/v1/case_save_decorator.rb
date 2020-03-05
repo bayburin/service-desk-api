@@ -24,7 +24,7 @@ module Api
       end
 
       def processing_responsibles
-        kase.accs = find_ticket&.responsible_users&.pluck(:tn) || []
+        kase.accs = find_ticket ? find_ticket.responsibles.pluck(:tn) : []
       end
 
       def find_ticket

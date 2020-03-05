@@ -68,4 +68,22 @@ RSpec.describe Ticket, type: :model do
       end
     end
   end
+
+  describe '#responsibles' do
+    subject { create(:ticket) }
+    let!(:responsible_users) { create(:responsible_user, responseable: subject) }
+
+    it 'returns responsible_users' do
+      expect(subject.responsibles).to eq [responsible_users]
+    end
+
+    context 'when responsible_users is empty' do
+      let!(:responsible_users) { create(:responsible_user, responseable: subject.service) }
+      before { subject.responsible_users.destroy_all }
+
+      it 'returns responsible_users of parent service' do
+        expect(subject.responsibles).to eq [responsible_users]
+      end
+    end
+  end
 end
