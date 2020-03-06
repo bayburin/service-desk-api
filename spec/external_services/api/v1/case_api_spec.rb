@@ -3,7 +3,7 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe CaseApi, type: :model do
-      let(:astraea_url) { 'https://astraea-ui.iss-reshetnev.ru/api/cases.json' }
+      let(:astraea_url) { "#{ENV['ASTRAEA_URL']}/cases.json" }
 
       describe 'class methods' do
         subject { CaseApi }
@@ -48,7 +48,7 @@ module Api
         describe '.update' do
           let(:case_id) { '12345' }
           let(:kase) { build(:case, case_id: case_id) }
-          let(:astraea_url) { "https://astraea-ui.iss-reshetnev.ru/api/cases/#{case_id}.json" }
+          let(:astraea_url) { "#{ENV['ASTRAEA_URL']}/cases/#{case_id}.json" }
 
           before { stub_request(:put, astraea_url).to_return(status: 200, body: '', headers: {}) }
 

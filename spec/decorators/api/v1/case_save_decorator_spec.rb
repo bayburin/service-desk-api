@@ -58,7 +58,7 @@ module Api
       end
 
       context 'when responsible_users is empty' do
-        before { allow(subject).to receive_message_chain(:find_ticket, :responsible_users).and_return([]) }
+        before { allow_any_instance_of(Ticket).to receive(:responsibles).and_return([]) }
 
         it 'sets empty array to :accs attribute' do
           subject.decorate
