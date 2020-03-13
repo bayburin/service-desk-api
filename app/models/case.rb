@@ -28,7 +28,7 @@ class Case
   attribute :runtime, Api::V1::Runtime
   attribute :rating, Integer
   attribute :files, Array[]
-  attribute :additional, String
+  attribute :additional, Hash
 
   alias_attribute :invent_num, :host_id
 
