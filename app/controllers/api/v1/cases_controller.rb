@@ -61,7 +61,7 @@ module Api
           :item_id,
           :invent_num,
           :rating,
-          :additional,
+          additional: [:comment],
           files: %i[filename file]
         )
       end
