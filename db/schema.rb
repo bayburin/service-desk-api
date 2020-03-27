@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_12_035459) do
+ActiveRecord::Schema.define(version: 2020_03_27_040542) do
 
   create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "visit_id"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 2019_12_12_035459) do
   end
 
   create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "question_ticket_id"
     t.bigint "ticket_id", null: false
     t.text "reason"
     t.text "answer", null: false
@@ -58,6 +59,7 @@ ActiveRecord::Schema.define(version: 2019_12_12_035459) do
     t.boolean "is_hidden", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["question_ticket_id"], name: "index_answers_on_question_ticket_id"
     t.index ["ticket_id"], name: "index_answers_on_ticket_id"
   end
 
@@ -90,6 +92,13 @@ ActiveRecord::Schema.define(version: 2019_12_12_035459) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["event_type"], name: "index_notifications_on_event_type"
+  end
+
+  create_table "question_tickets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "original_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["original_id"], name: "index_question_tickets_on_original_id"
   end
 
   create_table "responsible_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -148,6 +157,8 @@ ActiveRecord::Schema.define(version: 2019_12_12_035459) do
     t.integer "original_id"
     t.string "name", null: false
     t.integer "ticket_type", null: false
+    t.bigint "ticketable_id"
+    t.string "ticketable_type"
     t.integer "state", null: false
     t.boolean "is_hidden", default: true, null: false
     t.integer "sla", limit: 2
@@ -161,6 +172,7 @@ ActiveRecord::Schema.define(version: 2019_12_12_035459) do
     t.index ["service_id"], name: "index_tickets_on_service_id"
     t.index ["state"], name: "index_tickets_on_state"
     t.index ["ticket_type"], name: "index_tickets_on_ticket_type"
+    t.index ["ticketable_type", "ticketable_id"], name: "index_tickets_on_ticketable_type_and_ticketable_id"
   end
 
   create_table "user_recommendations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -185,6 +197,7 @@ ActiveRecord::Schema.define(version: 2019_12_12_035459) do
   end
 
   add_foreign_key "answer_attachments", "answers"
+  add_foreign_key "answers", "question_tickets"
   add_foreign_key "answers", "tickets"
   add_foreign_key "services", "categories"
   add_foreign_key "ticket_tags", "tags"
