@@ -2,7 +2,6 @@ FactoryBot.define do
   factory :ticket do
     service { build(:service, without_nested: true) }
     name { Faker::Restaurant.name }
-    ticket_type { :question }
     state { :published }
     is_hidden { false }
     to_approve { false }
@@ -15,7 +14,7 @@ FactoryBot.define do
     end
 
     after(:build) do |ticket, ev|
-      ticket.answers = build_list(:answer, 2, ticket: ticket) unless ev.without_nested
+      ticket.ticketable = build(:question_ticket, ticket: ticket) unless ticket.ticketable
     end
   end
 end

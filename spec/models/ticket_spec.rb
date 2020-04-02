@@ -1,31 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Ticket, type: :model do
-  it { is_expected.to have_many(:answers).dependent(:destroy) }
   it { is_expected.to have_many(:ticket_tags).dependent(:destroy) }
   it { is_expected.to have_many(:tags).through(:ticket_tags) }
   it { is_expected.to have_many(:responsible_users).dependent(:destroy) }
-  it { is_expected.to have_one(:correction).class_name('Ticket').with_foreign_key(:original_id).dependent(:nullify) }
   it { is_expected.to belong_to(:service) }
-  it { is_expected.to belong_to(:original).class_name('Ticket').optional }
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.not_to validate_presence_of(:answers) }
-
-  context 'when ticket has published_state' do
-    before { subject.state = :published }
-
-    context 'and when ticket is question' do
-      before { subject.ticket_type = :question }
-
-      it { is_expected.to validate_presence_of(:answers) }
-    end
-
-    context 'and when ticket is not question' do
-      before { subject.ticket_type = :case }
-
-      it { is_expected.not_to validate_presence_of(:answers) }
-    end
-  end
 
   it 'includes Associatable module' do
     expect(subject.singleton_class.ancestors).to include(Associatable)

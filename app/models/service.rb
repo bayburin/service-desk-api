@@ -3,6 +3,7 @@ class Service < ApplicationRecord
   include Belongable
 
   has_many :tickets, dependent: :destroy
+  has_many :question_tickets, through: :tickets, source: :ticketable, source_type: 'QuestionTicket'
   has_many :responsible_users, as: :responseable, dependent: :destroy
 
   belongs_to :category
