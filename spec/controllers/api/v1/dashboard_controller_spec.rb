@@ -27,8 +27,8 @@ module Api
           expect(response.body).to have_json_size(6).at_path('services')
         end
 
-        it 'loads :tickets association for services' do
-          expect(response.body).to have_json_path('services/0/tickets')
+        it 'loads :question_tickets association for services' do
+          expect(response.body).to have_json_path('services/0/question_tickets')
         end
 
         it 'loads all user_recommendation' do

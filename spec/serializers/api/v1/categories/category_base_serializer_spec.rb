@@ -71,14 +71,14 @@ module Api
             subject.to_json
           end
 
-          it 'create instance of Api::V1::QuestionsQuery' do
-            expect(Api::V1::QuestionsQuery).to receive(:new).with(category.tickets).and_call_original
+          it 'create instance of Api::V1::QuestionTicketsQuery' do
+            expect(Api::V1::QuestionTicketsQuery).to receive(:new).with(category.tickets).and_call_original
 
             subject.to_json
           end
 
           it 'calls :most_popular method' do
-            expect_any_instance_of(Api::V1::QuestionsQuery).to receive(:most_popular)
+            expect_any_instance_of(Api::V1::QuestionTicketsQuery).to receive(:most_popular)
 
             subject.to_json
           end

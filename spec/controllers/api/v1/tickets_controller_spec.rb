@@ -207,7 +207,7 @@ module Api
         let(:params) { { ids: ticket.id.to_s } }
 
         it 'change state of specified tickets' do
-          allow_any_instance_of(QuestionsQuery).to receive(:waiting_for_publish).and_return([ticket])
+          allow_any_instance_of(QuestionTicketsQuery).to receive(:waiting_for_publish).and_return([ticket])
           # expect(ticket).to receive(:publish).and_call_original
 
           post :publish, params: params, format: :json

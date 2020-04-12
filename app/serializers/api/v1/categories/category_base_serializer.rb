@@ -18,7 +18,7 @@ module Api
         end
 
         def faq
-          QuestionsQuery.new(object.tickets).most_popular
+          QuestionTicketsQuery.new(object.tickets).most_popular
         end
       end
     end

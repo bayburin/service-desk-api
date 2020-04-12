@@ -15,13 +15,13 @@ module Api
           end
         end
 
-        describe '#tickets' do
-          it 'calls Tickets::TicketSerializer for :faq association' do
-            expect(Tickets::TicketSerializer).to receive(:new).exactly(service.tickets.count).times.and_call_original
+        # describe '#tickets' do
+        #   it 'calls Tickets::TicketSerializer for :faq association' do
+        #     expect(Tickets::TicketSerializer).to receive(:new).exactly(service.tickets.count).times.and_call_original
 
-            subject.to_json
-          end
-        end
+        #     subject.to_json
+        #   end
+        # end
 
         describe '#category' do
           it 'calls Categories::CategoryBaseSerializer for :faq association' do

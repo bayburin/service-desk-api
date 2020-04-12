@@ -12,7 +12,13 @@ FactoryBot.define do
     end
 
     after(:create) do |service, ev|
-      create_list(:ticket, 2, service: service) unless ev.without_nested
+      # create_list(:question_ticket, 2, service: service) unless ev.without_nested
+      unless ev.without_nested
+        2.times do
+          ticket = build(:ticket, service: service)
+          create(:question_ticket, ticket: ticket)
+        end
+      end
     end
   end
 end

@@ -9,6 +9,10 @@ RSpec.describe QuestionTicket, type: :model do
   it { is_expected.to belong_to(:original).class_name('QuestionTicket').optional }
   it { is_expected.to validate_presence_of(:answers) }
 
+  it 'includes Associatable module' do
+    expect(subject.singleton_class.ancestors).to include(Associatable)
+  end
+
   context 'when ticket has :draft state' do
     before { subject.ticket.state = :draft }
 
