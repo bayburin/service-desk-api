@@ -151,7 +151,7 @@ module Api
             get :deep_search, params: params, format: :json
           end
 
-          after { ThinkingSphinx::Test.stop }
+          # after { ThinkingSphinx::Test.stop }
 
           it 'respond with finded data', transactional: true do
             expect(response.body).to have_json_size(9)
@@ -163,14 +163,14 @@ module Api
             (6..8).each { |i| expect(response.body).to have_json_path("#{i}/service_id") }
           end
 
-          it 'sortings each group of data (separate sorting inside categories, inside services and inside tickets) by popularity', transactional: true do
+          it 'sort each group of data (separate sorting inside categories, inside services and inside tickets) by popularity', transactional: true do
             expect(parse_json(response.body).first(3).map { |data| data['popularity'] }).to eq categories_abc.pluck(:popularity).sort { |a, b| b <=> a }
             expect(parse_json(response.body).first(6).last(3).map { |data| data['popularity'] }).to eq services_abc.pluck(:popularity).sort { |a, b| b <=> a }
             expect(parse_json(response.body).last(3).map { |data| data['popularity'] }).to eq tickets_abc.pluck(:popularity).sort { |a, b| b <=> a }
           end
 
-          it 'adds :service attribute to the :ticket attribute', transactional: true do
-            (6..8).each { |i| expect(response.body).to have_json_path("#{i}/service") }
+          it 'add :service attribute to the :ticket attribute', transactional: true do
+            (6..8).each { |i| expect(response.body).to have_json_path("#{i}/ticket/service") }
           end
 
           # it 'adds :attachments attribute to the :answer attribute', transactional: true do
