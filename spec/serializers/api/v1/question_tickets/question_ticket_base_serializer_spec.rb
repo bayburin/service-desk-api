@@ -28,6 +28,24 @@ module Api
             subject.to_json
           end
         end
+
+        describe '#include_associations?' do
+          context 'when :without_associations attribute setted to true' do
+            let(:question) { create(:question_ticket, without_associations: true) }
+
+            it 'returns false' do
+              expect(subject).to receive(:include_associations?).at_least(1).and_return(false)
+
+              subject.to_json
+            end
+
+            %w[answers].each do |attr|
+              it "does not have #{attr} attribute" do
+                expect(subject.to_json).not_to have_json_path(attr)
+              end
+            end
+          end
+        end
       end
     end
   end
