@@ -11,7 +11,7 @@ module Api
           expect(TicketResponsibleUserSerializer).to be < TicketBaseSerializer
         end
 
-        %w[responsible_users tags correction].each do |attr|
+        %w[responsible_users tags].each do |attr|
           it "has #{attr} attribute" do
             expect(subject.to_json).to have_json_path(attr)
           end
