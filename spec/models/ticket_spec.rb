@@ -27,7 +27,7 @@ RSpec.describe Ticket, type: :model do
     let(:new_tag_attr) { attributes_for(:tag) }
     let!(:existing_tag) { create(:tag) }
     let(:existing_tag_attr) { existing_tag.as_json(only: %i[id name]) }
-    subject { build(:ticket, tags_attributes: [new_tag_attr, existing_tag_attr].map(&:symbolize_keys)) }
+    subject { build(:ticket, :question, tags_attributes: [new_tag_attr, existing_tag_attr].map(&:symbolize_keys)) }
 
     it 'creates new tags' do
       expect { subject.save }.to change { Tag.count }.by(1)

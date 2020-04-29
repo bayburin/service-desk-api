@@ -51,7 +51,6 @@ module Api
         let!(:service) { services.first }
         let(:params) { { category_id: service.category.id, id: service.id } }
         let(:policy_attributes) { ServicePolicy.new(User.last, service).attributes_for_index }
-        before { service.tickets.each { |t| t.correction = create(:ticket, state: :draft) } }
 
         it 'loads service with specified service_id' do
           get :show, params: params, format: :json
@@ -80,7 +79,7 @@ module Api
         it 'includes attributes specified in policy' do
           get :show, params: params, format: :json
 
-          expect(response.body).to have_json_path('tickets')
+          expect(response.body).to have_json_path('question_tickets/0/ticket')
         end
 
         it 'respond with 200 status' do
