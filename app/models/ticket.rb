@@ -7,7 +7,7 @@ class Ticket < ApplicationRecord
   has_many :responsible_users, as: :responseable, dependent: :destroy
 
   belongs_to :service
-  belongs_to :ticketable, polymorphic: true, inverse_of: :ticket
+  belongs_to :ticketable, polymorphic: true, inverse_of: :ticket, optional: true
 
   validates :name, presence: true
   validates :is_hidden, :to_approve, inclusion: { in: [true, false] }

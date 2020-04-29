@@ -17,9 +17,8 @@ module Api
 
       def search
         ahoy.track 'Search', params[:search]
-        policy_attributes = policy(Ticket).attributes_for_search
 
-        render json: search_categories + search_services + search_tickets(policy_attributes)
+        render json: search_categories + search_services + search_tickets
       end
 
       def deep_search
@@ -50,33 +49,43 @@ module Api
           .as_json(include: policy_attributes.serialize)
       end
 
-      def search_tickets(policy_attributes)
+      def search_tickets
+        policy_attributes = policy(QuestionTicket).attributes_for_search
+        serialize_questions(find_tickets, policy_attributes)
+      end
+
+      def deep_search_tickets
+        question_policy_attributes = policy(QuestionTicket).attributes_for_deep_search
+        # case_policy_attributes = policy(CaseTicket).attributes_for_deep_search
+
+        serialize_questions(find_tickets, question_policy_attributes)
+      end
+
+      def find_tickets
         tickets = Ticket.search(
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: policy_attributes.sql_include }
+          sql: { include: :service }
         )
-        tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
+        TicketPolicy::SphinxScope.new(current_user, tickets).resolve
+      end
 
-        ActiveModel::Serializer::CollectionSerializer.new(tickets, serializer: policy_attributes.serializer)
+      def serialize_questions(tickets, policy_attributes)
+        question_ids = tickets.select { |ticket| ticket.ticketable_type == 'QuestionTicket' }.map(&:ticketable_id)
+        questions = QuestionTicket.where(id: question_ids).includes(policy_attributes.sql_include)
+
+        ActiveModel::Serializer::CollectionSerializer.new(questions, serializer: policy_attributes.serializer)
           .as_json(include: policy_attributes.serialize)
       end
 
-      def deep_search_tickets
-        tickets = Ticket.search(
-          ThinkingSphinx::Query.escape(params[:search]),
-          order: 'popularity DESC',
-          per_page: 1000
-        )
-        question_policy_attributes = policy(QuestionTicket).attributes_for_deep_search
-        tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
-        question_ids = tickets.select { |ticket| ticket.ticketable_type == 'QuestionTicket' }.map(&:ticketable_id)
-        questions = QuestionTicket.where(id: question_ids)
+      # def serialize_cases(tickets, policy_attributes)
+      #   case_ids = tickets.select { |ticket| ticket.ticketable_type == 'CaseTicket' }.map(&:ticketable_id)
+      #   cases = CaseTicket.where(id: case_ids).includes(policy_attributes.sql_include)
 
-        ActiveModel::Serializer::CollectionSerializer.new(questions, serializer: question_policy_attributes.serializer)
-          .as_json(include: question_policy_attributes.serialize)
-      end
+      #   ActiveModel::Serializer::CollectionSerializer.new(cases, serializer: policy_attributes.serializer)
+      #     .as_json(include: policy_attributes.serialize)
+      # end
     end
   end
 end

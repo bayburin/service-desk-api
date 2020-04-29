@@ -13,8 +13,16 @@ FactoryBot.define do
       without_nested { false }
     end
 
-    after(:build) do |ticket, ev|
-      ticket.ticketable = build(:question_ticket, ticket: ticket) unless ticket.ticketable
+    trait :question do
+      after(:build) do |ticket, ev|
+        ticket.ticketable = build(:question_ticket, ticket: ticket) unless ticket.ticketable
+      end
+    end
+
+    trait :common_case do
+      after(:build) do |ticket, ev|
+        ticket.ticketable_type = 'CommonCaseTicket' unless ticket.ticketable
+      end
     end
   end
 end

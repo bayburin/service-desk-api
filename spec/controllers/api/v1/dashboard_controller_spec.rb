@@ -73,19 +73,20 @@ module Api
         end
 
         context 'when database has any data' do
-          let!(:categories) { create_list(:category, 3) }
+          let!(:categories) { create_list(:category, 2) }
           let!(:categories_abc) { create_list(:category, 3, name: term) }
           let!(:services_abc) { create_list(:service, 3, name: term) }
-          let!(:tickets_abc) { create_list(:ticket, 3, name: term) }
+          let!(:questions_abc) { create_list(:question_ticket, 3, name: term) }
 
           before do
             ThinkingSphinx::Test.init
             ThinkingSphinx::Test.start_with_autostop
             sleep 1
+
             get :search, params: params, format: :json
           end
 
-          after { ThinkingSphinx::Test.stop }
+          # after { ThinkingSphinx::Test.stop }
 
           it 'respond with finded data', transactional: true do
             expect(response.body).to have_json_size(9)
@@ -94,17 +95,17 @@ module Api
           it 'respond with array which contains categories at first, then services and then tickets', transactional: true do
             (0..2).each { |i| expect(response.body).to have_json_path("#{i}/icon_name") }
             (3..5).each { |i| expect(response.body).to have_json_path("#{i}/category_id") }
-            (6..8).each { |i| expect(response.body).to have_json_path("#{i}/service_id") }
+            (6..8).each { |i| expect(response.body).to have_json_path("#{i}/ticket") }
           end
 
           it 'sortings each group of data (separate sorting inside categories, inside services and inside tickets) by popularity', transactional: true do
             expect(parse_json(response.body).first(3).map { |data| data['popularity'] }).to eq categories_abc.pluck(:popularity).sort { |a, b| b <=> a }
             expect(parse_json(response.body).first(6).last(3).map { |data| data['popularity'] }).to eq services_abc.pluck(:popularity).sort { |a, b| b <=> a }
-            expect(parse_json(response.body).last(3).map { |data| data['popularity'] }).to eq tickets_abc.pluck(:popularity).sort { |a, b| b <=> a }
+            expect(parse_json(response.body).last(3).map { |data| data['popularity'] }).to eq questions_abc.pluck(:popularity).sort { |a, b| b <=> a }
           end
 
           it 'adds :service attribute to the :ticket attribute', transactional: true do
-            (6..8).each { |i| expect(response.body).to have_json_path("#{i}/service") }
+            (6..8).each { |i| expect(response.body).to have_json_path("#{i}/ticket/service") }
           end
         end
       end
@@ -138,10 +139,10 @@ module Api
         end
 
         context 'with data' do
-          let!(:categories) { create_list(:category, 3) }
+          let!(:categories) { create_list(:category, 2) }
           let!(:categories_abc) { create_list(:category, 3, name: term) }
           let!(:services_abc) { create_list(:service, 3, name: term) }
-          let!(:tickets_abc) { create_list(:ticket, 3, name: term) }
+          let!(:questions_abc) { create_list(:question_ticket, 3, name: term) }
 
           before do
             ThinkingSphinx::Test.init
@@ -160,13 +161,13 @@ module Api
           it 'respond with array which contains categories at first, then services and then tickets', transactional: true do
             (0..2).each { |i| expect(response.body).to have_json_path("#{i}/icon_name") }
             (3..5).each { |i| expect(response.body).to have_json_path("#{i}/category_id") }
-            (6..8).each { |i| expect(response.body).to have_json_path("#{i}/service_id") }
+            (6..8).each { |i| expect(response.body).to have_json_path("#{i}/ticket") }
           end
 
           it 'sort each group of data (separate sorting inside categories, inside services and inside tickets) by popularity', transactional: true do
             expect(parse_json(response.body).first(3).map { |data| data['popularity'] }).to eq categories_abc.pluck(:popularity).sort { |a, b| b <=> a }
             expect(parse_json(response.body).first(6).last(3).map { |data| data['popularity'] }).to eq services_abc.pluck(:popularity).sort { |a, b| b <=> a }
-            expect(parse_json(response.body).last(3).map { |data| data['popularity'] }).to eq tickets_abc.pluck(:popularity).sort { |a, b| b <=> a }
+            expect(parse_json(response.body).last(3).map { |data| data['popularity'] }).to eq questions_abc.pluck(:popularity).sort { |a, b| b <=> a }
           end
 
           it 'add :service attribute to the :ticket attribute', transactional: true do

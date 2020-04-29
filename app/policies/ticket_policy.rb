@@ -89,22 +89,6 @@ class TicketPolicy < ApplicationPolicy
     )
   end
 
-  def attributes_for_search
-    if user.one_of_roles?(:content_manager, :operator, :service_responsible)
-      PolicyAttributes.new(
-        serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
-        sql_include: [:responsible_users, service: :responsible_users],
-        serialize: ['responsible_users', 'service.responsible_users']
-      )
-    else
-      PolicyAttributes.new(
-        serializer: Api::V1::Tickets::TicketGuestSerializer,
-        sql_include: [:service],
-        serialize: ['service']
-      )
-    end
-  end
-
   protected
 
   def show_for_guest?
