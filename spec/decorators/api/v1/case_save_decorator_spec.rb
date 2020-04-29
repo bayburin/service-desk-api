@@ -5,8 +5,8 @@ module Api
     RSpec.describe CaseSaveDecorator, type: :model do
       let(:item_id) { 999 }
       let(:invent_num) { 'new invent num' }
-      let(:common_ticket) { create(:ticket, ticket_type: :common_case) }
-      let(:connect_ticket) { create(:ticket, ticket_type: :case) }
+      let(:common_ticket) { create(:ticket, :common_case) }
+      let(:connect_ticket) { create(:ticket, :case) }
       let!(:service) { create(:service, tickets: [common_ticket, connect_ticket]) }
       let!(:kase) { build(:case, host_id: nil, item_id: nil, service: service) }
 

@@ -15,7 +15,7 @@ FactoryBot.define do
     time { nil }
     service_id { service.try(:id) }
     service { nil }
-    ticket_id { Ticket.where(service_id: service_id, ticket_type: %i[case common_case]).first.try(:id) }
+    ticket_id { Ticket.where(service_id: service_id, ticketable_type: %i[CaseTicket CommonCaseTicket]).first.try(:id) }
     ticket { nil }
     host_id { 765_300 }
     item_id { 123 }
