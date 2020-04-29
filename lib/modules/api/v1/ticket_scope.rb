@@ -13,6 +13,11 @@ module Api
         where(tickets: { state: :published })
       end
 
+      # Показать черновые тикеты.
+      def draft
+        where(tickets: { state: :draft })
+      end
+
       # Показать видимые объекты
       def visible
         where(tickets: { is_hidden: false })

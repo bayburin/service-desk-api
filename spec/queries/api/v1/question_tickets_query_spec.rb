@@ -77,6 +77,20 @@ module Api
           end
         end
       end
+
+      describe '#all_in_service' do
+        let(:service) { create(:service) }
+        let!(:ticket) { create(:ticket, :question, is_hidden: true, service: service) }
+        let!(:extra_service) { create(:service) }
+        let!(:service_tickets) { service.tickets.where(ticketable_type: :QuestionTicket) }
+        let(:result) { subject.all_in_service(service) }
+
+        it 'returns all tickets from specified service' do
+          expect(result.length).to eq service_tickets.count
+          expect(result).to include(*service_tickets.map(&:ticketable), ticket.ticketable)
+          expect(result).not_to include(*extra_service.tickets(&:ticketable))
+        end
+      end
     end
   end
 end

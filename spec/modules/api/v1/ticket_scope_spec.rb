@@ -9,7 +9,7 @@ module Api
         before { create_list(:question_ticket, 3) }
 
         it 'order array' do
-          expect(subject.includes(:ticket).by_popularity.map(&:id)).to eq QuestionTicket.joins(:ticket).order('popularity DESC').map(&:id)
+          expect(subject.includes(:ticket).by_popularity.map(&:id)).to eq QuestionTicket.joins(:ticket).order('tickets.popularity DESC').map(&:id)
         end
       end
 
@@ -24,6 +24,21 @@ module Api
         it 'return only record with :published state' do
           subject.joins(:ticket).published.each do |q|
             expect(q.ticket.published_state?).to be_truthy
+          end
+        end
+      end
+
+      describe '#draft' do
+        let!(:draft_ticket) { create(:ticket, state: :draft) }
+        let!(:published_ticket) { create(:ticket) }
+
+        it 'return instance of ActiveRecord::Relation' do
+          expect(subject.joins(:ticket).draft).to be_kind_of(ActiveRecord::Relation)
+        end
+
+        it 'return only record with :published state' do
+          subject.joins(:ticket).draft.each do |q|
+            expect(q.ticket.draft_state?).to be_truthy
           end
         end
       end

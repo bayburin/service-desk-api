@@ -4,13 +4,13 @@ module Api
       before_action :check_access, except: %i[raise_rating update publish]
 
       def index
-        tickets = Api::V1::TicketsQuery.new
-                    .all_in_service(Service.find(params[:service_id]))
-                    .includes(:correction, :service, :responsible_users, :tags, answers: :attachments)
-        tickets = tickets.where(state: params[:state]) if params[:state]
-        policy_attributes = policy(Ticket).attributes_for_show
+        policy_attributes = policy(QuestionTicket).attributes_for_show
+        questions = Api::V1::QuestionTicketsQuery.new
+                      .all_in_service(Service.find(params[:service_id]))
+                      .includes(policy_attributes.sql_include)
+                      .draft
 
-        render(json: tickets, each_serializer: policy_attributes.serializer, include: policy_attributes.serialize)
+        render(json: questions, each_serializer: policy_attributes.serializer, include: policy_attributes.serialize)
       end
 
       def show

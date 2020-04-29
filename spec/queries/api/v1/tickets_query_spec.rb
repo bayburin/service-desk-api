@@ -66,7 +66,7 @@ module Api
         end
       end
 
-      describe 'all_in_service' do
+      describe '#all_in_service' do
         let!(:ticket) { create(:ticket, :question, is_hidden: true, service: service) }
         let!(:extra_service) { create(:service) }
         let!(:service_tickets) { service.tickets.where(ticketable_type: :QuestionTicket) }

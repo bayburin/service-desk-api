@@ -143,4 +143,22 @@ RSpec.describe QuestionTicketPolicy do
       end
     end
   end
+
+  describe '#attributes_for_show' do
+    let(:question) { service.tickets.first }
+
+    subject(:policy) { QuestionTicketPolicy.new(responsible, question).attributes_for_show }
+
+    it 'sets :serializer attribute' do
+      expect(policy.serializer).to eq Api::V1::QuestionTickets::QuestionTicketResponsibleUserSerializer
+    end
+
+    it 'sets :sql_include attribute' do
+      expect(policy.sql_include).to eq [:correction, ticket: %i[responsible_users tags], answers: :attachments]
+    end
+
+    it 'sets :serialize attribute' do
+      expect(policy.serialize).to eq ['correction.*', 'correction.answers.attachments', 'ticket.responsible_users', 'ticket.tags', 'answers.attachments']
+    end
+  end
 end

@@ -30,4 +30,12 @@ class QuestionTicketPolicy < TicketPolicy
       )
     end
   end
+
+  def attributes_for_show
+    PolicyAttributes.new(
+      serializer: Api::V1::QuestionTickets::QuestionTicketResponsibleUserSerializer,
+      sql_include: [:correction, ticket: %i[responsible_users tags], answers: :attachments],
+      serialize: ['correction.*', 'correction.answers.attachments', 'ticket.responsible_users', 'ticket.tags', 'answers.attachments']
+    )
+  end
 end

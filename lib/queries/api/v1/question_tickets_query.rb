@@ -21,6 +21,10 @@ module Api
         scope.where(tickets: { state: :draft, id: ids })
       end
 
+      def all_in_service(service)
+        all.joins(:ticket).where(tickets: { service: service }).extend(TicketScope)
+      end
+
       private
 
       def questions

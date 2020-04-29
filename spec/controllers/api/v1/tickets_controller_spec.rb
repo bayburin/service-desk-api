@@ -8,7 +8,7 @@ module Api
 
       describe 'GET #index' do
         let(:service) { create(:service) }
-        let!(:tickets) { create_list(:ticket, 3, service: service, state: :draft) }
+        let!(:tickets) { create_list(:ticket, 3, :question, service: service, state: :draft) }
         let(:params) { { service_id: service.id, state: 'draft' } }
 
         it 'loads all tickets in service with specified state' do
@@ -17,7 +17,7 @@ module Api
           expect(response.body).to have_json_size(tickets.count)
         end
 
-        %w[correction responsible_users tags answers/0/attachments].each do |attr|
+        %w[correction ticket/responsible_users ticket/tags answers/0/attachments].each do |attr|
           it "has :#{attr} attribute" do
             get :index, params: params, format: :json
 

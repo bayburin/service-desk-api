@@ -82,13 +82,6 @@ class TicketPolicy < ApplicationPolicy
     end
   end
 
-  def attributes_for_show
-    PolicyAttributes.new(
-      serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
-      serialize: ['correction', 'responsible_users', 'tags', 'answers.attachments,correction.*', 'correction.answers.attachments']
-    )
-  end
-
   protected
 
   def show_for_guest?
