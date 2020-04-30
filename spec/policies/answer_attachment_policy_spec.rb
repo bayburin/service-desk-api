@@ -50,6 +50,14 @@ RSpec.describe AnswerAttachmentPolicy do
           expect(subject).not_to permit(guest, attachment)
         end
       end
+
+      context 'and when service invisible' do
+        before { attachment.service.is_hidden = true }
+
+        it 'denies access' do
+          expect(subject).not_to permit(guest, attachment)
+        end
+      end
     end
   end
 

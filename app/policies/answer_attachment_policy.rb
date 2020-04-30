@@ -3,7 +3,7 @@ class AnswerAttachmentPolicy < ApplicationPolicy
     if user.one_of_roles?(:content_manager, :operator, :service_responsible)
       true
     else
-      record.ticket.published_state? && !record.ticket.is_hidden
+      record.ticket.published_state? && !record.ticket.is_hidden && !record.service.is_hidden
     end
   end
 
