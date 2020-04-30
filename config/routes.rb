@@ -11,6 +11,10 @@ Rails.application.routes.draw do
 
   namespace :api, constraints: { format: 'json' } do
     namespace :v1 do
+      get 'welcome', to: 'base#welcome'
+      post 'auth/token'
+      post 'auth/revoke'
+
       resources :dashboard, only: :index do
         # Глобальный поиск
         get :search, to: :search, on: :collection
@@ -44,10 +48,15 @@ Rails.application.routes.draw do
         resources :answer_attachments, only: %i[show create destroy]
       end
 
-      get 'welcome', to: 'base#welcome'
-      post 'auth/token'
-      post 'auth/revoke'
       post 'tickets/publish', to: 'tickets#publish'
+    end
+
+    namespace :v2 do
+      get 'welcome', to: 'base#welcome'
+
+      resources :answers, only: [] do
+        resources :answer_attachments, only: :show
+      end
     end
   end
 end

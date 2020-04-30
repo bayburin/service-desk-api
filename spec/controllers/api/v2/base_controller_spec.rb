@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 module Api
-  module V1
+  module V2
     RSpec.describe BaseController, type: :controller do
-      sign_in_user
+      sign_in_guest_user
 
       describe 'GET #welcome' do
-        let(:message) { { message: 'v1' } }
+        let(:message) { { message: 'v2' } }
 
         it 'renders nothing' do
           get :welcome
