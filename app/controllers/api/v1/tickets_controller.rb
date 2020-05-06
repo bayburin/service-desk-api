@@ -20,14 +20,15 @@ module Api
       end
 
       def create
-        ticket = Tickets::TicketFactory.create(:question, attributive_params)
+        question_ticket = Tickets::TicketFactory.create(:question, attributive_params)
 
-        if ticket.save
-          NotifyContentManagersWorker.perform_async(ticket.id, current_user.tn, 'create', request.headers['origin'])
+        if question_ticket.save
+          # FIXME: Исправить воркер. Он работает на id Ticket, а не QuestionTicket
+          NotifyContentManagersWorker.perform_async(question_ticket.id, current_user.tn, 'create', request.headers['origin'])
 
-          render json: ticket, serializer: Tickets::TicketResponsibleUserSerializer
+          render json: question_ticket, serializer: QuestionTickets::QuestionTicketResponsibleUserSerializer
         else
-          render json: ticket.errors, status: :unprocessable_entity
+          render json: question_ticket.errors, status: :unprocessable_entity
         end
       end
 
@@ -82,23 +83,27 @@ module Api
       protected
 
       def ticket_params
-        params.require(:ticket).permit(
+        params.require(:question).permit(
           :id,
-          :service_id,
-          :parent_id,
-          :name,
-          :is_hidden,
+          ticket: [
+            :id,
+            :service_id,
+            :parent_id,
+            :name,
+            :is_hidden,
+            tags: %i[id name _destroy],
+            responsible_users: %i[id responseable_type responseable_id tn _destroy]
+          ],
           answers: %i[id _destroy ticket_id reason answer link is_hidden],
-          tags: %i[id name _destroy],
-          responsible_users: %i[id responseable_type responseable_id tn _destroy]
         )
       end
 
       def attributive_params
         attributive_params = ticket_params
         attributive_params[:answers_attributes] = attributive_params.delete(:answers) || []
-        attributive_params[:tags_attributes] = attributive_params.delete(:tags) || []
-        attributive_params[:responsible_users_attributes] = attributive_params.delete(:responsible_users) || []
+        attributive_params[:ticket][:tags_attributes] = attributive_params[:ticket].delete(:tags) || []
+        attributive_params[:ticket][:responsible_users_attributes] = attributive_params[:ticket].delete(:responsible_users) || []
+        attributive_params[:ticket_attributes] = attributive_params.delete(:ticket)
         attributive_params
       end
 

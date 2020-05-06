@@ -62,9 +62,10 @@ module Api
       describe 'POST #create' do
         let!(:service) { create(:service) }
         let(:answer) { attributes_for(:answer) }
-        let(:ticket_attrs) { attributes_for(:ticket, service_id: service.id, state: :draft, answers: [answer], tags: [{ name: 'test' }]) }
-        let(:params) { { service_id: service.id, ticket: ticket_attrs } }
-        let(:ticket) { create(:ticket) }
+        let(:ticket_attrs) { attributes_for(:ticket, service_id: service.id, state: :draft, tags: [{ name: 'test' }]) }
+        let(:question_attrs) { attributes_for(:question_ticket, answers: [answer], ticket: ticket_attrs) }
+        let(:params) { { service_id: service.id, question: question_attrs } }
+        let(:quesion) { create(:question_ticket) }
         before do
           allow(subject).to receive(:authorize).and_return(true)
           allow(NotifyContentManagersWorker).to receive(:perform_async)
@@ -77,10 +78,14 @@ module Api
         end
 
         it 'calls NotifyContentManagersWorker worker with id of created ticket' do
-          allow(Tickets::TicketFactory).to receive(:create).and_return(ticket)
-          expect(NotifyContentManagersWorker).to receive(:perform_async).with(ticket.id, subject.current_user.tn, 'create', nil)
+          allow(Tickets::TicketFactory).to receive(:create).and_return(quesion)
+          expect(NotifyContentManagersWorker).to receive(:perform_async).with(quesion.id, subject.current_user.tn, 'create', nil)
 
           post :create, params: params, format: :json
+        end
+
+        it 'create new question_ticket' do
+          expect { post :create, params: params, format: :json }.to change { QuestionTicket.count }.by(1)
         end
 
         it 'creates new ticket' do
@@ -90,7 +95,7 @@ module Api
         it 'response with created ticket' do
           post :create, params: params, format: :json
 
-          expect(parse_json(response.body)['id']).to eq Ticket.last.id
+          expect(parse_json(response.body)['id']).to eq QuestionTicket.last.id
         end
 
         it 'response with success status' do
