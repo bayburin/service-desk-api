@@ -71,7 +71,8 @@ class ServicePolicy < ApplicationPolicy
         ],
         serialize: [
           '*', 'question_tickets.ticket.*', 'question_tickets.answers.attachments', 'question_tickets.correction.*',
-          'question_tickets.correction.answers.attachments'
+          'question_tickets.correction.answers.attachments', 'question_tickets.correction.ticket.responsible_users',
+          'question_tickets.correction.ticket.tags'
         ]
       )
     elsif user.role?(:operator)
