@@ -14,9 +14,13 @@ module Api
       end
 
       def show
-        ticket = Service.find(params[:service_id]).tickets.find(params[:id])
+        question_ticket = Service.find(params[:service_id]).question_tickets.find(params[:id])
 
-        render json: ticket, serializer: Tickets::TicketResponsibleUserSerializer
+        render(
+          json: question_ticket,
+          serializer: QuestionTickets::QuestionTicketResponsibleUserSerializer,
+          include: ['*', 'ticket.*']
+        )
       end
 
       def create
@@ -39,6 +43,7 @@ module Api
 
         if decorated_ticket.update_by_state(attributive_params)
           policy_attributes = policy(Ticket).attributes_for_show
+          # FIXME: Исправить воркер. Он работает на id Ticket, а не QuestionTicket
           NotifyContentManagersWorker.perform_async(decorated_ticket.original.try(:id) || decorated_ticket.id, current_user.tn, 'update', request.headers['origin'])
 
           render json: decorated_ticket, serializer: policy_attributes.serializer, include: policy_attributes.serialize

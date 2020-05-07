@@ -34,17 +34,17 @@ module Api
 
       describe 'GET #show' do
         let(:service) { create(:service) }
-        let(:tickets) { create_list(:ticket, 3, service: service) }
-        let!(:ticket) { tickets.first }
-        let(:params) { { service_id: ticket.service_id, id: ticket.id } }
+        let(:ticket) { create(:ticket, :question, service: service) }
+        let(:question) { ticket.ticketable }
+        let(:params) { { service_id: ticket.service_id, id: question.id } }
 
         it 'loads ticket' do
           get :show, params: params, format: :json
 
-          expect(parse_json(response.body)['id']).to eq ticket.id
+          expect(parse_json(response.body)['id']).to eq question.id
         end
 
-        %w[answers responsible_users tags correction service].each do |attr|
+        %w[answers ticket/responsible_users ticket/tags correction ticket/service].each do |attr|
           it "has :#{attr} attribute" do
             get :show, params: params, format: :json
 
