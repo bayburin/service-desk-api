@@ -37,12 +37,12 @@ module Api
       end
 
       def update
-        ticket = Service.find(params[:service_id]).tickets.find(params[:id])
-        authorize ticket
-        decorated_ticket = TicketDecorator.new(ticket)
+        question_ticket = Service.find(params[:service_id]).question_tickets.find(params[:id])
+        authorize question_ticket
+        decorated_ticket = QuestionTicketDecorator.new(question_ticket)
 
         if decorated_ticket.update_by_state(attributive_params)
-          policy_attributes = policy(Ticket).attributes_for_show
+          policy_attributes = policy(QuestionTicket).attributes_for_show
           # FIXME: Исправить воркер. Он работает на id Ticket, а не QuestionTicket
           NotifyContentManagersWorker.perform_async(decorated_ticket.original.try(:id) || decorated_ticket.id, current_user.tn, 'update', request.headers['origin'])
 
@@ -55,7 +55,7 @@ module Api
       def destroy
         ticket = Service.find(params[:service_id]).tickets.find(params[:id])
         authorize ticket
-        decorated_ticket = TicketDecorator.new(ticket)
+        decorated_ticket = QuestionTicketDecorator.new(ticket)
 
         if decorated_ticket.destroy_by_state
           render json: ticket

@@ -1,6 +1,6 @@
 module Api
   module V1
-    module Tickets
+    module QuestionTickets
       class OnlyOneCorrectionValidator < ActiveModel::Validator
         def validate(record)
           return unless record.correction

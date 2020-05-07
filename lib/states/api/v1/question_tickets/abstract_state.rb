@@ -1,11 +1,11 @@
 module Api
   module V1
-    module Tickets
+    module QuestionTickets
       class AbstractState
-        attr_reader :ticket
+        attr_reader :question_ticket
 
-        def initialize(ticket)
-          @ticket = ticket
+        def initialize(question_ticket)
+          @question_ticket = question_ticket
         end
 
         def update

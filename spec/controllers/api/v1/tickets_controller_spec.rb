@@ -120,12 +120,12 @@ module Api
       end
 
       describe 'PUT #update' do
-        let!(:ticket) { create(:ticket) }
-        let(:ticket_params) { ticket.as_json(include: %i[answers tags responsible_users]) }
-        let(:params) { { service_id: ticket.service.id, id: ticket.id, ticket: ticket_params } }
-        let(:decorator) { TicketDecorator.new(ticket) }
+        let!(:question) { create(:question_ticket) }
+        let(:question_params) { question.as_json(include: [:answers, ticket: { include: %i[tags responsible_users] }]) }
+        let(:params) { { service_id: question.service.id, id: question.id, question: question_params } }
+        let(:decorator) { QuestionTicketDecorator.new(question) }
         before do
-          allow(TicketDecorator).to receive(:new).with(ticket).and_return(decorator)
+          allow(QuestionTicketDecorator).to receive(:new).with(question).and_return(decorator)
           allow(NotifyContentManagersWorker).to receive(:perform_async)
         end
 
@@ -136,7 +136,7 @@ module Api
         end
 
         it 'calls NotifyContentManagersWorker worker with id of ticket' do
-          expect(NotifyContentManagersWorker).to receive(:perform_async).with(ticket.id, subject.current_user.tn, 'update', nil)
+          expect(NotifyContentManagersWorker).to receive(:perform_async).with(question.id, subject.current_user.tn, 'update', nil)
 
           put :update, params: params, format: :json
         end

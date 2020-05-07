@@ -2,37 +2,37 @@ require 'rails_helper'
 
 module Api
   module V1
-    module Tickets
+    module QuestionTickets
       RSpec.describe PublishedState do
-        let!(:ticket) { create(:ticket, state: :published) }
-        subject { PublishedState.new(ticket) }
+        let!(:question) { create(:question_ticket, state: :published) }
+        subject { PublishedState.new(question) }
 
         it 'inherits from AbstractState' do
           expect(PublishedState).to be < AbstractState
         end
 
         describe '#update' do
-          before { allow_any_instance_of(UpdatePublishedTicket).to receive(:update).and_return(true) }
+          before { allow_any_instance_of(UpdatePublishedQuestion).to receive(:update).and_return(true) }
 
-          it 'calls #update method for UpdatePublishedTicket instance' do
-            expect_any_instance_of(UpdatePublishedTicket).to receive(:update)
+          it 'call #update method for UpdatePublishedQuestion instance' do
+            expect_any_instance_of(UpdatePublishedQuestion).to receive(:update).with({})
 
             subject.update({})
           end
 
-          it 'returns true' do
+          it 'return true' do
             expect(subject.update({})).to be_truthy
           end
 
-          context 'when UpdatePublishedTicket#update returns false' do
+          context 'when UpdatePublishedQuestion#update returns false' do
             let(:custom_error) { 'test error' }
-            let(:update_ticket) { UpdatePublishedTicket.new(ticket) }
+            let(:update_ticket) { UpdatePublishedQuestion.new(question) }
             before do
-              allow(UpdatePublishedTicket).to receive(:new).and_return(update_ticket)
+              allow(UpdatePublishedQuestion).to receive(:new).and_return(update_ticket)
               allow(update_ticket).to receive(:update).and_return(false)
             end
 
-            it 'returns false' do
+            it 'return false' do
               expect(subject.update({})).to be_falsey
             end
 
@@ -40,7 +40,7 @@ module Api
               update_ticket.errors.add(:base, custom_error)
               subject.update({})
 
-              expect(subject.ticket.errors.full_messages).to include(custom_error)
+              expect(subject.question_ticket.errors.full_messages).to include(custom_error)
             end
           end
         end
@@ -53,8 +53,8 @@ module Api
 
         describe '#destroy' do
           context 'when ticket has correction' do
-            let(:correction) { create(:ticket) }
-            before { ticket.correction = correction }
+            let(:correction) { create(:question_ticket) }
+            before { question.correction = correction }
 
             it 'destroys correction and ticket' do
               expect { subject.destroy }.to change { Ticket.count }.by(-2)
@@ -64,6 +64,10 @@ module Api
               before { allow(correction).to receive(:destroy).and_return(false) }
 
               it 'does not destroy original' do
+                expect { subject.destroy }.not_to change { QuestionTicket.count }
+              end
+
+              it 'does not destroy ticket which belongs to original ticket' do
                 expect { subject.destroy }.not_to change { Ticket.count }
               end
             end
@@ -71,7 +75,7 @@ module Api
 
           context 'when ticket does not have correction' do
             it 'destroys ticket' do
-              expect { subject.destroy }.to change { Ticket.count }.by(-1)
+              expect { subject.destroy }.to change { QuestionTicket.count }.by(-1)
             end
           end
         end

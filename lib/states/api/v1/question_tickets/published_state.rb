@@ -1,12 +1,12 @@
 module Api
   module V1
-    module Tickets
+    module QuestionTickets
       class PublishedState < AbstractState
         def update(attributes)
-          update_ticket = UpdatePublishedTicket.new(ticket)
+          update_ticket = UpdatePublishedQuestion.new(question_ticket)
           return true if update_ticket.update(attributes)
 
-          ticket.errors.merge!(update_ticket.errors)
+          question_ticket.errors.merge!(update_ticket.errors)
           false
         end
 
@@ -15,12 +15,12 @@ module Api
         end
 
         def destroy
-          if ticket.correction
-            Ticket.transaction do
-              ticket.correction.destroy && ticket.destroy
+          if question_ticket.correction
+            QuestionTicket.transaction do
+              question_ticket.correction.destroy && question_ticket.destroy
             end
           else
-            ticket.destroy
+            question_ticket.destroy
           end
         end
       end

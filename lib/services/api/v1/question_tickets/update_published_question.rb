@@ -1,12 +1,12 @@
 module Api
   module V1
-    module Tickets
-      class UpdatePublishedTicket
+    module QuestionTickets
+      class UpdatePublishedQuestion
         include ActiveModel::Validations
 
         validates_with OnlyOneCorrectionValidator
 
-        attr_reader :original, :ticket
+        attr_reader :original, :question_ticket
 
         def initialize(original)
           @original = original
@@ -20,10 +20,10 @@ module Api
           return unless valid?
 
           cleared_attributes = process_attributes(attributes)
-          @ticket = TicketFactory.create(:question, cleared_attributes.merge!(original_id: original.id))
-          return true if ticket.save
+          @question_ticket = Tickets::TicketFactory.create(:question, cleared_attributes.merge!(original_id: original.id))
+          return true if question_ticket.save
 
-          errors.merge!(ticket.errors)
+          errors.merge!(question_ticket.errors)
           false
         end
 
@@ -35,7 +35,9 @@ module Api
                           .select(:id, :answer_id, :document)
 
           attributes[:id] = nil
-          attributes[:responsible_users_attributes].each do |responsible|
+          attributes[:ticket_attributes][:id] = nil
+          attributes[:ticket_attributes][:ticketable_id] = nil
+          attributes[:ticket_attributes][:responsible_users_attributes].each do |responsible|
             responsible[:id] = nil
             responsible[:responseable_id] = nil
           end
@@ -43,8 +45,6 @@ module Api
             answer[:attachments_attributes] ||= []
             answer[:attachments_attributes] << build_attachments(answer, attachments)
             answer[:attachments_attributes] = answer[:attachments_attributes].flatten.compact.each { |el| el.try(:permit!) }
-
-            answer[:ticket] = nil
             answer[:id] = nil
           end
 

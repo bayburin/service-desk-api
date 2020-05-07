@@ -1,8 +1,8 @@
 module Api
   module V1
-    class TicketDecorator < SimpleDelegator
-      def initialize(ticket)
-        __setobj__ ticket
+    class QuestionTicketDecorator < SimpleDelegator
+      def initialize(question_ticket)
+        __setobj__ question_ticket
       end
 
       def update_by_state(attributes)
@@ -24,7 +24,7 @@ module Api
       protected
 
       def ticket_state
-        published_state? ? Api::V1::Tickets::PublishedState.new(self) : Api::V1::Tickets::DraftState.new(self)
+        __getobj__.ticket.published_state? ? Api::V1::QuestionTickets::PublishedState.new(self) : Api::V1::QuestionTickets::DraftState.new(self)
       end
     end
   end
