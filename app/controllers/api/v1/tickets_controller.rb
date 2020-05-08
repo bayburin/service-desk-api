@@ -73,14 +73,14 @@ module Api
       end
 
       def publish
-        authorize Ticket, :publish?
+        authorize Ticket
 
-        tickets = QuestionTicketsQuery.new.waiting_for_publish(params[:ids].split(','))
-        published = tickets.map do |ticket|
-          decorated_ticket = TicketDecorator.new(ticket)
-          decorated_ticket.publish ? ticket.reload : nil
+        question_tickets = QuestionTicketsQuery.new.waiting_for_publish(params[:ids].split(','))
+        published = question_tickets.map do |question|
+          decorated_ticket = QuestionTicketDecorator.new(question)
+          decorated_ticket.publish ? question.reload : nil
         end
-        policy_attributes = policy(Ticket).attributes_for_show
+        policy_attributes = policy(QuestionTicket).attributes_for_show
 
         render json: published, each_serializer: policy_attributes.serializer, include: policy_attributes.serialize
       end
