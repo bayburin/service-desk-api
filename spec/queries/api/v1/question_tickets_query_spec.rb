@@ -3,8 +3,10 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe QuestionTicketsQuery, type: :model do
+      let!(:cases) { create_list(:ticket, 2, :case) }
       let!(:questions) { create_list(:question_ticket, 7) }
-      let!(:correction) { create(:question_ticket, original: questions.first, state: :draft) }
+      let(:question) { create(:question_ticket) }
+      let!(:correction) { create(:question_ticket, original: question, state: :draft) }
 
       it 'inherits from TicketsQuery class' do
         expect(QuestionTicketsQuery).to be < ApplicationQuery
@@ -70,7 +72,9 @@ module Api
       end
 
       describe '#waiting_for_publish' do
-        it 'return tickets with draft state and specified id' do
+        it 'return questions with draft state and specified id' do
+          expect(subject.waiting_for_publish(correction.id).count).to eq 1
+
           subject.waiting_for_publish(correction.id).each do |q|
             expect(q.ticket.draft_state?).to be_truthy
             expect(q.id).to eq correction.id

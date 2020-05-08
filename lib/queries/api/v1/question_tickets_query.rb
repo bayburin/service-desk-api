@@ -18,7 +18,7 @@ module Api
       end
 
       def waiting_for_publish(ids = [])
-        scope.where(tickets: { state: :draft, id: ids })
+        scope.where(tickets: { state: :draft }, id: ids)
       end
 
       def all_in_service(service)
