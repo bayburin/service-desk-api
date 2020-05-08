@@ -1,6 +1,6 @@
 module Api
   module V1
-    class TicketsController < BaseController
+    class QuestionTicketsController < BaseController
       before_action :check_access, except: %i[raise_rating update publish]
 
       def index
@@ -87,7 +87,7 @@ module Api
 
       protected
 
-      def ticket_params
+      def question_params
         params.require(:question).permit(
           :id,
           ticket: [
@@ -104,7 +104,7 @@ module Api
       end
 
       def attributive_params
-        attributive_params = ticket_params
+        attributive_params = question_params
         attributive_params[:answers_attributes] = attributive_params.delete(:answers) || []
         attributive_params[:ticket][:tags_attributes] = attributive_params[:ticket].delete(:tags) || []
         attributive_params[:ticket][:responsible_users_attributes] = attributive_params[:ticket].delete(:responsible_users) || []

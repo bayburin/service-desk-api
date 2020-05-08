@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe TicketsController, type: :controller do
+    RSpec.describe QuestionTicketsController, type: :controller do
       sign_in_user
       before { allow(subject).to receive(:authorize) }
 
