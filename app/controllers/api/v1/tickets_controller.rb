@@ -53,14 +53,14 @@ module Api
       end
 
       def destroy
-        ticket = Service.find(params[:service_id]).tickets.find(params[:id])
-        authorize ticket
-        decorated_ticket = QuestionTicketDecorator.new(ticket)
+        question_ticket = Service.find(params[:service_id]).question_tickets.find(params[:id])
+        authorize Ticket
+        decorated_ticket = QuestionTicketDecorator.new(question_ticket)
 
         if decorated_ticket.destroy_by_state
-          render json: ticket
+          render json: question_ticket
         else
-          render json: ticket.errors, status: :unprocessable_entity
+          render json: question_ticket.errors, status: :unprocessable_entity
         end
       end
 

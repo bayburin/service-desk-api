@@ -159,12 +159,12 @@ module Api
       end
 
       describe 'DELETE #destroy' do
-        let!(:ticket) { create(:ticket) }
-        let(:params) { { service_id: ticket.service.id, id: ticket.id } }
-        let(:decorator) { TicketDecorator.new(ticket) }
-        before { allow(TicketDecorator).to receive(:new).with(ticket).and_return(decorator) }
+        let!(:question) { create(:question_ticket) }
+        let(:params) { { service_id: question.service.id, id: question.id } }
+        let(:decorator) { QuestionTicketDecorator.new(question) }
+        before { allow(QuestionTicketDecorator).to receive(:new).with(question).and_return(decorator) }
 
-        it 'calls destroy_by_state method' do
+        it 'call destroy_by_state method' do
           expect(decorator).to receive(:destroy_by_state).and_return(true)
 
           delete :destroy, params: params, format: :json
