@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_01_063023) do
+ActiveRecord::Schema.define(version: 2020_05_13_074103) do
 
   create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "visit_id"
@@ -198,7 +198,6 @@ ActiveRecord::Schema.define(version: 2020_04_01_063023) do
 
   add_foreign_key "answer_attachments", "answers"
   add_foreign_key "answers", "question_tickets"
-  add_foreign_key "answers", "tickets"
   add_foreign_key "services", "categories"
   add_foreign_key "ticket_tags", "tags"
   add_foreign_key "ticket_tags", "tickets"
