@@ -1,6 +1,6 @@
 module Api
   module V1
-    class NotifyContentManagerOnCreate
+    class NotifyContentManagerOnUpdateQuestion
       include Sidekiq::Worker
 
       def perform(user_id, ticket_id, current_user_tn, origin)
@@ -9,7 +9,7 @@ module Api
         current_user = User.authenticate(tn: current_user_tn).load_details
         return if delivery_user.tn == current_user.tn
 
-        ReportSender.new(delivery_user, ticket, current_user, origin).send_report(Tickets::TicketCreatedEmailSender.new)
+        ReportSender.new(delivery_user, ticket, current_user, origin).send_report(QuestionTickets::QuestionTicketUpdatedEmailSender.new)
       end
     end
   end

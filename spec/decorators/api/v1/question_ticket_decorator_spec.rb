@@ -2,9 +2,10 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe TicketDecorator, type: :model do
-      let!(:ticket) { create(:ticket) }
-      subject { TicketDecorator.new(ticket) }
+    RSpec.describe QuestionTicketDecorator, type: :model do
+      let!(:question) { create(:question_ticket) }
+      let(:ticket) { question.ticket }
+      subject { QuestionTicketDecorator.new(question) }
 
       it 'inherits from SimpleDelegator class' do
         expect(TicketDecorator).to be < SimpleDelegator
@@ -20,13 +21,13 @@ module Api
           it 'creates Api::V1::Tickets::PublishedState instance' do
             expect(Api::V1::Tickets::PublishedState).to receive(:new).with(subject).and_call_original
 
-            subject.update_by_state(ticket.as_json)
+            subject.update_by_state(question.as_json)
           end
 
           it 'calls update method for Api::V1::Tickets::PublishedState instance' do
             expect_any_instance_of(Api::V1::Tickets::PublishedState).to receive(:update).and_return(true)
 
-            subject.update_by_state(ticket.as_json)
+            subject.update_by_state(question.as_json)
           end
         end
 
@@ -39,13 +40,13 @@ module Api
           it 'creates Api::V1::Tickets::DraftState instance' do
             expect(Api::V1::Tickets::DraftState).to receive(:new).with(subject).and_call_original
 
-            subject.update_by_state(ticket.as_json)
+            subject.update_by_state(question.as_json)
           end
 
           it 'calls update method for Api::V1::Tickets::DraftState instance' do
             expect_any_instance_of(Api::V1::Tickets::DraftState).to receive(:update).and_return(true)
 
-            subject.update_by_state(ticket.as_json)
+            subject.update_by_state(question.as_json)
           end
         end
       end

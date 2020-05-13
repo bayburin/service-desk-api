@@ -27,8 +27,7 @@ module Api
         question_ticket = Tickets::TicketFactory.create(:question, attributive_params)
 
         if question_ticket.save
-          # FIXME: Исправить воркер. Он работает на id Ticket, а не QuestionTicket
-          NotifyContentManagersWorker.perform_async(question_ticket.id, current_user.tn, 'create', request.headers['origin'])
+          QuestionTicketChangedWorker.perform_async(question_ticket.ticket.id, current_user.tn, 'create', request.headers['origin'])
 
           render json: question_ticket, serializer: QuestionTickets::QuestionTicketResponsibleUserSerializer
         else
@@ -43,8 +42,8 @@ module Api
 
         if decorated_ticket.update_by_state(attributive_params)
           policy_attributes = policy(QuestionTicket).attributes_for_show
-          # FIXME: Исправить воркер. Он работает на id Ticket, а не QuestionTicket
-          NotifyContentManagersWorker.perform_async(decorated_ticket.original.try(:id) || decorated_ticket.id, current_user.tn, 'update', request.headers['origin'])
+          notify_ticket_id = decorated_ticket.original ? decorated_ticket.original.ticket.id : decorated_ticket.ticket.id
+          QuestionTicketChangedWorker.perform_async(notify_ticket_id, current_user.tn, 'update', request.headers['origin'])
 
           render json: decorated_ticket, serializer: policy_attributes.serializer, include: policy_attributes.serialize
         else

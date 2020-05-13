@@ -18,7 +18,7 @@ module Api
       end
 
       def link_to_admin_ui(origin)
-        "#{origin}/categories/#{service.category.id}/services/#{service.id}/admin/tickets?ticket=#{id}"
+        "#{origin}/categories/#{service.category.id}/services/#{service.id}/admin/tickets?ticket=#{ticket.id}"
       end
 
       protected

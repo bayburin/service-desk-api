@@ -5,11 +5,11 @@ module Api
     RSpec.describe ContentManagerMailer, type: :mailer do
       let(:operator) { create(:operator_user) }
       let(:manager) { create(:content_manager_user) }
-      let(:ticket) { create(:ticket, correction: create(:ticket)) }
-      let(:mail) { ContentManagerMailer.question_updated_email(manager, ticket, operator, '') }
+      let(:question) { create(:question_ticket, correction: create(:question_ticket)) }
+      let(:mail) { ContentManagerMailer.question_updated_email(manager, question.ticket, operator, '') }
 
       it 'renders the subject' do
-        expect(mail.subject).to eq("Портал \"Техподдержка УИВТ\": вопрос №#{ticket.id} изменен")
+        expect(mail.subject).to eq("Портал \"Техподдержка УИВТ\": вопрос №#{question.ticket.id} изменен")
       end
 
       it 'renders the receiver email' do

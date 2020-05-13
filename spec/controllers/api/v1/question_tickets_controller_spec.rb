@@ -68,7 +68,7 @@ module Api
         let(:quesion) { create(:question_ticket) }
         before do
           allow(subject).to receive(:authorize).and_return(true)
-          allow(NotifyContentManagersWorker).to receive(:perform_async)
+          allow(QuestionTicketChangedWorker).to receive(:perform_async)
         end
 
         it 'calls Tickets::TicketFactory.create method' do
@@ -77,9 +77,9 @@ module Api
           post :create, params: params, format: :json
         end
 
-        it 'calls NotifyContentManagersWorker worker with id of created ticket' do
+        it 'calls QuestionTicketChangedWorker worker with id of created ticket' do
           allow(Tickets::TicketFactory).to receive(:create).and_return(quesion)
-          expect(NotifyContentManagersWorker).to receive(:perform_async).with(quesion.id, subject.current_user.tn, 'create', nil)
+          expect(QuestionTicketChangedWorker).to receive(:perform_async).with(quesion.id, subject.current_user.tn, 'create', nil)
 
           post :create, params: params, format: :json
         end
@@ -126,7 +126,7 @@ module Api
         let(:decorator) { QuestionTicketDecorator.new(question) }
         before do
           allow(QuestionTicketDecorator).to receive(:new).with(question).and_return(decorator)
-          allow(NotifyContentManagersWorker).to receive(:perform_async)
+          allow(QuestionTicketChangedWorker).to receive(:perform_async)
         end
 
         it 'calls update_by_state method' do
@@ -135,8 +135,8 @@ module Api
           put :update, params: params, format: :json
         end
 
-        it 'calls NotifyContentManagersWorker worker with id of ticket' do
-          expect(NotifyContentManagersWorker).to receive(:perform_async).with(question.id, subject.current_user.tn, 'update', nil)
+        it 'calls QuestionTicketChangedWorker worker with id of ticket' do
+          expect(QuestionTicketChangedWorker).to receive(:perform_async).with(question.id, subject.current_user.tn, 'update', nil)
 
           put :update, params: params, format: :json
         end
