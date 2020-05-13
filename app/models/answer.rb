@@ -7,4 +7,6 @@ class Answer < ApplicationRecord
   validates :is_hidden, inclusion: { in: [true, false] }
 
   accepts_nested_attributes_for :attachments
+
+  delegate :ticket, to: :question_ticket
 end

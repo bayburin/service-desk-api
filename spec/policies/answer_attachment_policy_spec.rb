@@ -6,8 +6,8 @@ RSpec.describe AnswerAttachmentPolicy do
   let(:manager) { create(:content_manager_user) }
   let(:responsible) { create(:service_responsible_user) }
   let(:operator) { create(:operator_user) }
-  let(:ticket) { create(:ticket) }
-  let(:attachment) { create(:answer_attachment, answer: ticket.answers.first) }
+  let(:question) { create(:question_ticket) }
+  let(:attachment) { create(:answer_attachment, answer: question.answers.first) }
 
   permissions :show? do
     context 'for user with :content_manager role' do

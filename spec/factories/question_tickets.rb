@@ -5,7 +5,7 @@ FactoryBot.define do
       name { Faker::Restaurant.name }
       state { :published }
       is_hidden { false }
-      popularity { 0 }
+      sequence(:popularity) { |i| i }
     end
 
     after(:build) do |question, ev|

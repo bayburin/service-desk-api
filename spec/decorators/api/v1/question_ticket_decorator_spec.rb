@@ -8,24 +8,24 @@ module Api
       subject { QuestionTicketDecorator.new(question) }
 
       it 'inherits from SimpleDelegator class' do
-        expect(TicketDecorator).to be < SimpleDelegator
+        expect(QuestionTicketDecorator).to be < SimpleDelegator
       end
 
       describe '#update_by_state' do
         context 'when ticket has published state' do
           before do
             ticket.state = :published
-            allow_any_instance_of(Api::V1::Tickets::PublishedState).to receive(:update).and_return(true)
+            allow_any_instance_of(Api::V1::QuestionTickets::PublishedState).to receive(:update).and_return(true)
           end
 
-          it 'creates Api::V1::Tickets::PublishedState instance' do
-            expect(Api::V1::Tickets::PublishedState).to receive(:new).with(subject).and_call_original
+          it 'creates Api::V1::QuestionTickets::PublishedState instance' do
+            expect(Api::V1::QuestionTickets::PublishedState).to receive(:new).with(subject).and_call_original
 
             subject.update_by_state(question.as_json)
           end
 
-          it 'calls update method for Api::V1::Tickets::PublishedState instance' do
-            expect_any_instance_of(Api::V1::Tickets::PublishedState).to receive(:update).and_return(true)
+          it 'calls update method for Api::V1::QuestionTickets::PublishedState instance' do
+            expect_any_instance_of(Api::V1::QuestionTickets::PublishedState).to receive(:update).and_return(true)
 
             subject.update_by_state(question.as_json)
           end
@@ -33,18 +33,18 @@ module Api
 
         context 'when ticket has draft state' do
           before do
-            subject.state = :draft
-            allow_any_instance_of(Api::V1::Tickets::DraftState).to receive(:update).and_return(true)
+            ticket.state = :draft
+            allow_any_instance_of(Api::V1::QuestionTickets::DraftState).to receive(:update).and_return(true)
           end
 
-          it 'creates Api::V1::Tickets::DraftState instance' do
-            expect(Api::V1::Tickets::DraftState).to receive(:new).with(subject).and_call_original
+          it 'creates Api::V1::QuestionTickets::DraftState instance' do
+            expect(Api::V1::QuestionTickets::DraftState).to receive(:new).with(subject).and_call_original
 
             subject.update_by_state(question.as_json)
           end
 
-          it 'calls update method for Api::V1::Tickets::DraftState instance' do
-            expect_any_instance_of(Api::V1::Tickets::DraftState).to receive(:update).and_return(true)
+          it 'calls update method for Api::V1::QuestionTickets::DraftState instance' do
+            expect_any_instance_of(Api::V1::QuestionTickets::DraftState).to receive(:update).and_return(true)
 
             subject.update_by_state(question.as_json)
           end
@@ -55,17 +55,17 @@ module Api
         context 'when ticket has published state' do
           before do
             ticket.state = :published
-            allow_any_instance_of(Api::V1::Tickets::PublishedState).to receive(:destroy).and_return(true)
+            allow_any_instance_of(Api::V1::QuestionTickets::PublishedState).to receive(:destroy).and_return(true)
           end
 
-          it 'creates Api::V1::Tickets::PublishedState instance' do
-            expect(Api::V1::Tickets::PublishedState).to receive(:new).with(subject).and_call_original
+          it 'creates Api::V1::QuestionTickets::PublishedState instance' do
+            expect(Api::V1::QuestionTickets::PublishedState).to receive(:new).with(subject).and_call_original
 
             subject.destroy_by_state
           end
 
-          it 'calls destroy method for Api::V1::Tickets::PublishedState instance' do
-            expect_any_instance_of(Api::V1::Tickets::PublishedState).to receive(:destroy).and_return(true)
+          it 'calls destroy method for Api::V1::QuestionTickets::PublishedState instance' do
+            expect_any_instance_of(Api::V1::QuestionTickets::PublishedState).to receive(:destroy).and_return(true)
 
             subject.destroy_by_state
           end
@@ -73,18 +73,18 @@ module Api
 
         context 'when ticket has draft state' do
           before do
-            subject.state = :draft
-            allow_any_instance_of(Api::V1::Tickets::DraftState).to receive(:destroy).and_return(true)
+            ticket.state = :draft
+            allow_any_instance_of(Api::V1::QuestionTickets::DraftState).to receive(:destroy).and_return(true)
           end
 
-          it 'creates Api::V1::Tickets::DraftState instance' do
-            expect(Api::V1::Tickets::DraftState).to receive(:new).with(subject).and_call_original
+          it 'creates Api::V1::QuestionTickets::DraftState instance' do
+            expect(Api::V1::QuestionTickets::DraftState).to receive(:new).with(subject).and_call_original
 
             subject.destroy_by_state
           end
 
-          it 'calls destroy method for Api::V1::Tickets::DraftState instance' do
-            expect_any_instance_of(Api::V1::Tickets::DraftState).to receive(:destroy).and_return(true)
+          it 'calls destroy method for Api::V1::QuestionTickets::DraftState instance' do
+            expect_any_instance_of(Api::V1::QuestionTickets::DraftState).to receive(:destroy).and_return(true)
 
             subject.destroy_by_state
           end
@@ -95,7 +95,7 @@ module Api
         before { ticket.published_state! }
 
         it 'calls :publish method for instance of state' do
-          expect_any_instance_of(Api::V1::Tickets::PublishedState).to receive(:publish)
+          expect_any_instance_of(Api::V1::QuestionTickets::PublishedState).to receive(:publish)
 
           subject.publish
         end

@@ -9,7 +9,7 @@ module Api
         let(:current_user) { create(:user) }
         subject { ServiceBaseSerializer.new(service, scope: current_user, scope_name: :current_user) }
 
-        %w[id category_id name short_description install popularity is_hidden has_common_case popularity category tickets].each do |attr|
+        %w[id category_id name short_description install popularity is_hidden has_common_case popularity category].each do |attr|
           it "has #{attr} attribute" do
             expect(subject.to_json).to have_json_path(attr)
           end
@@ -41,7 +41,7 @@ module Api
               subject.to_json
             end
 
-            %w[tickets category responsible_users].each do |attr|
+            %w[question_tickets category responsible_users].each do |attr|
               it "does not have :#{attr} attribute" do
                 expect(subject.to_json).not_to have_json_path(attr)
               end
@@ -57,7 +57,7 @@ module Api
               subject.to_json
             end
 
-            %w[tickets category responsible_users].each do |attr|
+            %w[category responsible_users].each do |attr|
               it "has :#{attr} attribute" do
                 expect(subject.to_json).to have_json_path(attr)
               end

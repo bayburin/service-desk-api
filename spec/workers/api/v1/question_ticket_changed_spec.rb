@@ -13,8 +13,8 @@ module Api
         let(:origin) { 'custom origin' }
 
         it 'calls Api::V1::NotifyContentManagerOnCreate worker for each manager' do
-          expect(Api::V1::NotifyContentManagerOnCreate).to receive(:perform_async).with(manager.id, ticket.id, operator.id, origin)
-          expect(Api::V1::NotifyContentManagerOnCreate).to receive(:perform_async).with(sec_manager.id, ticket.id, operator.id, origin)
+          expect(Api::V1::NotifyContentManagerOnCreateQuestion).to receive(:perform_async).with(manager.id, ticket.id, operator.id, origin)
+          expect(Api::V1::NotifyContentManagerOnCreateQuestion).to receive(:perform_async).with(sec_manager.id, ticket.id, operator.id, origin)
 
           subject.perform(ticket.id, operator.id, type, origin)
         end
@@ -25,8 +25,8 @@ module Api
         let(:origin) { 'custom origin' }
 
         it 'calls Api::V1::NotifyContentManagerOnUpdate worker for each manager' do
-          expect(Api::V1::NotifyContentManagerOnUpdate).to receive(:perform_async).with(manager.id, ticket.id, operator.id, origin)
-          expect(Api::V1::NotifyContentManagerOnUpdate).to receive(:perform_async).with(sec_manager.id, ticket.id, operator.id, origin)
+          expect(Api::V1::NotifyContentManagerOnUpdateQuestion).to receive(:perform_async).with(manager.id, ticket.id, operator.id, origin)
+          expect(Api::V1::NotifyContentManagerOnUpdateQuestion).to receive(:perform_async).with(sec_manager.id, ticket.id, operator.id, origin)
 
           subject.perform(ticket.id, operator.id, type, origin)
         end

@@ -5,7 +5,7 @@ module Api
 
       has_many :attachments, serializer: AnswerAttachmentSerializer
 
-      belongs_to :ticket
+      belongs_to :question_ticket
     end
   end
 end

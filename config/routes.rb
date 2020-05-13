@@ -48,7 +48,7 @@ Rails.application.routes.draw do
         resources :answer_attachments, only: %i[show create destroy]
       end
 
-      post 'tickets/publish', to: 'tickets#publish'
+      post 'question_tickets/publish', to: 'question_tickets#publish'
     end
 
     namespace :v2 do

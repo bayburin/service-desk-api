@@ -4,8 +4,8 @@ module Api
   module V1
     RSpec.describe AnswerAttachmentsController, type: :controller do
       sign_in_user
-      let(:ticket) { create(:ticket, :question) }
-      let!(:answer) { ticket.answers.first }
+      let(:question) { create(:question_ticket) }
+      let!(:answer) { question.answers.first }
       before { allow(subject).to receive(:authorize) }
 
       describe 'GET #show' do

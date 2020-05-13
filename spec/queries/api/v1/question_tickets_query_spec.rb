@@ -35,7 +35,7 @@ module Api
 
       describe '#all' do
         it 'load all question_tickets' do
-          expect(subject.all.count).to eq questions.count
+          expect(subject.all.count).to eq questions.count + 1
         end
 
         it 'call scope :by_popularity' do
