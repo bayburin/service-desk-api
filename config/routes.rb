@@ -42,7 +42,7 @@ Rails.application.routes.draw do
         end
       end
       resources :tags, only: :index do
-        get :popularity, to: :popularity, on: :collection
+        get :popular, to: :popular, on: :collection
       end
       resources :answers, only: [] do
         resources :answer_attachments, only: %i[show create destroy]
