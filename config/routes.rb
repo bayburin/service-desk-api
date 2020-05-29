@@ -24,6 +24,7 @@ Rails.application.routes.draw do
         resources :services, only: :show
       end
       resources :services, only: [] do
+        resources :tickets, only: :index
         resources :question_tickets do
           post :raise_rating, to: :raise_rating, on: :member
         end
