@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_13_074103) do
+ActiveRecord::Schema.define(version: 2020_05_29_081853) do
 
   create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "visit_id"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2020_05_13_074103) do
   end
 
   create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "question_ticket_id"
+    t.bigint "question_id"
     t.bigint "ticket_id"
     t.text "reason"
     t.text "answer", null: false
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2020_05_13_074103) do
     t.boolean "is_hidden", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["question_ticket_id"], name: "index_answers_on_question_ticket_id"
+    t.index ["question_id"], name: "index_answers_on_question_id"
     t.index ["ticket_id"], name: "index_answers_on_ticket_id"
   end
 
@@ -94,11 +94,11 @@ ActiveRecord::Schema.define(version: 2020_05_13_074103) do
     t.index ["event_type"], name: "index_notifications_on_event_type"
   end
 
-  create_table "question_tickets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "questions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "original_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["original_id"], name: "index_question_tickets_on_original_id"
+    t.index ["original_id"], name: "index_questions_on_original_id"
   end
 
   create_table "responsible_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -197,7 +197,7 @@ ActiveRecord::Schema.define(version: 2020_05_13_074103) do
   end
 
   add_foreign_key "answer_attachments", "answers"
-  add_foreign_key "answers", "question_tickets"
+  add_foreign_key "answers", "questions"
   add_foreign_key "services", "categories"
   add_foreign_key "ticket_tags", "tags"
   add_foreign_key "ticket_tags", "tickets"

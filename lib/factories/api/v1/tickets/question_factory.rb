@@ -3,7 +3,7 @@ module Api
     module Tickets
       class QuestionFactory
         def create(params = {})
-          QuestionTicket.new(params).tap do |question|
+          Question.new(params).tap do |question|
             question.ticket.state = :draft if question.ticket
           end
         end

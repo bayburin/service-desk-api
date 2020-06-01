@@ -15,7 +15,7 @@ FactoryBot.define do
 
     trait :question do
       after(:build) do |ticket, ev|
-        ticket.ticketable = build(:question_ticket, ticket: ticket) unless ticket.ticketable
+        ticket.ticketable = build(:question, ticket: ticket) unless ticket.ticketable
       end
     end
 

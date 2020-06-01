@@ -36,7 +36,7 @@ module Api
       end
 
       it 'calls #send_report method for ReportSender instance' do
-        expect(sender).to receive(:send_report).with(an_instance_of(QuestionTickets::QuestionTicketCreatedEmailSender))
+        expect(sender).to receive(:send_report).with(an_instance_of(Questions::QuestionCreatedEmailSender))
 
         subject.perform(manager.id, ticket.id, operator.tn, '')
       end

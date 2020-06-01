@@ -65,20 +65,20 @@ module Api
         describe '#faq' do
           before { create_list(:service, 2, category: category) }
 
-          it 'calls QuestionTickets::QuestionTicketBaseSerializer for :faq association' do
-            expect(QuestionTickets::QuestionTicketBaseSerializer).to receive(:new).exactly(5).times.and_call_original
+          it 'calls Questions::QuestionBaseSerializer for :faq association' do
+            expect(Questions::QuestionBaseSerializer).to receive(:new).exactly(5).times.and_call_original
 
             subject.to_json
           end
 
-          it 'create instance of Api::V1::QuestionTicketsQuery' do
-            expect(Api::V1::QuestionTicketsQuery).to receive(:new).with(category.question_tickets).and_call_original
+          it 'create instance of Api::V1::QuestionsQuery' do
+            expect(Api::V1::QuestionsQuery).to receive(:new).with(category.questions).and_call_original
 
             subject.to_json
           end
 
           it 'calls :most_popular method' do
-            expect_any_instance_of(Api::V1::QuestionTicketsQuery).to receive(:most_popular)
+            expect_any_instance_of(Api::V1::QuestionsQuery).to receive(:most_popular)
 
             subject.to_json
           end

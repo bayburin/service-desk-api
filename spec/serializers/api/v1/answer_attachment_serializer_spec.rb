@@ -3,7 +3,7 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe AnswerAttachmentSerializer, type: :model do
-      let(:question) { create(:question_ticket) }
+      let(:question) { create(:question) }
       let!(:answer_attachment) { build(:answer_attachment, answer: question.answers.first) }
       subject { AnswerAttachmentSerializer.new(answer_attachment) }
 

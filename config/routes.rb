@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       end
       resources :services, only: [] do
         resources :tickets, only: :index
-        resources :question_tickets do
+        resources :questions do
           post :raise_rating, to: :raise_rating, on: :member
         end
       end
@@ -49,7 +49,7 @@ Rails.application.routes.draw do
         resources :answer_attachments, only: %i[show create destroy]
       end
 
-      post 'question_tickets/publish', to: 'question_tickets#publish'
+      post 'questions/publish', to: 'questions#publish'
     end
 
     namespace :v2 do

@@ -41,7 +41,7 @@ module Api
               subject.to_json
             end
 
-            %w[question_tickets category responsible_users].each do |attr|
+            %w[questions category responsible_users].each do |attr|
               it "does not have :#{attr} attribute" do
                 expect(subject.to_json).not_to have_json_path(attr)
               end

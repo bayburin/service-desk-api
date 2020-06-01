@@ -11,7 +11,7 @@ module Api
         end
 
         @delivery_user = delivery_user
-        @question = QuestionTicketDecorator.new(ticket.ticketable)
+        @question = QuestionDecorator.new(ticket.ticketable)
         @current_user = current_user
         @origin = origin
 
@@ -26,7 +26,7 @@ module Api
         end
 
         @delivery_user = delivery_user
-        @question = QuestionTicketDecorator.new(ticket.ticketable)
+        @question = QuestionDecorator.new(ticket.ticketable)
         @current_user = current_user
         @origin = origin
         @updated_date = ticket.published_state? ? @question.correction.updated_at : @question.updated_at

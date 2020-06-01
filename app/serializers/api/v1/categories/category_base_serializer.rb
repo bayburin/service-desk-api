@@ -7,7 +7,7 @@ module Api
         attributes :id, :name, :short_description, :icon_name, :popularity
 
         has_many :services, if: :include_associations?, serializer: Services::ServiceBaseSerializer
-        has_many :faq, if: :include_associations?, serializer: QuestionTickets::QuestionTicketBaseSerializer
+        has_many :faq, if: :include_associations?, serializer: Questions::QuestionBaseSerializer
 
         def include_associations?
           !object.without_associations
@@ -18,7 +18,7 @@ module Api
         end
 
         def faq
-          QuestionTicketsQuery.new(object.question_tickets).most_popular
+          QuestionsQuery.new(object.questions).most_popular
         end
       end
     end

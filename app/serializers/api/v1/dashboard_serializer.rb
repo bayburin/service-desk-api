@@ -7,7 +7,7 @@ module Api
       has_many :user_recommendations, serializer: UserRecommendationSerializer
 
       def services
-        ActiveModel::SerializableResource.new(object.services, each_serializer: Services::ServiceGuestSerializer, include: 'question_tickets.ticket')
+        ActiveModel::SerializableResource.new(object.services, each_serializer: Services::ServiceGuestSerializer, include: 'questions.ticket')
       end
     end
   end

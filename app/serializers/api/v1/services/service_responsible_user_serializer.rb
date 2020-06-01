@@ -9,8 +9,8 @@ module Api
         #   tickets_scope
         # end
 
-        has_many :question_tickets, if: :include_associations?, serializer: QuestionTickets::QuestionTicketResponsibleUserSerializer do |serializer|
-          tickets_scope = QuestionTicketsQuery.new(serializer.object.question_tickets).all.published
+        has_many :questions, if: :include_associations?, serializer: Questions::QuestionResponsibleUserSerializer do |serializer|
+          tickets_scope = QuestionsQuery.new(serializer.object.questions).all.published
           serializer.include_authorize_attributes_for(tickets_scope)
         end
       end

@@ -27,8 +27,8 @@ module Api
           expect(response.body).to have_json_size(6).at_path('services')
         end
 
-        it 'loads :question_tickets association for services' do
-          expect(response.body).to have_json_path('services/0/question_tickets')
+        it 'loads :questions association for services' do
+          expect(response.body).to have_json_path('services/0/questions')
         end
 
         it 'loads all user_recommendation' do
@@ -76,7 +76,7 @@ module Api
           let!(:categories) { create_list(:category, 2) }
           let!(:categories_abc) { create_list(:category, 3, name: term) }
           let!(:services_abc) { create_list(:service, 3, name: term) }
-          let!(:questions_abc) { create_list(:question_ticket, 3, name: term) }
+          let!(:questions_abc) { create_list(:question, 3, name: term) }
 
           before do
             ThinkingSphinx::Test.init
@@ -142,7 +142,7 @@ module Api
           let!(:categories) { create_list(:category, 2) }
           let!(:categories_abc) { create_list(:category, 3, name: term) }
           let!(:services_abc) { create_list(:service, 3, name: term) }
-          let!(:questions_abc) { create_list(:question_ticket, 3, name: term) }
+          let!(:questions_abc) { create_list(:question, 3, name: term) }
 
           before do
             ThinkingSphinx::Test.init

@@ -8,8 +8,8 @@ module Api
           let(:ticket) { build(:ticket) }
           let(:question) { subject.create(ticket: ticket) }
 
-          it 'return instance of QuestionTicket class' do
-            expect(question).to be_instance_of QuestionTicket
+          it 'return instance of Question class' do
+            expect(question).to be_instance_of Question
           end
 
           it 'sets question params' do

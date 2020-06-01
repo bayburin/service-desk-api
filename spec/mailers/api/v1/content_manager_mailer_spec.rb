@@ -5,7 +5,7 @@ module Api
     RSpec.describe ContentManagerMailer, type: :mailer do
       let(:operator) { create(:operator_user) }
       let(:manager) { create(:content_manager_user) }
-      let(:question) { create(:question_ticket, correction: create(:question_ticket)) }
+      let(:question) { create(:question, correction: create(:question)) }
       let(:mail) { ContentManagerMailer.question_updated_email(manager, question.ticket, operator, '') }
 
       it 'renders the subject' do

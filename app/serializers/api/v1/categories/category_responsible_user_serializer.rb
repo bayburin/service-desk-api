@@ -3,8 +3,8 @@ module Api
     module Categories
       class CategoryResponsibleUserSerializer < CategoryBaseSerializer
         has_many :services, if: :include_associations?, serializer: Services::ServiceResponsibleUserSerializer
-        has_many :faq, if: :include_associations?, serializer: QuestionTickets::QuestionTicketResponsibleUserSerializer do |serializer|
-          query = QuestionTicketsQuery.new(serializer.object.question_tickets.includes(ticket: :responsible_users, answers: :attachments))
+        has_many :faq, if: :include_associations?, serializer: Questions::QuestionResponsibleUserSerializer do |serializer|
+          query = QuestionsQuery.new(serializer.object.questions.includes(ticket: :responsible_users, answers: :attachments))
           query.most_popular
           # .includes(:service)
         end

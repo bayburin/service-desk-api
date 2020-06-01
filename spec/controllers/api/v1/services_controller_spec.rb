@@ -79,7 +79,7 @@ module Api
         it 'includes attributes specified in policy' do
           get :show, params: params, format: :json
 
-          expect(response.body).to have_json_path('question_tickets/0/ticket')
+          expect(response.body).to have_json_path('questions/0/ticket')
         end
 
         it 'respond with 200 status' do

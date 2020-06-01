@@ -3,15 +3,15 @@ module Api
     class DashboardController < BaseController
       def index
         categories = CategoriesQuery.new.all.limit(9)
-        services = ServicesQuery.new.most_popular.includes(:question_tickets).each do |service|
-          service.question_tickets.each(&:without_associations!)
+        services = ServicesQuery.new.most_popular.includes(:questions).each do |service|
+          service.questions.each(&:without_associations!)
         end
         user_recommendations = UserRecommendation.order(:order)
 
         render(
           json: Dashboard.new(categories, services, user_recommendations),
           serializer: DashboardSerializer,
-          include: 'categories,services.question_tickets,user_recommendations'
+          include: 'categories,services.questions,user_recommendations'
         )
       end
 
@@ -50,12 +50,12 @@ module Api
       end
 
       def search_tickets
-        policy_attributes = policy(QuestionTicket).attributes_for_search
+        policy_attributes = policy(Question).attributes_for_search
         serialize_questions(find_tickets, policy_attributes)
       end
 
       def deep_search_tickets
-        question_policy_attributes = policy(QuestionTicket).attributes_for_deep_search
+        question_policy_attributes = policy(Question).attributes_for_deep_search
         # case_policy_attributes = policy(CaseTicket).attributes_for_deep_search
 
         serialize_questions(find_tickets, question_policy_attributes)
@@ -72,8 +72,8 @@ module Api
       end
 
       def serialize_questions(tickets, policy_attributes)
-        question_ids = tickets.select { |ticket| ticket.ticketable_type == 'QuestionTicket' }.map(&:ticketable_id)
-        questions = QuestionTicket.where(id: question_ids).includes(policy_attributes.sql_include)
+        question_ids = tickets.select { |ticket| ticket.ticketable_type == 'Question' }.map(&:ticketable_id)
+        questions = Question.where(id: question_ids).includes(policy_attributes.sql_include)
 
         ActiveModel::Serializer::CollectionSerializer.new(questions, serializer: policy_attributes.serializer)
           .as_json(include: policy_attributes.serialize)

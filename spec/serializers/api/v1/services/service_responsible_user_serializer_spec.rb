@@ -5,7 +5,7 @@ module Api
     module Services
       RSpec.describe ServiceResponsibleUserSerializer, type: :model do
         let(:service) { create(:service) }
-        let!(:question) { create(:question_ticket, ticket: create(:ticket, service: service)) }
+        let!(:question) { create(:question, ticket: create(:ticket, service: service)) }
         let(:current_user) { create(:user) }
         subject { ServiceResponsibleUserSerializer.new(service, scope: current_user, scope_name: :current_user) }
 
@@ -41,29 +41,29 @@ module Api
         #   end
         # end
 
-        describe '#question_tickets' do
-          before { allow_any_instance_of(QuestionTicketsQuery).to receive_message_chain(:all, :published).and_return(service.question_tickets) }
+        describe '#questions' do
+          before { allow_any_instance_of(QuestionsQuery).to receive_message_chain(:all, :published).and_return(service.questions) }
 
-          it 'call QuestionTickets::QuestionTicketResponsibleUserSerializer for :question_tickets association' do
-            expect(QuestionTickets::QuestionTicketResponsibleUserSerializer).to receive(:new).exactly(service.question_tickets.count).times.and_call_original
+          it 'call Questions::QuestionResponsibleUserSerializer for :questions association' do
+            expect(Questions::QuestionResponsibleUserSerializer).to receive(:new).exactly(service.questions.count).times.and_call_original
 
             subject.to_json
           end
 
-          it 'creates instance of Api::V1::QuestionTicketsQuery' do
-            expect(QuestionTicketsQuery).to receive(:new).with(service.question_tickets).and_call_original
+          it 'creates instance of Api::V1::QuestionsQuery' do
+            expect(QuestionsQuery).to receive(:new).with(service.questions).and_call_original
 
             subject.to_json
           end
 
           it 'calls :all and :published method' do
-            expect_any_instance_of(QuestionTicketsQuery).to receive_message_chain(:all, :published)
+            expect_any_instance_of(QuestionsQuery).to receive_message_chain(:all, :published)
 
             subject.to_json
           end
 
           it 'calls :include_authorize_attributes_for method' do
-            expect(subject).to receive(:include_authorize_attributes_for).with(service.question_tickets).and_call_original
+            expect(subject).to receive(:include_authorize_attributes_for).with(service.questions).and_call_original
 
             subject.to_json
           end

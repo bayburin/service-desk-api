@@ -69,7 +69,7 @@ module Api
       describe '#all_in_service' do
         let!(:ticket) { create(:ticket, :question, is_hidden: true, service: service) }
         let!(:extra_service) { create(:service) }
-        let!(:service_tickets) { service.tickets.where(ticketable_type: :QuestionTicket) }
+        let!(:service_tickets) { service.tickets.where(ticketable_type: :Question) }
         let(:result) { subject.all_in_service(service) }
 
         it 'returns all tickets from specified service' do
