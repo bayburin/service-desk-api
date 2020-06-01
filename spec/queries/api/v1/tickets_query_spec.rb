@@ -29,7 +29,7 @@ module Api
 
       describe '#all' do
         it 'loads all tickets except tickets with :common_case type' do
-          expect(subject.all.count).to eq service.tickets.where.not(ticketable_type: :CommonCaseTicket).count
+          expect(subject.all.count).to eq service.tickets.where.not(ticketable_type: :FreeApplication).count
         end
 
         it 'runs scope :by_popularity' do
@@ -43,7 +43,7 @@ module Api
         let!(:hidden_ticket) { create(:ticket, :question, is_hidden: true, service: service) }
 
         it 'loads all tickets except tickets with :common_case type and :is_hidden attribute' do
-          expect(subject.visible.count).to eq service.tickets.where.not(ticketable_type: :CommonCaseTicket).count - 1
+          expect(subject.visible.count).to eq service.tickets.where.not(ticketable_type: :FreeApplication).count - 1
           expect(subject.visible).not_to include(hidden_ticket)
         end
 

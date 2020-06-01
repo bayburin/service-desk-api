@@ -56,7 +56,7 @@ module Api
 
       def deep_search_tickets
         question_policy_attributes = policy(Question).attributes_for_deep_search
-        # case_policy_attributes = policy(CaseTicket).attributes_for_deep_search
+        # application_policy_attributes = policy(Application).attributes_for_deep_search
 
         serialize_questions(find_tickets, question_policy_attributes)
       end
@@ -80,8 +80,8 @@ module Api
       end
 
       # def serialize_cases(tickets, policy_attributes)
-      #   case_ids = tickets.select { |ticket| ticket.ticketable_type == 'CaseTicket' }.map(&:ticketable_id)
-      #   cases = CaseTicket.where(id: case_ids).includes(policy_attributes.sql_include)
+      #   case_ids = tickets.select { |ticket| ticket.ticketable_type == 'Application' }.map(&:ticketable_id)
+      #   cases = Application.where(id: case_ids).includes(policy_attributes.sql_include)
 
       #   ActiveModel::Serializer::CollectionSerializer.new(cases, serializer: policy_attributes.serializer)
       #     .as_json(include: policy_attributes.serialize)

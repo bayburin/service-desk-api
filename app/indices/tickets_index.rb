@@ -5,5 +5,5 @@ ThinkingSphinx::Index.define :ticket, with: :active_record, delta: true do
   has popularity, type: :integer
   has ticketable_type, type: :string
 
-  where 'ticketable_type != "CommonCaseTicket"'
+  where 'ticketable_type != "FreeApplication"'
 end

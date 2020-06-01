@@ -24,7 +24,7 @@ module Api
       private
 
       def tickets
-        scope.where.not(ticketable_type: :CommonCaseTicket).extend(Scope)
+        scope.where.not(ticketable_type: :FreeApplication).extend(Scope)
       end
     end
   end

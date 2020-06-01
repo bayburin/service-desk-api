@@ -21,14 +21,14 @@ FactoryBot.define do
 
     trait :common_case do
       after(:build) do |ticket, ev|
-        ticket.ticketable_type = 'CommonCaseTicket' unless ticket.ticketable
+        ticket.ticketable_type = 'FreeApplication' unless ticket.ticketable
       end
     end
 
     # FIXME: Исправить после создания таблицы заявок
     trait :case do
       after(:build) do |ticket, ev|
-        ticket.ticketable_type = 'CaseTicket' unless ticket.ticketable
+        ticket.ticketable_type = 'Application' unless ticket.ticketable
       end
     end
   end

@@ -28,7 +28,7 @@ module Api
       end
 
       def find_ticket
-        @find_ticket ||= kase.ticket_id ? Ticket.find(kase.ticket_id) : Ticket.find_by(ticketable_type: :CommonCaseTicket, service_id: kase.service_id)
+        @find_ticket ||= kase.ticket_id ? Ticket.find(kase.ticket_id) : Ticket.find_by(ticketable_type: :FreeApplication, service_id: kase.service_id)
       end
 
       def processing_files
