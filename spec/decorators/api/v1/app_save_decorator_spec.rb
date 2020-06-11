@@ -2,15 +2,15 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe CaseSaveDecorator, type: :model do
+    RSpec.describe AppSaveDecorator, type: :model do
       let(:item_id) { 999 }
       let(:invent_num) { 'new invent num' }
       let(:common_ticket) { create(:ticket, :common_case) }
-      let(:connect_ticket) { create(:ticket, :case) }
+      let(:connect_ticket) { create(:ticket, :app) }
       let!(:service) { create(:service, tickets: [common_ticket, connect_ticket]) }
-      let!(:kase) { build(:case, host_id: nil, item_id: nil, service: service) }
+      let!(:app) { build(:app, host_id: nil, item_id: nil, service: service) }
 
-      subject { CaseSaveDecorator.new(kase) }
+      subject { AppSaveDecorator.new(app) }
 
       before do
         stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json')
@@ -18,34 +18,34 @@ module Api
       end
 
       context 'when ticket_id is not defined' do
-        before { kase.ticket_id = nil }
+        before { app.ticket_id = nil }
 
         it 'adds :ticket_id attribute from :common_case type' do
           subject.decorate
 
-          expect(subject.kase.ticket_id).to eq common_ticket.id
+          expect(subject.app.ticket_id).to eq common_ticket.id
         end
 
         it 'adds :sla attribute from :common_case type' do
           subject.decorate
 
-          expect(subject.kase.sla).to eq common_ticket.sla
+          expect(subject.app.sla).to eq common_ticket.sla
         end
 
         it 'adds responsible users from :common_case type' do
           subject.decorate
 
-          expect(subject.kase.accs).to match_array(common_ticket.responsible_users.pluck(:tn))
+          expect(subject.app.accs).to match_array(common_ticket.responsible_users.pluck(:tn))
         end
       end
 
       context 'when ticket_id is defined' do
-        before { kase.ticket_id = connect_ticket.id }
+        before { app.ticket_id = connect_ticket.id }
 
         it 'adds responsible users from current ticket' do
           subject.decorate
 
-          expect(subject.kase.accs).to match_array(connect_ticket.responsible_users.pluck(:tn))
+          expect(subject.app.accs).to match_array(connect_ticket.responsible_users.pluck(:tn))
         end
       end
 
@@ -63,19 +63,19 @@ module Api
         it 'sets empty array to :accs attribute' do
           subject.decorate
 
-          expect(subject.kase.accs).to be_empty
+          expect(subject.app.accs).to be_empty
         end
       end
 
       context 'when files exists' do
         let(:result) { 'base64_encoded_string' }
         let(:file) { { filename: 'test.png', file: "data:application/pdf,#{result}" }.as_json }
-        before { kase[:files] = [file] }
+        before { app[:files] = [file] }
 
         it 'should remove metadata from string encoded by base64' do
           subject.decorate
 
-          expect(subject.kase[:files].first['file']).to eq result
+          expect(subject.app[:files].first['file']).to eq result
         end
       end
     end

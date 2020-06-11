@@ -1,17 +1,17 @@
 require 'rails_helper'
 
 module Messaging
-  RSpec.describe CaseEventWorker, type: :worker do
+  RSpec.describe AppEventWorker, type: :worker do
     let(:msg) { { user_tn: 17_664, case_id: 123, message: 'Test message' } }
 
     it 'creates notification record' do
       expect { subject.work(msg.to_json) }.to change { Notification.count }.by(1)
     end
 
-    it 'sets :case type to created notification' do
+    it 'sets :app type to created notification' do
       subject.work(msg.to_json)
 
-      expect(Notification.last.case_event_type?).to be_truthy
+      expect(Notification.last.app_event_type?).to be_truthy
     end
 
     it 'runs #ack! method' do

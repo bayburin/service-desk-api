@@ -2,15 +2,15 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe CasesController, type: :controller do
+    RSpec.describe AppsController, type: :controller do
       sign_in_user
 
       let(:astraea_url) { ENV['ASTRAEA_URL'] }
       before { allow(subject).to receive(:authorize).and_return(true) }
 
       describe 'GET #index' do
-        let(:kase) { attributes_for(:case) }
-        let(:astraea_response) { { cases: [kase], statuses: [] } }
+        let(:app) { attributes_for(:app) }
+        let(:astraea_response) { { cases: [app], statuses: [] } }
         let(:filters) { { limit: 15, offset: 30, status_id: 1 } }
         let(:params) { { filters: filters.to_json } }
         before do
@@ -25,18 +25,18 @@ module Api
         end
 
         it 'creates instance of scope policy' do
-          expect(CaseApiPolicy::Scope).to receive(:new).with(subject.current_user, CaseApi).and_call_original
+          expect(AppApiPolicy::Scope).to receive(:new).with(subject.current_user, AppApi).and_call_original
 
           get :index, format: :json
         end
 
         it 'runs #resolve method for policy instance' do
-          expect_any_instance_of(CaseApiPolicy::Scope).to receive(:resolve).and_call_original
+          expect_any_instance_of(AppApiPolicy::Scope).to receive(:resolve).and_call_original
 
           get :index, format: :json
         end
 
-        %w[cases statuses].each do |attr|
+        %w[apps statuses].each do |attr|
           it "respond with :#{attr} attributes" do
             get :index, format: :json
 
@@ -65,25 +65,25 @@ module Api
       end
 
       describe 'POST #create' do
-        let(:kase) { build(:case, without_item: true) }
-        let(:params) { { case: kase.as_json } }
-        let(:decorator) { CaseSaveDecorator.new(kase) }
+        let(:app) { build(:app, without_item: true) }
+        let(:params) { { app: app.as_json } }
+        let(:decorator) { AppSaveDecorator.new(app) }
 
         before do
           stub_request(:post, "#{astraea_url}/cases.json")
-            .to_return(status: 200, body: kase.to_json, headers: {})
-          allow(Case).to receive(:new).and_return(kase)
-          allow(CaseSaveDecorator).to receive(:new).and_return(decorator)
+            .to_return(status: 200, body: app.to_json, headers: {})
+          allow(App).to receive(:new).and_return(app)
+          allow(AppSaveDecorator).to receive(:new).and_return(decorator)
         end
 
         it 'runs #authorize method' do
-          expect(controller).to receive(:authorize).with(kase)
+          expect(controller).to receive(:authorize).with(app)
 
           post :create, params: params, format: :json
         end
 
-        it 'creates instance of CaseSaveDecorator and pass the case instance to it' do
-          expect(CaseSaveDecorator).to receive(:new).with(kase).and_return(decorator)
+        it 'creates instance of AppSaveDecorator and pass the app instance to it' do
+          expect(AppSaveDecorator).to receive(:new).with(app).and_return(decorator)
 
           post :create, params: params, format: :json
         end
@@ -94,20 +94,20 @@ module Api
           post :create, params: params, format: :json
         end
 
-        it 'runs #save method of Cases::CaseApi' do
-          expect(CaseApi).to receive(:save).with(decorator.kase).and_call_original
+        it 'runs #save method of Apps::AppApi' do
+          expect(AppApi).to receive(:save).with(decorator.app).and_call_original
 
           post :create, params: params, format: :json
         end
 
-        context 'when case was created' do
+        context 'when app was created' do
           it 'respond with status 200' do
             post :create, params: params, format: :json
 
             expect(response.status).to eq 200
           end
 
-          it 'respond with kase data' do
+          it 'respond with app data' do
             post :create, params: params, format: :json
 
             expect(response.body).to have_json_path('case_id')
@@ -126,43 +126,43 @@ module Api
       end
 
       describe 'PUT #update' do
-        let(:case_id) { '12345' }
-        let(:kase) { build(:case, case_id: case_id, without_item: true) }
-        let(:params) { { case_id: case_id, case: kase.as_json } }
+        let(:app_id) { '12345' }
+        let(:app) { build(:app, case_id: app_id, without_item: true) }
+        let(:params) { { case_id: app_id, app: app.as_json } }
 
         before do
-          allow(Case).to receive(:new).and_return(kase)
-          stub_request(:put, "#{astraea_url}/cases/#{case_id}.json")
+          allow(App).to receive(:new).and_return(app)
+          stub_request(:put, "#{astraea_url}/cases/#{app_id}.json")
             .to_return(status: 200, body: { message: 'updated' }.to_json, headers: {})
         end
 
         it 'runs #authorize method' do
-          expect(controller).to receive(:authorize).with(kase)
+          expect(controller).to receive(:authorize).with(app)
 
           post :update, params: params, format: :json
         end
 
-        it 'runs #update method of Cases::CaseApi' do
-          expect(CaseApi).to receive(:update).with(case_id, kase).and_call_original
+        it 'runs #update method of Apps::AppApi' do
+          expect(AppApi).to receive(:update).with(app_id, app).and_call_original
 
           post :update, params: params, format: :json
         end
 
-        context 'when case was updated' do
+        context 'when app_id was updated' do
           it 'respond with status 200' do
             post :update, params: params, format: :json
 
             expect(response.status).to eq 200
           end
 
-          it 'respond with kase data' do
+          it 'respond with app data' do
             post :update, params: params, format: :json
 
             expect(response.body).to have_json_path('message')
           end
         end
 
-        context 'when case was not updated' do
+        context 'when app_id was not updated' do
           before { allow_any_instance_of(Faraday::Response).to receive(:status).and_return(422) }
 
           it 'respond with error status' do
@@ -182,13 +182,13 @@ module Api
         end
 
         it 'creates instance of scope policy' do
-          expect(CaseApiPolicy::Scope).to receive(:new).with(subject.current_user, CaseApi).and_call_original
+          expect(AppApiPolicy::Scope).to receive(:new).with(subject.current_user, AppApi).and_call_original
 
           delete :destroy, params: params, format: :json
         end
 
         it 'runs #resolve method for policy instance' do
-          expect_any_instance_of(CaseApiPolicy::Scope).to receive(:resolve).and_call_original
+          expect_any_instance_of(AppApiPolicy::Scope).to receive(:resolve).and_call_original
 
           delete :destroy, params: params, format: :json
         end

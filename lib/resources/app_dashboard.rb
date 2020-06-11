@@ -1,11 +1,11 @@
-class CaseDashboard
+class AppDashboard
   include ActiveModel::Model
   include ActiveModel::Serialization
 
-  attr_accessor :cases, :statuses
+  attr_accessor :apps, :statuses
 
   def initialize(args = {})
-    @cases = args['cases']
+    @apps = args['cases']
     @statuses = args['statuses']
   end
 end

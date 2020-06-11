@@ -1,4 +1,4 @@
-class CasePolicy < ApplicationPolicy
+class AppPolicy < ApplicationPolicy
   def create?
     user_matсh?
   end

@@ -1,6 +1,6 @@
 module Api
   module V1
-    class CaseSerializer < ActiveModel::Serializer
+    class AppSerializer < ActiveModel::Serializer
       attributes :case_id, :service_id, :ticket_id, :user_tn, :id_tn, :user_info, :host_id, :item_id, :desc, :phone, :email, :mobile,
                  :status_id, :status, :runtime, :rating
 

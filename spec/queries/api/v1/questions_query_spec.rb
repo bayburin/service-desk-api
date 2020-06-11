@@ -3,7 +3,7 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe QuestionsQuery, type: :model do
-      let!(:cases) { create_list(:ticket, 2, :case) }
+      let!(:apps) { create_list(:ticket, 2, :app) }
       let!(:questions) { create_list(:question, 7) }
       let(:question) { create(:question) }
       let!(:correction) { create(:question, original: question, state: :draft) }

@@ -18,10 +18,10 @@ module Api
           expect(response.body).to have_json_path('questions')
         end
 
-        it 'response with cases' do
+        it 'response with apps' do
           get :index, params: params, format: :json
 
-          expect(response.body).to have_json_path('cases')
+          expect(response.body).to have_json_path('apps')
         end
 
         it 'loads all tickets in service with draft state' do

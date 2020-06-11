@@ -1,4 +1,4 @@
-class CaseApiPolicy < Struct.new(:user, :record)
+class AppApiPolicy < Struct.new(:user, :record)
   class Scope
     attr_reader :user, :scope
 

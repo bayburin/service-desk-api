@@ -4,8 +4,8 @@ module Api
       class TicketInitializer
         def self.for(type)
           case type.to_sym
-          when :case
-            CaseFactory.new
+          when :app_form
+            # Тут фабрика, создающая форму заявки
           when :question
             QuestionFactory.new
           else

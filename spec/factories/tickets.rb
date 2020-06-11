@@ -26,7 +26,7 @@ FactoryBot.define do
     end
 
     # FIXME: Исправить после создания таблицы заявок
-    trait :case do
+    trait :app do
       after(:build) do |ticket, ev|
         ticket.ticketable_type = 'Application' unless ticket.ticketable
       end

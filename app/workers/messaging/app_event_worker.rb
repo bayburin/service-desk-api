@@ -1,5 +1,5 @@
 module Messaging
-  class CaseEventWorker
+  class AppEventWorker
     include Sneakers::Worker
     include Api::V1::ActionCableBroadcast
 
@@ -12,14 +12,14 @@ module Messaging
       save_message(msg)
       ack!
     rescue StandardError => e
-      Rails.logger.tagged('RabbitMQ') { Rails.logger.error { "CaseEventWorker. Получена ошибка: #{e.message}" } }
+      Rails.logger.tagged('RabbitMQ') { Rails.logger.error { "AppEventWorker. Получена ошибка: #{e.message}" } }
       reject!
     end
 
     private
 
     def save_message(msg)
-      event = Notification.new(event_type: :case, tn: msg['user_tn'], body: msg)
+      event = Notification.new(event_type: :app, tn: msg['user_tn'], body: msg)
 
       if event.save
         broadcast_notification_to_user(msg['user_tn'], event)

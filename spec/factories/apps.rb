@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :case do
+  factory :app do
     case_id { nil }
     user_tn { nil }
     id_tn { nil }
@@ -33,16 +33,16 @@ FactoryBot.define do
       user { build(:user) }
     end
 
-    after(:build) do |kase, ev|
+    after(:build) do |app, ev|
       user = ev.user || build(:user)
-      kase.user_tn = user.tn
-      kase.id_tn = user.id_tn
-      # kase.dept = user.dept
-      # kase.fio = user.fio
-      kase.phone = user.tel
-      kase.email = user.email
+      app.user_tn = user.tn
+      app.id_tn = user.id_tn
+      # app.dept = user.dept
+      # app.fio = user.fio
+      app.phone = user.tel
+      app.email = user.email
 
-      kase.service_id ||= ev.service&.id
+      app.service_id ||= ev.service&.id
     end
   end
 end

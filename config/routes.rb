@@ -32,7 +32,7 @@ Rails.application.routes.draw do
       resources :responsible_users, only: :index do
         get :search, to: :search, on: :collection
       end
-      resources :cases, only: %i[index create update destroy], param: :case_id
+      resources :apps, only: %i[index create update destroy], param: :case_id
       # Получение данных о пользователе
       resources :users, only: [] do
         collection do

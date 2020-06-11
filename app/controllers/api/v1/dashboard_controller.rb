@@ -79,11 +79,11 @@ module Api
           .as_json(include: policy_attributes.serialize)
       end
 
-      # def serialize_cases(tickets, policy_attributes)
-      #   case_ids = tickets.select { |ticket| ticket.ticketable_type == 'Application' }.map(&:ticketable_id)
-      #   cases = Application.where(id: case_ids).includes(policy_attributes.sql_include)
+      # def serialize_apps(tickets, policy_attributes)
+      #   app_ids = tickets.select { |ticket| ticket.ticketable_type == 'Application' }.map(&:ticketable_id)
+      #   apps = Application.where(id: app_ids).includes(policy_attributes.sql_include)
 
-      #   ActiveModel::Serializer::CollectionSerializer.new(cases, serializer: policy_attributes.serializer)
+      #   ActiveModel::Serializer::CollectionSerializer.new(apps, serializer: policy_attributes.serializer)
       #     .as_json(include: policy_attributes.serialize)
       # end
     end

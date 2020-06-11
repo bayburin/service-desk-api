@@ -12,7 +12,7 @@ module Api
 
         render json: {
           questions: ActiveModelSerializers::SerializableResource.new(questions, each_serializer: policy_attributes.serializer, include: policy_attributes.serialize).serializable_hash,
-          cases: []
+          apps: []
         }
       end
     end

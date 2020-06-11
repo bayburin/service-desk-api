@@ -6,7 +6,7 @@ RSpec.describe ApplicationPolicy do
     let(:scope) { double(:scope) }
     subject(:policy_scope) { ApplicationPolicy::Scope.new(user, scope).resolve }
 
-    it 'runs loads only cases in which user is creator' do
+    it 'runs loads only apps in which user is creator' do
       expect(policy_scope).to eq scope
     end
   end

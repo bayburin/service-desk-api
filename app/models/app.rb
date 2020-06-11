@@ -1,5 +1,5 @@
 # Legacy database
-class Case
+class App
   include ActiveModel::Model
   include ActiveModel::Serializers::JSON
   include Virtus::Model

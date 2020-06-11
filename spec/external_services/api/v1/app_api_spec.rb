@@ -2,14 +2,14 @@ require 'rails_helper'
 
 module Api
   module V1
-    RSpec.describe CaseApi, type: :model do
+    RSpec.describe AppApi, type: :model do
       let(:astraea_url) { "#{ENV['ASTRAEA_URL']}/cases.json" }
 
       describe 'class methods' do
-        subject { CaseApi }
+        subject { AppApi }
 
         describe '.query' do
-          let(:response) { { cases: [attributes_for(:case)] } }
+          let(:response) { { cases: [attributes_for(:app)] } }
           let(:params) { { foo: :bar } }
 
           before { stub_request(:get, /#{astraea_url}.*/).to_return(status: 200, body: response.to_json, headers: {}) }
@@ -20,8 +20,8 @@ module Api
             expect(WebMock).to have_requested(:get, astraea_url).with(query: params)
           end
 
-          it 'creates instances of Case' do
-            subject.query(params).body['cases'].each { |kase| expect(kase).to be_instance_of(Case) }
+          it 'creates instances of App' do
+            subject.query(params).body['cases'].each { |app| expect(app).to be_instance_of(App) }
           end
 
           it 'returns instance of Faraday::Response class' do
@@ -30,53 +30,53 @@ module Api
         end
 
         describe '.save' do
-          let(:kase) { build(:case) }
+          let(:app) { build(:app) }
 
           before { stub_request(:post, astraea_url).to_return(status: 200, body: '', headers: {}) }
 
-          it 'sends :post request with kase params' do
-            subject.save(kase)
+          it 'sends :post request with app params' do
+            subject.save(app)
 
-            expect(WebMock).to have_requested(:post, astraea_url).with(body: kase.to_json)
+            expect(WebMock).to have_requested(:post, astraea_url).with(body: app.to_json)
           end
 
           it 'returns instance of Faraday::Response class' do
-            expect(subject.save(kase)).to be_instance_of(Faraday::Response)
+            expect(subject.save(app)).to be_instance_of(Faraday::Response)
           end
         end
 
         describe '.update' do
-          let(:case_id) { '12345' }
-          let(:kase) { build(:case, case_id: case_id) }
-          let(:astraea_url) { "#{ENV['ASTRAEA_URL']}/cases/#{case_id}.json" }
+          let(:app_id) { '12345' }
+          let(:app) { build(:app, case_id: app_id) }
+          let(:astraea_url) { "#{ENV['ASTRAEA_URL']}/cases/#{app_id}.json" }
 
           before { stub_request(:put, astraea_url).to_return(status: 200, body: '', headers: {}) }
 
-          it 'sends :put request with kase params' do
-            subject.update(case_id, kase)
+          it 'sends :put request with app params' do
+            subject.update(app_id, app)
 
-            expect(WebMock).to have_requested(:put, astraea_url).with(body: kase.to_json)
+            expect(WebMock).to have_requested(:put, astraea_url).with(body: app.to_json)
           end
 
           it 'returns instance of Faraday::Response class' do
-            expect(subject.update(case_id, kase)).to be_instance_of(Faraday::Response)
+            expect(subject.update(app_id, app)).to be_instance_of(Faraday::Response)
           end
         end
 
         describe '.where' do
           it 'creates and returns new instance of class' do
-            expect(subject.where(foo: :bar)).to be_instance_of(CaseApi)
+            expect(subject.where(foo: :bar)).to be_instance_of(AppApi)
           end
 
-          it 'merge passed parameters with @case_params' do
-            expect(subject.where(foo: :bar).instance_variable_get(:@case_params)).to eq(foo: :bar)
+          it 'merge passed parameters with @app_params' do
+            expect(subject.where(foo: :bar).instance_variable_get(:@app_params)).to eq(foo: :bar)
           end
         end
       end
 
       describe 'instance methods' do
         describe '#query' do
-          let(:response) { { cases: [attributes_for(:case)] } }
+          let(:response) { { cases: [attributes_for(:app)] } }
           let(:where) { { user_tn: 12_345 } }
           let(:params) { { foo: :bar } }
 
@@ -88,8 +88,8 @@ module Api
             expect(WebMock).to have_requested(:get, astraea_url).with(query: where.merge(params))
           end
 
-          it 'creates instances of Case' do
-            subject.where(where).query(params).body['cases'].each { |kase| expect(kase).to be_instance_of(Case) }
+          it 'creates instances of App' do
+            subject.where(where).query(params).body['cases'].each { |app| expect(app).to be_instance_of(App) }
           end
 
           it 'returns instance of Faraday::Response class' do
@@ -120,8 +120,8 @@ module Api
             expect(subject.where(foo: :bar).object_id).to eq object_id
           end
 
-          it 'merge passed parameters with @case_params' do
-            expect(subject.where(foo: :bar).instance_variable_get(:@case_params)).to eq(foo: :bar)
+          it 'merge passed parameters with @app_params' do
+            expect(subject.where(foo: :bar).instance_variable_get(:@app_params)).to eq(foo: :bar)
           end
         end
       end
