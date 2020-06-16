@@ -98,7 +98,7 @@ module Api
             tags: %i[id name _destroy],
             responsible_users: %i[id responseable_type responseable_id tn _destroy]
           ],
-          answers: %i[id _destroy ticket_id reason answer link is_hidden],
+          answers: %i[id _destroy question_id reason answer link is_hidden],
         )
       end
 
