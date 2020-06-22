@@ -24,3 +24,14 @@ end
 
 after 'deploy:publishing', 'thinking_sphinx:configure'
 after 'thinking_sphinx:configure', 'thinking_sphinx:rebuild'
+
+namespace :reports do
+  desc 'Создать отчет со списком всех вопросов'
+  task :question_list do
+    on roles(:app) do
+      within release_path do
+        execute :rails, "reports:question_list RAILS_ENV=#{fetch(:rails_env)}"
+      end
+    end
+  end
+end
