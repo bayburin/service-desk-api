@@ -3,30 +3,28 @@ module Api
     class DashboardController < BaseController
       def index
         categories = CategoriesQuery.new.all.limit(9)
-        services = ServicesQuery.new.most_popular.includes(:tickets).each do |service|
-          service.tickets.each(&:without_associations!)
+        services = ServicesQuery.new.most_popular.includes(:questions).each do |service|
+          service.questions.each(&:without_associations!)
         end
         user_recommendations = UserRecommendation.order(:order)
 
         render(
           json: Dashboard.new(categories, services, user_recommendations),
           serializer: DashboardSerializer,
-          include: 'categories,services.tickets,user_recommendations'
+          include: 'categories,services.questions,user_recommendations'
         )
       end
 
       def search
         ahoy.track 'Search', params[:search]
-        policy_attributes = policy(Ticket).attributes_for_search
 
-        render json: search_categories + search_services + search_tickets(policy_attributes)
+        render json: search_categories + search_services + search_tickets
       end
 
       def deep_search
         ahoy.track 'Deep search', params[:search]
-        policy_attributes = policy(Ticket).attributes_for_deep_search
 
-        render json: search_categories + search_services + search_tickets(policy_attributes)
+        render json: search_categories + search_services + deep_search_tickets
       end
 
       protected
@@ -51,18 +49,43 @@ module Api
           .as_json(include: policy_attributes.serialize)
       end
 
-      def search_tickets(policy_attributes)
+      def search_tickets
+        policy_attributes = policy(Question).attributes_for_search
+        serialize_questions(find_tickets, policy_attributes)
+      end
+
+      def deep_search_tickets
+        question_policy_attributes = policy(Question).attributes_for_deep_search
+        # application_policy_attributes = policy(Application).attributes_for_deep_search
+
+        serialize_questions(find_tickets, question_policy_attributes)
+      end
+
+      def find_tickets
         tickets = Ticket.search(
           ThinkingSphinx::Query.escape(params[:search]),
           order: 'popularity DESC',
           per_page: 1000,
-          sql: { include: policy_attributes.sql_include }
+          sql: { include: :service }
         )
-        tickets = TicketPolicy::SphinxScope.new(current_user, tickets).resolve
+        TicketPolicy::SphinxScope.new(current_user, tickets).resolve
+      end
 
-        ActiveModel::Serializer::CollectionSerializer.new(tickets, serializer: policy_attributes.serializer)
+      def serialize_questions(tickets, policy_attributes)
+        question_ids = tickets.select { |ticket| ticket.ticketable_type == 'Question' }.map(&:ticketable_id)
+        questions = Question.where(id: question_ids).includes(policy_attributes.sql_include)
+
+        ActiveModel::Serializer::CollectionSerializer.new(questions, serializer: policy_attributes.serializer)
           .as_json(include: policy_attributes.serialize)
       end
+
+      # def serialize_apps(tickets, policy_attributes)
+      #   app_ids = tickets.select { |ticket| ticket.ticketable_type == 'Application' }.map(&:ticketable_id)
+      #   apps = Application.where(id: app_ids).includes(policy_attributes.sql_include)
+
+      #   ActiveModel::Serializer::CollectionSerializer.new(apps, serializer: policy_attributes.serializer)
+      #     .as_json(include: policy_attributes.serialize)
+      # end
     end
   end
 end

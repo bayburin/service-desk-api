@@ -6,11 +6,11 @@
   <body>
     <p>
       На портал "Техподдержка УИВТ" добавлен вопрос:
-      <a href="<%= @ticket.link_to_admin_ui(@origin) %>">
-        <%= @ticket.name %>
+      <a href="<%= @question.link_to_admin_ui(@origin) %>">
+        <%= @question.ticket.name %>
       </a>
     </p>
-    <p>в разделе <strong><%= @ticket.service.category.name %></strong> → <strong><%= @ticket.service.name %></strong></p>
-    <p>ответственным <%= @current_user.details.full_name %> <%= @ticket.updated_at.strftime('%d.%m.%Y %H:%M') %></p>
+    <p>в разделе <strong><%= @question.service.category.name %></strong> → <strong><%= @question.service.name %></strong></p>
+    <p>ответственным <%= @current_user.details.full_name %> <%= @question.updated_at.strftime('%d.%m.%Y %H:%M') %></p>
   </body>
 </html>

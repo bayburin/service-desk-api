@@ -8,7 +8,7 @@ module Api
 
       def all
         scope
-          .where(event_type: :case, tn: current_user.tn)
+          .where(event_type: :app, tn: current_user.tn)
           .or(Notification.where(event_type: :broadcast, tn: nil))
           .order(id: :desc)
       end

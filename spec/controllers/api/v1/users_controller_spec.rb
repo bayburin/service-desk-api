@@ -40,8 +40,8 @@ module Api
           end
         end
 
-        it 'runs :allowed_to_create_case method for ServiceQuery query' do
-          expect_any_instance_of(ServicesQuery).to receive(:allowed_to_create_case).and_call_original
+        it 'runs :allowed_to_create_app method for ServiceQuery query' do
+          expect_any_instance_of(ServicesQuery).to receive(:allowed_to_create_app).and_call_original
 
           get :owns, format: :json
         end

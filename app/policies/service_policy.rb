@@ -65,22 +65,26 @@ class ServicePolicy < ApplicationPolicy
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
         sql_include: [
-          :responsible_users,
-          :tags,
+          ticket: %i[responsible_users tags service],
           answers: :attachments,
-          correction: [:responsible_users, :tags, :correction, :service, answers: :attachments]
+          correction: [ticket: %i[responsible_users tags service], answers: :attachments]
         ],
-        serialize: ['*', 'tickets.*', 'tickets.answers.attachments', 'tickets.correction.*', 'tickets.correction.answers.attachments']
+        serialize: [
+          '*', 'questions.ticket.*', 'questions.answers.attachments', 'questions.correction.*',
+          'questions.correction.answers.attachments', 'questions.correction.ticket.responsible_users',
+          'questions.correction.ticket.tags'
+        ]
       )
     elsif user.role?(:operator)
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
-        serialize: ['category', 'tickets.answers.attachments', 'tickets.responsible_users', 'tickets.service']
+        sql_include: [ticket: %i[service responsible_users]],
+        serialize: ['category', 'questions.answers.attachments', 'questions.ticket.responsible_users', 'questions.ticket.service']
       )
     else
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceGuestSerializer,
-        serialize: ['category', 'tickets.answers.attachments', 'tickets.service']
+        serialize: ['category', 'questions.answers.attachments', 'questions.*']
       )
     end
   end

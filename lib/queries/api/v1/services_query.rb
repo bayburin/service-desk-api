@@ -11,7 +11,7 @@ module Api
         scope.by_popularity.extend(ServiceScope)
       end
 
-      def allowed_to_create_case
+      def allowed_to_create_app
         visible.where(has_common_case: true)
       end
 

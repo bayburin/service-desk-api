@@ -3,10 +3,8 @@ module Api
     module Tickets
       class QuestionFactory
         def create(params = {})
-          Ticket.new(params).tap do |ticket|
-            ticket.ticket_type = :question
-            ticket.state = :draft
-            ticket.to_approve = false
+          Question.new(params).tap do |question|
+            question.ticket.state = :draft if question.ticket
           end
         end
       end
