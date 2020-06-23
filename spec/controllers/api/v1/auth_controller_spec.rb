@@ -15,7 +15,7 @@ module Api
           }
         end
         let(:user_info_response) { { 'tn' => '17664', 'dept' => '714', 'fio' => 'Байбурин Равиль Фаильевич' } }
-        let(:redis_key) { ReadCache.redis.get("token:#{token_response['access_token']}") }
+        let(:redis_key) { ReadCache.redis.get("token:#{token_response[:access_token]}") }
         before do
           stub_request(:post, 'https://auth-center.iss-reshetnev.ru/oauth/token')
             .to_return(status: 200, body: token_response.to_json, headers: {})
@@ -30,7 +30,7 @@ module Api
         end
 
         it 'call #user_info method for Api::V1::AuthCenterApi with received access_token' do
-          expect(Api::V1::AuthCenterApi).to receive(:user_info).with(token_response['access_token']).and_call_original
+          expect(Api::V1::AuthCenterApi).to receive(:user_info).with(token_response[:access_token]).and_call_original
 
           post :token, params: params, format: :json
         end

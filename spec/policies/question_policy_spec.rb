@@ -158,7 +158,7 @@ RSpec.describe QuestionPolicy do
     end
 
     it 'sets :serialize attribute' do
-      expect(policy.serialize).to eq ['correction.*', 'correction.answers.attachments', 'ticket.responsible_users', 'ticket.tags', 'answers.attachments']
+      expect(policy.serialize).to eq ['correction.*', 'correction.ticket.responsible_users', 'correction.answers.attachments', 'ticket.responsible_users', 'ticket.tags', 'answers.attachments']
     end
   end
 end
