@@ -2,7 +2,6 @@ FactoryBot.define do
   factory :ticket do
     service { build(:service, without_nested: true) }
     name { Faker::Restaurant.name }
-    ticket_type { :question }
     state { :published }
     is_hidden { false }
     to_approve { false }
@@ -14,8 +13,23 @@ FactoryBot.define do
       without_nested { false }
     end
 
-    after(:build) do |ticket, ev|
-      ticket.answers = build_list(:answer, 2, ticket: ticket) unless ev.without_nested
+    trait :question do
+      after(:build) do |ticket, ev|
+        ticket.ticketable = build(:question, ticket: ticket) unless ticket.ticketable
+      end
+    end
+
+    trait :common_case do
+      after(:build) do |ticket, ev|
+        ticket.ticketable_type = 'FreeApplication' unless ticket.ticketable
+      end
+    end
+
+    # FIXME: Исправить после создания таблицы заявок
+    trait :app do
+      after(:build) do |ticket, ev|
+        ticket.ticketable_type = 'Application' unless ticket.ticketable
+      end
     end
   end
 end

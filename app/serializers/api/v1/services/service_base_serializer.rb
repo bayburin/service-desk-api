@@ -4,9 +4,9 @@ module Api
       class ServiceBaseSerializer < ActiveModel::Serializer
         attributes :id, :category_id, :name, :short_description, :install, :is_hidden, :has_common_case, :popularity
 
-        has_many :tickets, if: :include_associations?, serializer: Tickets::TicketSerializer do |serializer|
-          TicketPolicy::Scope.new(serializer.current_user, serializer.object.tickets).resolve_by(serializer.object)
-        end
+        # has_many :tickets, if: :include_associations?, serializer: Tickets::TicketSerializer do |serializer|
+        #   TicketPolicy::Scope.new(serializer.current_user, serializer.object.tickets).resolve_by(serializer.object)
+        # end
         has_many :responsible_users, if: :include_associations?, serializer: ResponsibleUserSerializer
 
         belongs_to :category, if: :include_associations?, serializer: Categories::CategoryBaseSerializer

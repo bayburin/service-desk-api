@@ -24,14 +24,15 @@ Rails.application.routes.draw do
         resources :services, only: :show
       end
       resources :services, only: [] do
-        resources :tickets do
+        resources :tickets, only: :index
+        resources :questions do
           post :raise_rating, to: :raise_rating, on: :member
         end
       end
       resources :responsible_users, only: :index do
         get :search, to: :search, on: :collection
       end
-      resources :cases, only: %i[index create update destroy], param: :case_id
+      resources :apps, only: %i[index create update destroy], param: :case_id
       # Получение данных о пользователе
       resources :users, only: [] do
         collection do
@@ -42,13 +43,13 @@ Rails.application.routes.draw do
         end
       end
       resources :tags, only: :index do
-        get :popularity, to: :popularity, on: :collection
+        get :popular, to: :popular, on: :collection
       end
       resources :answers, only: [] do
         resources :answer_attachments, only: %i[show create destroy]
       end
 
-      post 'tickets/publish', to: 'tickets#publish'
+      post 'questions/publish', to: 'questions#publish'
     end
 
     namespace :v2 do

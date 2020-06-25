@@ -82,45 +82,6 @@ class TicketPolicy < ApplicationPolicy
     end
   end
 
-  def attributes_for_show
-    PolicyAttributes.new(
-      serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
-      serialize: ['correction', 'responsible_users', 'tags', 'answers.attachments,correction.*', 'correction.answers.attachments']
-    )
-  end
-
-  def attributes_for_search
-    if user.one_of_roles?(:content_manager, :operator, :service_responsible)
-      PolicyAttributes.new(
-        serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
-        sql_include: [:responsible_users, service: :responsible_users],
-        serialize: ['responsible_users', 'service.responsible_users']
-      )
-    else
-      PolicyAttributes.new(
-        serializer: Api::V1::Tickets::TicketGuestSerializer,
-        sql_include: [:service],
-        serialize: ['service']
-      )
-    end
-  end
-
-  def attributes_for_deep_search
-    if user.one_of_roles?(:content_manager, :operator, :service_responsible)
-      PolicyAttributes.new(
-        serializer: Api::V1::Tickets::TicketResponsibleUserSerializer,
-        sql_include: [:responsible_users, service: :responsible_users, answers: :attachments],
-        serialize: ['responsible_users', 'service.responsible_users', 'answers.attachments']
-      )
-    else
-      PolicyAttributes.new(
-        serializer: Api::V1::Tickets::TicketGuestSerializer,
-        sql_include: [:service, answers: :attachments],
-        serialize: ['answers.attachments', 'service']
-      )
-    end
-  end
-
   protected
 
   def show_for_guest?

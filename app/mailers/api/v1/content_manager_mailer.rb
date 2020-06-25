@@ -11,11 +11,11 @@ module Api
         end
 
         @delivery_user = delivery_user
-        @ticket = TicketDecorator.new(ticket)
+        @question = QuestionDecorator.new(ticket.ticketable)
         @current_user = current_user
         @origin = origin
 
-        mail to: "#{@delivery_user.details.full_name} <#{@delivery_user.details.email}>", subject: "Портал \"Техподдержка УИВТ\": добавлен новый вопрос №#{@ticket.id}"
+        mail to: "#{@delivery_user.details.full_name} <#{@delivery_user.details.email}>", subject: "Портал \"Техподдержка УИВТ\": добавлен новый вопрос №#{ticket.id}"
       end
 
       def question_updated_email(delivery_user, ticket, current_user, origin)
@@ -26,12 +26,12 @@ module Api
         end
 
         @delivery_user = delivery_user
-        @ticket = TicketDecorator.new(ticket)
+        @question = QuestionDecorator.new(ticket.ticketable)
         @current_user = current_user
         @origin = origin
-        @updated_date = ticket.published_state? ? @ticket.correction.updated_at : @ticket.updated_at
+        @updated_date = ticket.published_state? ? @question.correction.updated_at : @question.updated_at
 
-        mail to: "#{@delivery_user.details.full_name} <#{@delivery_user.details.email}>", subject: "Портал \"Техподдержка УИВТ\": вопрос №#{@ticket.id} изменен"
+        mail to: "#{@delivery_user.details.full_name} <#{@delivery_user.details.email}>", subject: "Портал \"Техподдержка УИВТ\": вопрос №#{ticket.id} изменен"
       end
     end
   end

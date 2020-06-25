@@ -2,9 +2,7 @@ module Api
   module V1
     module Tickets
       class TicketBaseSerializer < ActiveModel::Serializer
-        attributes :id, :service_id, :original_id, :name, :ticket_type, :state, :is_hidden, :sla, :popularity
-
-        has_many :answers, if: :include_associations?, serializer: AnswerSerializer
+        attributes :id, :service_id, :name, :ticketable_id, :ticketable_type, :state, :is_hidden, :sla, :popularity
 
         belongs_to :service, serializer: Services::ServiceBaseSerializer
 

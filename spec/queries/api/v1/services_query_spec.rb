@@ -44,17 +44,17 @@ module Api
         end
       end
 
-      describe '#allowed_to_create_case' do
+      describe '#allowed_to_create_app' do
         before { create_list(:service, 2, has_common_case: false) }
 
         it 'runs :visible scope' do
           expect(subject).to receive(:visible).and_call_original
 
-          subject.allowed_to_create_case
+          subject.allowed_to_create_app
         end
 
         it 'returns data, which have :has_common_case attribute setted to true' do
-          subject.allowed_to_create_case.each do |service|
+          subject.allowed_to_create_app.each do |service|
             expect(service.has_common_case).to be_truthy
           end
         end

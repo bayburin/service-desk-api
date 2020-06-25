@@ -36,7 +36,7 @@ module Api
           before { create_list(:service, 2, category: category) }
 
           it 'calls Tickets::TicketGuestSerializer for :faq association' do
-            expect(Tickets::TicketGuestSerializer).to receive(:new).exactly(5).times.and_call_original
+            expect(Questions::QuestionGuestSerializer).to receive(:new).exactly(5).times.and_call_original
 
             subject.to_json
           end

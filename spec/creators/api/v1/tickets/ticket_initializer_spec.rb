@@ -7,13 +7,13 @@ module Api
         subject { TicketInitializer }
 
         describe '#for' do
-          context 'with :question type' do
-            it 'returns instance of CaseFactory' do
-              expect(subject.for('case')).to be_instance_of(CaseFactory)
-            end
+          context 'with :app type' do
+            # it 'returns instance of AppFactory' do
+            #   expect(subject.for('app')).to be_instance_of(AppFactory)
+            # end
           end
 
-          context 'with :case type' do
+          context 'with :question type' do
             it 'returns instance of QuestionFactory' do
               expect(subject.for('question')).to be_instance_of(QuestionFactory)
             end

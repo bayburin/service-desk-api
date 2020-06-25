@@ -3,5 +3,5 @@ class Notification < ApplicationRecord
 
   validates :body, presence: true
 
-  enum event_type: { case: 1, broadcast: 2 }, _suffix: true
+  enum event_type: { app: 1, broadcast: 2 }, _suffix: true
 end

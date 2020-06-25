@@ -9,19 +9,19 @@ module Api
         let(:current_user) { create(:user) }
         subject { ServiceBaseSerializer.new(service, scope: current_user, scope_name: :current_user) }
 
-        %w[id category_id name short_description install popularity is_hidden has_common_case popularity category tickets].each do |attr|
+        %w[id category_id name short_description install popularity is_hidden has_common_case popularity category].each do |attr|
           it "has #{attr} attribute" do
             expect(subject.to_json).to have_json_path(attr)
           end
         end
 
-        describe '#tickets' do
-          it 'calls Tickets::TicketSerializer for :faq association' do
-            expect(Tickets::TicketSerializer).to receive(:new).exactly(service.tickets.count).times.and_call_original
+        # describe '#tickets' do
+        #   it 'calls Tickets::TicketSerializer for :faq association' do
+        #     expect(Tickets::TicketSerializer).to receive(:new).exactly(service.tickets.count).times.and_call_original
 
-            subject.to_json
-          end
-        end
+        #     subject.to_json
+        #   end
+        # end
 
         describe '#category' do
           it 'calls Categories::CategoryBaseSerializer for :faq association' do
@@ -41,7 +41,7 @@ module Api
               subject.to_json
             end
 
-            %w[tickets category responsible_users].each do |attr|
+            %w[questions category responsible_users].each do |attr|
               it "does not have :#{attr} attribute" do
                 expect(subject.to_json).not_to have_json_path(attr)
               end
@@ -57,7 +57,7 @@ module Api
               subject.to_json
             end
 
-            %w[tickets category responsible_users].each do |attr|
+            %w[category responsible_users].each do |attr|
               it "has :#{attr} attribute" do
                 expect(subject.to_json).to have_json_path(attr)
               end

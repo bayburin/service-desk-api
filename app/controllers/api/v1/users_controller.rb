@@ -7,7 +7,7 @@ module Api
 
       def owns
         items = SvtApi.items(current_user).body
-        services = ServicesQuery.new.allowed_to_create_case
+        services = ServicesQuery.new.allowed_to_create_app
 
         render json: UserOwns.new(items, services)
       end

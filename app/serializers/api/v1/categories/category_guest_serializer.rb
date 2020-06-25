@@ -5,7 +5,7 @@ module Api
         has_many :services, if: :include_associations?, serializer: Services::ServiceGuestSerializer do |serializer|
           ServicesQuery.new(serializer.object.services).visible
         end
-        has_many :faq, if: :include_associations?, serializer: Tickets::TicketGuestSerializer
+        has_many :faq, if: :include_associations?, serializer: Questions::QuestionGuestSerializer
       end
     end
   end
