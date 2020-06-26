@@ -3,7 +3,7 @@ module Api
     module Tickets
       class TicketSerializer < TicketBaseSerializer
         has_many :responsible_users, if: :include_associations?, serializer: ResponsibleUserSerializer
-        has_many :tags, if: :include_associations?
+        has_many :tags, if: :include_associations?, serializer: TagSerializer
         # has_one :correction, if: :include_associations?, serializer: TicketSerializer
 
         # def answers

@@ -6,11 +6,16 @@ RSpec.describe Question, type: :model do
   it { is_expected.to have_many(:answers).dependent(:destroy) }
   it { is_expected.to have_one(:ticket).dependent(:destroy) }
   it { is_expected.to have_one(:correction).class_name('Question').with_foreign_key(:original_id).dependent(:nullify) }
+  it { is_expected.to have_many(:responsible_users).through(:ticket) }
   it { is_expected.to belong_to(:original).class_name('Question').optional }
   it { is_expected.to validate_presence_of(:answers) }
 
   it 'includes Associatable module' do
     expect(subject.singleton_class.ancestors).to include(Associatable)
+  end
+
+  it 'includes Belongable module' do
+    expect(subject.singleton_class.ancestors).to include(Belongable)
   end
 
   context 'when ticket has :draft state' do
