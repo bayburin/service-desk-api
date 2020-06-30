@@ -146,7 +146,6 @@ RSpec.describe QuestionPolicy do
 
   describe '#attributes_for_show' do
     let(:question) { service.tickets.first }
-
     subject(:policy) { QuestionPolicy.new(responsible, question).attributes_for_show }
 
     it 'sets :serializer attribute' do
@@ -158,7 +157,10 @@ RSpec.describe QuestionPolicy do
     end
 
     it 'sets :serialize attribute' do
-      expect(policy.serialize).to eq ['correction.*', 'correction.ticket.responsible_users', 'correction.answers.attachments', 'ticket.responsible_users', 'ticket.tags', 'answers.attachments']
+      expect(policy.serialize).to eq [
+        'correction.*', 'correction.ticket.responsible_users', 'correction.ticket.service', 'correction.ticket.tags',
+        'correction.answers.attachments', 'ticket.responsible_users', 'ticket.tags', 'ticket.service', 'answers.attachments'
+      ]
     end
   end
 end
