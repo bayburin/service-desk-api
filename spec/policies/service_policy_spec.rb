@@ -264,7 +264,7 @@ RSpec.describe ServicePolicy do
         end
 
         it 'sets :serialize attribute' do
-          expect(policy.serialize).to eq ['*', 'questions.ticket.*', 'questions.answers.attachments', 'questions.correction.*', 'questions.correction.answers.attachments', 'questions.correction.ticket.responsible_users', 'questions.correction.ticket.tags']
+          expect(policy.serialize).to eq ['*', 'questions.ticket.service', 'questions.ticket.*', 'questions.answers.attachments', 'questions.correction.*', 'questions.correction.answers.attachments', 'questions.correction.ticket.responsible_users', 'questions.correction.ticket.tags']
         end
       end
 
@@ -273,8 +273,12 @@ RSpec.describe ServicePolicy do
           expect(policy.serializer).to eq Api::V1::Services::ServiceGuestSerializer
         end
 
+        it 'sets :sql_include attribute' do
+          expect(policy.sql_include).to eq [ticket: :service]
+        end
+
         it 'sets :serialize attribute' do
-          expect(policy.serialize).to eq ['category', 'questions.answers.attachments', 'questions.*']
+          expect(policy.serialize).to eq ['category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.*']
         end
       end
     end
@@ -291,7 +295,7 @@ RSpec.describe ServicePolicy do
       end
 
       it 'sets :serialize attribute' do
-        expect(policy.serialize).to eq ['*', 'questions.ticket.*', 'questions.answers.attachments', 'questions.correction.*', 'questions.correction.answers.attachments', 'questions.correction.ticket.responsible_users', 'questions.correction.ticket.tags']
+        expect(policy.serialize).to eq ['*', 'questions.ticket.service', 'questions.ticket.*', 'questions.answers.attachments', 'questions.correction.*', 'questions.correction.answers.attachments', 'questions.correction.ticket.responsible_users', 'questions.correction.ticket.tags']
       end
     end
 
@@ -307,7 +311,7 @@ RSpec.describe ServicePolicy do
       end
 
       it 'sets :serialize attribute' do
-        expect(policy.serialize).to eq ['category', 'questions.answers.attachments', 'questions.ticket.responsible_users', 'questions.ticket.service']
+        expect(policy.serialize).to eq ['category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.ticket.responsible_users', 'questions.ticket.service']
       end
     end
 
@@ -318,8 +322,12 @@ RSpec.describe ServicePolicy do
         expect(policy.serializer).to eq Api::V1::Services::ServiceGuestSerializer
       end
 
+      it 'sets :sql_include attribute' do
+        expect(policy.sql_include).to eq [ticket: :service]
+      end
+
       it 'sets :serialize attribute' do
-        expect(policy.serialize).to eq ['category', 'questions.answers.attachments', 'questions.*']
+        expect(policy.serialize).to eq ['category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.*']
       end
     end
   end

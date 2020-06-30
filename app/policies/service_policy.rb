@@ -70,7 +70,7 @@ class ServicePolicy < ApplicationPolicy
           correction: [ticket: %i[responsible_users tags service], answers: :attachments]
         ],
         serialize: [
-          '*', 'questions.ticket.*', 'questions.answers.attachments', 'questions.correction.*',
+          '*', 'questions.ticket.service', 'questions.ticket.*', 'questions.answers.attachments', 'questions.correction.*',
           'questions.correction.answers.attachments', 'questions.correction.ticket.responsible_users',
           'questions.correction.ticket.tags'
         ]
@@ -79,12 +79,13 @@ class ServicePolicy < ApplicationPolicy
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
         sql_include: [ticket: %i[service responsible_users]],
-        serialize: ['category', 'questions.answers.attachments', 'questions.ticket.responsible_users', 'questions.ticket.service']
+        serialize: ['category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.ticket.responsible_users', 'questions.ticket.service']
       )
     else
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceGuestSerializer,
-        serialize: ['category', 'questions.answers.attachments', 'questions.*']
+        sql_include: [ticket: :service],
+        serialize: ['category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.*']
       )
     end
   end
