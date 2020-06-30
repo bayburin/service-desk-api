@@ -79,7 +79,10 @@ class ServicePolicy < ApplicationPolicy
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceResponsibleUserSerializer,
         sql_include: [ticket: %i[service responsible_users]],
-        serialize: ['category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.ticket.responsible_users', 'questions.ticket.service']
+        serialize: [
+          'category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.ticket.responsible_users',
+          'questions.ticket.service'
+        ]
       )
     else
       PolicyAttributes.new(
