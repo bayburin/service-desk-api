@@ -24,14 +24,14 @@ module Api
       end
 
       def create
-        question = Tickets::TicketFactory.create(:question, attributive_params)
+        create = Questions::Create.new(attributive_params)
 
-        if question.save
-          QuestionChangedWorker.perform_async(question.ticket.id, current_user.tn, 'create', request.headers['origin'])
+        if create.call
+          QuestionChangedWorker.perform_async(create.data.ticket.id, current_user.tn, 'create', request.headers['origin'])
 
-          render json: question, serializer: Questions::QuestionResponsibleUserSerializer
+          render json: create.data, serializer: Questions::QuestionResponsibleUserSerializer
         else
-          render json: question.errors, status: :unprocessable_entity
+          render json: create.errors, status: :unprocessable_entity
         end
       end
 

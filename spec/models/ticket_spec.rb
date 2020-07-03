@@ -66,4 +66,12 @@ RSpec.describe Ticket, type: :model do
       end
     end
   end
+
+  describe '#generate_identity' do
+    let(:expected_identity) { Ticket.maximum(:identity).to_i + 1 }
+
+    it 'set new identity' do
+      expect(subject.generate_identity).to eq expected_identity
+    end
+  end
 end

@@ -25,6 +25,7 @@ gem 'sneakers'
 gem 'thinking-sphinx'
 gem 'unicorn'
 gem 'virtus'
+gem 'with_advisory_lock'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.2'

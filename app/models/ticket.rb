@@ -45,4 +45,8 @@ class Ticket < ApplicationRecord
   def responsibles
     responsible_users.presence || service.responsible_users
   end
+
+  def generate_identity
+    self.identity = Ticket.maximum(:identity).to_i + 1
+  end
 end

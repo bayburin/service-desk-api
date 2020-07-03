@@ -19,8 +19,10 @@ module Api
         def update(attributes)
           return unless valid?
 
-          cleared_attributes = process_attributes(attributes)
-          @question = Tickets::TicketFactory.create(:question, cleared_attributes.merge!(original_id: original.id))
+          process_attributes(attributes)
+          @question = Tickets::TicketFactory.create(:question, attributes.merge!(original_id: original.id))
+
+          Rails.logger.debug "Correction: #{question.ticket.inspect}".cyan
           return true if question.save
 
           errors.merge!(question.errors)
@@ -37,6 +39,7 @@ module Api
           attributes[:id] = nil
           attributes[:ticket_attributes][:id] = nil
           attributes[:ticket_attributes][:ticketable_id] = nil
+          attributes[:ticket_attributes][:identity] = original.ticket.identity
           attributes[:ticket_attributes][:responsible_users_attributes].each do |responsible|
             responsible[:id] = nil
             responsible[:responseable_id] = nil

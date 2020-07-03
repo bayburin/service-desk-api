@@ -61,55 +61,40 @@ module Api
 
       describe 'POST #create' do
         let!(:service) { create(:service) }
-        let(:answer) { attributes_for(:answer) }
         let(:ticket_attrs) { attributes_for(:ticket, service_id: service.id, state: :draft, tags: [{ name: 'test' }]) }
-        let(:question_attrs) { attributes_for(:question, answers: [answer], ticket: ticket_attrs) }
+        let(:question_attrs) { attributes_for(:question, answers: [], ticket: ticket_attrs) }
         let(:params) { { service_id: service.id, question: question_attrs } }
-        let(:quesion) { create(:question) }
+        let(:question) { create(:question) }
         before do
           allow(subject).to receive(:authorize).and_return(true)
+          allow_any_instance_of(Questions::Create).to receive(:data).and_return(question)
           allow(QuestionChangedWorker).to receive(:perform_async)
         end
 
-        it 'calls Tickets::TicketFactory.create method' do
-          expect(Tickets::TicketFactory).to receive(:create).with(:question, any_args).and_call_original
+        context 'when question was created' do
+          before { allow_any_instance_of(Questions::Create).to receive(:call).and_return(true) }
 
-          post :create, params: params, format: :json
-        end
+          it 'call Questions::Create#call method' do
+            expect_any_instance_of(Questions::Create).to receive(:call)
 
-        it 'calls QuestionChangedWorker worker with id of created ticket' do
-          allow(Tickets::TicketFactory).to receive(:create).and_return(quesion)
-          expect(QuestionChangedWorker).to receive(:perform_async).with(quesion.id, subject.current_user.tn, 'create', nil)
-
-          post :create, params: params, format: :json
-        end
-
-        it 'create new question' do
-          expect { post :create, params: params, format: :json }.to change { Question.count }.by(1)
-        end
-
-        it 'creates new ticket' do
-          expect { post :create, params: params, format: :json }.to change { Ticket.count }.by(1)
-        end
-
-        it 'response with created ticket' do
-          post :create, params: params, format: :json
-
-          expect(parse_json(response.body)['id']).to eq Question.last.id
-        end
-
-        it 'response with success status' do
-          post :create, params: params, format: :json
-
-          expect(response.status).to eq 200
-        end
-
-        context 'when ticket has errors' do
-          before { ticket_attrs[:service_id] = nil }
-
-          it 'does not save ticket' do
-            expect { post :create, params: params, format: :json }.not_to change { Ticket.count }
+            post :create, params: params, format: :json
           end
+
+          it 'response with created ticket' do
+            post :create, params: params, format: :json
+
+            expect(parse_json(response.body)['id']).to eq question.id
+          end
+
+          it 'response with success status' do
+            post :create, params: params, format: :json
+
+            expect(response.status).to eq 200
+          end
+        end
+
+        context 'when question was not created' do
+          before { allow_any_instance_of(Questions::Create).to receive(:call).and_return(false) }
 
           it 'response with errors status' do
             post :create, params: params, format: :json
