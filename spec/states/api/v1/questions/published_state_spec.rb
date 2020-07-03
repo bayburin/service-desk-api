@@ -12,10 +12,10 @@ module Api
         end
 
         describe '#update' do
-          before { allow_any_instance_of(UpdatePublishedQuestion).to receive(:update).and_return(true) }
+          before { allow_any_instance_of(UpdatePublished).to receive(:call).and_return(true) }
 
-          it 'call #update method for UpdatePublishedQuestion instance' do
-            expect_any_instance_of(UpdatePublishedQuestion).to receive(:update).with({})
+          it 'call #update method for UpdatePublished instance' do
+            expect_any_instance_of(UpdatePublished).to receive(:call)
 
             subject.update({})
           end
@@ -24,12 +24,12 @@ module Api
             expect(subject.update({})).to be_truthy
           end
 
-          context 'when UpdatePublishedQuestion#update returns false' do
+          context 'when UpdatePublished#update returns false' do
             let(:custom_error) { 'test error' }
-            let(:update_ticket) { UpdatePublishedQuestion.new(question) }
+            let(:update_ticket) { UpdatePublished.new(question, {}) }
             before do
-              allow(UpdatePublishedQuestion).to receive(:new).and_return(update_ticket)
-              allow(update_ticket).to receive(:update).and_return(false)
+              allow(UpdatePublished).to receive(:new).and_return(update_ticket)
+              allow(update_ticket).to receive(:call).and_return(false)
             end
 
             it 'return false' do

@@ -1,28 +1,29 @@
 module Api
   module V1
     module Questions
-      class UpdatePublishedQuestion
-        include ActiveModel::Validations
-
+      class UpdatePublished < ApplicationService
         validates_with OnlyOneCorrectionValidator
 
         attr_reader :original, :question
 
-        def initialize(original)
+        def initialize(original, params)
           @original = original
+          @params = params
+
+          super
         end
 
         def correction
           original.correction
         end
 
-        def update(attributes)
+        def call
           return unless valid?
 
-          process_attributes(attributes)
-          @question = Tickets::TicketFactory.create(:question, attributes.merge!(original_id: original.id))
+          process_attributes
+          @question = Tickets::TicketFactory.create(:question, params.merge!(original_id: original.id))
 
-          Rails.logger.debug "Correction: #{question.ticket.inspect}".cyan
+          Rails.logger.debug { "Correction: #{question.ticket.inspect}".cyan }
           return true if question.save
 
           errors.merge!(question.errors)
@@ -31,27 +32,25 @@ module Api
 
         protected
 
-        def process_attributes(attributes)
+        def process_attributes
           attachments = AnswerAttachment
-                          .where(answer_id: attributes[:answers_attributes].map { |answer| answer[:id] })
+                          .where(answer_id: params[:answers_attributes].map { |answer| answer[:id] })
                           .select(:id, :answer_id, :document)
 
-          attributes[:id] = nil
-          attributes[:ticket_attributes][:id] = nil
-          attributes[:ticket_attributes][:ticketable_id] = nil
-          attributes[:ticket_attributes][:identity] = original.ticket.identity
-          attributes[:ticket_attributes][:responsible_users_attributes].each do |responsible|
+          params[:id] = nil
+          params[:ticket_attributes][:id] = nil
+          params[:ticket_attributes][:ticketable_id] = nil
+          params[:ticket_attributes][:identity] = original.ticket.identity
+          params[:ticket_attributes][:responsible_users_attributes].each do |responsible|
             responsible[:id] = nil
             responsible[:responseable_id] = nil
           end
-          attributes[:answers_attributes].each do |answer|
+          params[:answers_attributes].each do |answer|
             answer[:attachments_attributes] ||= []
             answer[:attachments_attributes] << build_attachments(answer, attachments)
             answer[:attachments_attributes] = answer[:attachments_attributes].flatten.compact.each { |el| el.try(:permit!) }
             answer[:id] = nil
           end
-
-          attributes
         end
 
         def build_attachments(answer, attachments)

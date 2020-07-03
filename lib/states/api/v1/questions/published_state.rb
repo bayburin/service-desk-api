@@ -3,8 +3,8 @@ module Api
     module Questions
       class PublishedState < AbstractState
         def update(attributes)
-          update_ticket = UpdatePublishedQuestion.new(question)
-          return true if update_ticket.update(attributes)
+          update_ticket = UpdatePublished.new(question, attributes)
+          return true if update_ticket.call
 
           question.errors.merge!(update_ticket.errors)
           false
