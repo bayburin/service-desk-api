@@ -8,7 +8,6 @@ module Api
         let(:answer) { attributes_for(:answer, question: nil) }
         let(:ticket_attrs) { attributes_for(:ticket, service_id: service.id, state: :draft, tags_attributes: [{ name: 'test' }]) }
         let(:question_attrs) { attributes_for(:question, answers_attributes: [answer], ticket_attributes: ticket_attrs) }
-        let(:quesion) { create(:question) }
         subject { Create.new(question_attrs) }
 
         it 'inherits from ApplicationService class' do

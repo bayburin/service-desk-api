@@ -7,15 +7,11 @@ module Api
         end
 
         def publish
-          if question.original
-            popularity = question.original.ticket.popularity
+          publish = Publish.new(question)
+          return true if publish.call
 
-            Question.transaction do
-              question.original.destroy && question.ticket.update(state: :published, popularity: popularity)
-            end
-          else
-            question.ticket.update(state: :published)
-          end
+          question.errors.merge!(publish.errors)
+          false
         end
 
         def destroy

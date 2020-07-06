@@ -9,8 +9,6 @@ class Question < ApplicationRecord
 
   belongs_to :original, class_name: 'Question', optional: true
 
-  validates :answers, :ticket, presence: true, if: -> { ticket.published_state? }
-
   accepts_nested_attributes_for :answers, allow_destroy: true
   accepts_nested_attributes_for :ticket, allow_destroy: true
 

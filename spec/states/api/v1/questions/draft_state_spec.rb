@@ -22,47 +22,25 @@ module Api
         end
 
         describe '#publish' do
-          context 'when question has original' do
-            it 'destroyes original question' do
-              subject.publish
-              question.reload
+          it 'call Publish class' do
+            expect(Publish).to receive(:new).with(question).and_call_original
 
-              expect(question.original).to be_nil
-            end
+            subject.publish
+          end
 
-            it 'sets :published state' do
-              subject.publish
-              question.reload
+          context 'when publish finished' do
+            before { allow_any_instance_of(Publish).to receive(:call).and_return(true) }
 
-              expect(question.ticket.published_state?).to be_truthy
-            end
-
-            it 'clones popularity from original' do
-              subject.publish
-              question.reload
-
-              expect(question.ticket.popularity).to eq popularity
-            end
-
-            context 'when original was not destroyed' do
-              before { allow(question.original).to receive(:destroy).and_return(false) }
-
-              it 'does not change state' do
-                subject.publish
-                question.reload
-
-                expect(question.ticket.published_state?).to be_falsey
-              end
+            it 'return true' do
+              expect(subject.publish).to be_truthy
             end
           end
 
-          context 'when ticket does not have original' do
-            before { question.original = nil }
+          context 'when publish falied' do
+            before { allow_any_instance_of(Publish).to receive(:call).and_return(false) }
 
-            it 'updates ticket' do
-              subject.publish
-
-              expect(question.ticket.published_state?).to be_truthy
+            it 'return false' do
+              expect(subject.publish).to be_falsey
             end
           end
         end
