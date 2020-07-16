@@ -8,7 +8,7 @@ module Api
         subject { QuestionGuestSerializer.new(question) }
 
         it 'inherits from QuestionBaseSerializer class' do
-          expect(QuestionGuestSerializer).to be < QuestionBaseSerializer
+          expect(described_class).to be < QuestionBaseSerializer
         end
 
         describe '#ticket' do

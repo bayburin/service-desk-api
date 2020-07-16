@@ -9,7 +9,7 @@ module Api
       let!(:correction) { create(:question, original: question, state: :draft) }
 
       it 'inherits from TicketsQuery class' do
-        expect(QuestionsQuery).to be < ApplicationQuery
+        expect(described_class).to be < ApplicationQuery
       end
 
       context 'when scope exists' do

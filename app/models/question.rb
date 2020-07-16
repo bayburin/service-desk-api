@@ -9,8 +9,5 @@ class Question < ApplicationRecord
 
   belongs_to :original, class_name: 'Question', optional: true
 
-  accepts_nested_attributes_for :answers, allow_destroy: true
-  accepts_nested_attributes_for :ticket, allow_destroy: true
-
   delegate :service, to: :ticket
 end

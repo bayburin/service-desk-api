@@ -14,10 +14,41 @@ module Api
         end
 
         describe '#update' do
-          it 'calls update method for question' do
-            expect(question).to receive(:update).with({})
+          let(:params) { {} }
+          before do
+            allow_any_instance_of(QuestionForm).to receive(:validate).and_return(true)
+            allow_any_instance_of(QuestionForm).to receive(:save).and_return(true)
+          end
 
-            subject.update({})
+          it 'create instance with current question' do
+            expect(QuestionForm).to receive(:new).with(question).and_call_original
+
+            subject.update(params)
+          end
+
+          it 'call #validate method for QuestionForm instance' do
+            expect_any_instance_of(QuestionForm).to receive(:validate).with(params)
+
+            subject.update(params)
+          end
+
+          it 'call #save method for QuestionForm instance' do
+            expect_any_instance_of(QuestionForm).to receive(:save)
+
+            subject.update(params)
+          end
+
+          it 'return true' do
+            expect(subject.update(params)).to be_truthy
+          end
+
+          context 'when QuestionForm#validate returns false' do
+            let(:custom_error) { 'test error' }
+            before { allow_any_instance_of(QuestionForm).to receive(:validate).and_return(false) }
+
+            it 'return false' do
+              expect(subject.update(params)).to be_falsey
+            end
           end
         end
 

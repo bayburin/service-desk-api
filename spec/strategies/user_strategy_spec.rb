@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UserStrategy, type: :model do
   it 'inherits from LocalStrategy class' do
-    expect(UserStrategy).to be < LocalStrategy
+    expect(described_class).to be < LocalStrategy
   end
 
   describe '#process_searching_user' do

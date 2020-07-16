@@ -3,10 +3,7 @@ class Answer < ApplicationRecord
 
   belongs_to :question
 
-  validates :question, :answer, presence: true
   validates :is_hidden, inclusion: { in: [true, false] }
-
-  accepts_nested_attributes_for :attachments
 
   delegate :ticket, to: :question
 end

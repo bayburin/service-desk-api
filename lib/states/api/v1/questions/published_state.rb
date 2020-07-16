@@ -3,10 +3,10 @@ module Api
     module Questions
       class PublishedState < AbstractState
         def update(attributes)
-          update_ticket = UpdatePublished.new(question, attributes)
-          return true if update_ticket.call
+          form = UpdatePublishedForm.new(question)
+          return true if form.validate(attributes) && form.save
 
-          question.errors.merge!(update_ticket.errors)
+          question.errors.merge!(form.errors)
           false
         end
 

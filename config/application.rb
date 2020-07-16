@@ -42,6 +42,8 @@ module ServiceDeskBackend
     config.autoload_paths << Rails.root.join('lib', 'validators').to_s
     config.autoload_paths << Rails.root.join('lib', 'services').to_s
     config.autoload_paths << Rails.root.join('lib', 'factories').to_s
+    config.autoload_paths << Rails.root.join('lib', 'interactors').to_s
+    config.autoload_paths << Rails.root.join('lib', 'forms').to_s
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

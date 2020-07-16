@@ -10,7 +10,7 @@ module Api
         subject { ServiceResponsibleUserSerializer.new(service, scope: current_user, scope_name: :current_user) }
 
         it 'inherits from ServiceBaseSerializer class' do
-          expect(ServiceResponsibleUserSerializer).to be < ServiceBaseSerializer
+          expect(described_class).to be < ServiceBaseSerializer
         end
 
         # describe '#tickets' do

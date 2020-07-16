@@ -8,7 +8,7 @@ module Api
       subject { TagExtendedSerializer.new(custom_tag).to_json }
 
       it 'inherits from SimpleDelegator class' do
-        expect(TagExtendedSerializer).to be < TagSerializer
+        expect(described_class).to be < TagSerializer
       end
 
       %w[id name popularity].each do |attr|

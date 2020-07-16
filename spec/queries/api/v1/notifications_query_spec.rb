@@ -11,7 +11,7 @@ module Api
       subject { NotificationsQuery.new(user) }
 
       it 'inherits from ApplicationQuery class' do
-        expect(CategoriesQuery).to be < ApplicationQuery
+        expect(described_class).to be < ApplicationQuery
       end
 
       context 'when scope does not exist' do

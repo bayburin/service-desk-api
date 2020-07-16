@@ -12,7 +12,7 @@ module Api
       subject { UsersQuery.new }
 
       it 'inherits from ApplicationQuery class' do
-        expect(UsersQuery).to be < ApplicationQuery
+        expect(described_class).to be < ApplicationQuery
       end
 
       context 'when scope exists' do

@@ -10,7 +10,7 @@ module Api
         subject { Publish.new(question) }
 
         it 'inherits from ApplicationService class' do
-          expect(Create).to be < ApplicationService
+          expect(described_class).to be < ApplicationService
         end
 
         context 'when ticket is not set' do

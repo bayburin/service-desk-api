@@ -24,7 +24,7 @@ module Api
       protected
 
       def ticket_state
-        __getobj__.ticket.published_state? ? Api::V1::Questions::PublishedState.new(self) : Api::V1::Questions::DraftState.new(self)
+        ticket.published_state? ? Api::V1::Questions::PublishedState.new(self) : Api::V1::Questions::DraftState.new(self)
       end
     end
   end

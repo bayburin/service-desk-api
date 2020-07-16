@@ -6,7 +6,7 @@ module Api
       let!(:categories) { create_list(:category, 5) }
 
       it 'inherits from ApplicationQuery class' do
-        expect(CategoriesQuery).to be < ApplicationQuery
+        expect(described_class).to be < ApplicationQuery
       end
 
       context 'when scope does not exist' do

@@ -60,22 +60,19 @@ module Api
       end
 
       describe 'POST #create' do
-        let!(:service) { create(:service) }
-        let(:ticket_attrs) { attributes_for(:ticket, service_id: service.id, state: :draft, tags: [{ name: 'test' }]) }
-        let(:question_attrs) { attributes_for(:question, answers: [], ticket: ticket_attrs) }
-        let(:params) { { service_id: service.id, question: question_attrs } }
+        let(:service) { create(:service) }
         let(:question) { create(:question) }
+        let(:params) { { service_id: service.id, question: question.as_json } }
         before do
-          allow(subject).to receive(:authorize).and_return(true)
-          allow_any_instance_of(Questions::Create).to receive(:data).and_return(question)
+          allow(Questions::Create).to receive(:call).and_return(create_dbl)
           allow(QuestionChangedWorker).to receive(:perform_async)
         end
 
         context 'when question was created' do
-          before { allow_any_instance_of(Questions::Create).to receive(:call).and_return(true) }
+          let(:create_dbl) { double(:create, success?: true, question: question) }
 
           it 'call Questions::Create#call method' do
-            expect_any_instance_of(Questions::Create).to receive(:call)
+            expect(Questions::Create).to receive(:call)
 
             post :create, params: params, format: :json
           end
@@ -94,9 +91,15 @@ module Api
         end
 
         context 'when question was not created' do
-          before { allow_any_instance_of(Questions::Create).to receive(:call).and_return(false) }
+          let(:create_dbl) { double(:create, success?: false, errors: { message: 'test' }) }
 
-          it 'response with errors status' do
+          it 'response with error message' do
+            post :create, params: params, format: :json
+
+            expect(response.body).to eq create_dbl.errors.to_json
+          end
+
+          it 'response with error status' do
             post :create, params: params, format: :json
 
             expect(response.status).to eq 422
