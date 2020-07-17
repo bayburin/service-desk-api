@@ -3,19 +3,19 @@ module Api
     module Questions
       class DraftState < AbstractState
         def update(attributes)
-          question.update(attributes)
+          form = QuestionForm.new(question)
+          return true if form.validate(attributes) && form.save
+
+          question.errors.merge!(form.errors)
+          false
         end
 
         def publish
-          if question.original
-            popularity = question.original.ticket.popularity
+          publish = Publish.new(question)
+          return true if publish.call
 
-            Question.transaction do
-              question.original.destroy && question.ticket.update(state: :published, popularity: popularity)
-            end
-          else
-            question.ticket.update(state: :published)
-          end
+          question.errors.merge!(publish.errors)
+          false
         end
 
         def destroy

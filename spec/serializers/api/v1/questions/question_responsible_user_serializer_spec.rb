@@ -8,7 +8,7 @@ module Api
         subject { QuestionResponsibleUserSerializer.new(question) }
 
         it 'inherits from QuestionBaseSerializer class' do
-          expect(QuestionResponsibleUserSerializer).to be < QuestionBaseSerializer
+          expect(described_class).to be < QuestionBaseSerializer
         end
 
         it 'has correction attribute' do

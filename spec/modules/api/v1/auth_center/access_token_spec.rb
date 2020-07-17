@@ -6,13 +6,17 @@ module Api
       RSpec.describe AccessToken do
         let(:token) { 'my_token' }
         let(:user_info) { { fio: 'test', tn: 123 }.as_json }
-        subject { AccessToken }
+        subject { described_class }
 
         describe '.get, .set' do
           before { subject.set(token, user_info) }
 
           it 'return user data' do
             expect(subject.get(token)).to eq user_info
+          end
+
+          it 'set expiration' do
+            expect(ReadCache.redis.ttl(subject.key(token))).to eq subject::EXPIRED_TIME.to_i
           end
         end
 

@@ -9,7 +9,7 @@ module Api
         subject { CategoryOperatorSerializer.new(category, scope: current_user, scope_name: :current_user) }
 
         it 'inherits from CategoryBaseSerializer class' do
-          expect(CategoryOperatorSerializer).to be < CategoryBaseSerializer
+          expect(described_class).to be < CategoryBaseSerializer
         end
 
         describe '#services' do

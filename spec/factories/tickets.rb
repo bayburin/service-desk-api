@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :ticket do
+    sequence(:identity) { |i| i }
     service { build(:service, without_nested: true) }
     name { Faker::Restaurant.name }
     state { :published }

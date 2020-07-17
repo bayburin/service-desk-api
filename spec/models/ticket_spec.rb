@@ -5,7 +5,6 @@ RSpec.describe Ticket, type: :model do
   it { is_expected.to have_many(:tags).through(:ticket_tags) }
   it { is_expected.to have_many(:responsible_users).dependent(:destroy) }
   it { is_expected.to belong_to(:service) }
-  it { is_expected.to validate_presence_of(:name) }
 
   it 'includes Associatable module' do
     expect(subject.singleton_class.ancestors).to include(Associatable)
@@ -20,32 +19,6 @@ RSpec.describe Ticket, type: :model do
 
     it 'increases popularity' do
       expect(subject.calculate_popularity).to eq popularity
-    end
-  end
-
-  describe '#tags_attributes' do
-    let(:new_tag_attr) { attributes_for(:tag) }
-    let!(:existing_tag) { create(:tag) }
-    let(:existing_tag_attr) { existing_tag.as_json(only: %i[id name]) }
-    subject { build(:ticket, :question, tags_attributes: [new_tag_attr, existing_tag_attr].map(&:symbolize_keys)) }
-
-    it 'creates new tags' do
-      expect { subject.save }.to change { Tag.count }.by(1)
-    end
-
-    it 'adds references on existing tags' do
-      subject.save
-
-      expect(subject.tags).to include(existing_tag)
-    end
-
-    context 'when id not set but tag exists' do
-      let!(:new_tag) { Tag.create(new_tag_attr) }
-
-      it 'add references on existing tag' do
-        expect { subject.save }.not_to change { Tag.count }
-        expect(subject.tags).to include(new_tag, existing_tag)
-      end
     end
   end
 
@@ -64,6 +37,23 @@ RSpec.describe Ticket, type: :model do
       it 'returns responsible_users of parent service' do
         expect(subject.responsibles).to eq [responsible_users]
       end
+    end
+  end
+
+  describe '.generate_identity' do
+    let(:expected_identity) { Ticket.maximum(:identity).to_i + 1 }
+
+    it 'set new identity' do
+      expect(described_class.generate_identity).to eq expected_identity
+    end
+  end
+
+  describe '#generate_identity' do
+    let(:identity) { 123 }
+    before { allow(described_class).to receive(:generate_identity).and_return(identity) }
+
+    it 'call Ticket.generate_identity' do
+      expect(subject.generate_identity).to eq identity
     end
   end
 end

@@ -8,39 +8,44 @@ module Api
         subject { PublishedState.new(question) }
 
         it 'inherits from AbstractState' do
-          expect(PublishedState).to be < AbstractState
+          expect(described_class).to be < AbstractState
         end
 
         describe '#update' do
-          before { allow_any_instance_of(UpdatePublishedQuestion).to receive(:update).and_return(true) }
+          let(:params) { {} }
+          before do
+            allow_any_instance_of(UpdatePublishedForm).to receive(:validate).and_return(true)
+            allow_any_instance_of(UpdatePublishedForm).to receive(:save).and_return(true)
+          end
 
-          it 'call #update method for UpdatePublishedQuestion instance' do
-            expect_any_instance_of(UpdatePublishedQuestion).to receive(:update).with({})
+          it 'create instance with current question' do
+            expect(UpdatePublishedForm).to receive(:new).with(question).and_call_original
 
-            subject.update({})
+            subject.update(params)
+          end
+
+          it 'call #validate method for UpdatePublishedForm instance' do
+            expect_any_instance_of(UpdatePublishedForm).to receive(:validate).with(params)
+
+            subject.update(params)
+          end
+
+          it 'call #save method for UpdatePublishedForm instance' do
+            expect_any_instance_of(UpdatePublishedForm).to receive(:save)
+
+            subject.update(params)
           end
 
           it 'return true' do
-            expect(subject.update({})).to be_truthy
+            expect(subject.update(params)).to be_truthy
           end
 
-          context 'when UpdatePublishedQuestion#update returns false' do
+          context 'when UpdatePublishedForm#validate returns false' do
             let(:custom_error) { 'test error' }
-            let(:update_ticket) { UpdatePublishedQuestion.new(question) }
-            before do
-              allow(UpdatePublishedQuestion).to receive(:new).and_return(update_ticket)
-              allow(update_ticket).to receive(:update).and_return(false)
-            end
+            before { allow_any_instance_of(UpdatePublishedForm).to receive(:validate).and_return(false) }
 
             it 'return false' do
-              expect(subject.update({})).to be_falsey
-            end
-
-            it 'merge ticket errors with errors of UpdatePublishedTicket instance' do
-              update_ticket.errors.add(:base, custom_error)
-              subject.update({})
-
-              expect(subject.question.errors.full_messages).to include(custom_error)
+              expect(subject.update(params)).to be_falsey
             end
           end
         end

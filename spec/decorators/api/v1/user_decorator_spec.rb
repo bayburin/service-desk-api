@@ -7,7 +7,7 @@ module Api
       subject { UserDecorator.new(user) }
 
       it 'inherits from SimpleDelegator class' do
-        expect(UserDecorator).to be < SimpleDelegator
+        expect(described_class).to be < SimpleDelegator
       end
 
       describe '#read_notifications' do

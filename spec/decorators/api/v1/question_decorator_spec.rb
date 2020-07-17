@@ -8,7 +8,7 @@ module Api
       subject { QuestionDecorator.new(question) }
 
       it 'inherits from SimpleDelegator class' do
-        expect(QuestionDecorator).to be < SimpleDelegator
+        expect(described_class).to be < SimpleDelegator
       end
 
       describe '#update_by_state' do

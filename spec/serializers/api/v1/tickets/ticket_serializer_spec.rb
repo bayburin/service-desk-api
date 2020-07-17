@@ -8,7 +8,7 @@ module Api
         subject { TicketResponsibleUserSerializer.new(ticket) }
 
         it 'inherits from TicketBaseSerializer class' do
-          expect(TicketSerializer).to be < TicketBaseSerializer
+          expect(described_class).to be < TicketBaseSerializer
         end
 
         %w[responsible_users tags].each do |attr|

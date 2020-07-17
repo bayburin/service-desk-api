@@ -24,42 +24,42 @@ module Api
       end
 
       def create
-        question = Tickets::TicketFactory.create(:question, attributive_params)
+        create = Questions::Create.call(params: question_params)
 
-        if question.save
-          QuestionChangedWorker.perform_async(question.ticket.id, current_user.tn, 'create', request.headers['origin'])
+        if create.success?
+          QuestionChangedWorker.perform_async(create.question.ticket.id, current_user.tn, 'create', request.headers['origin'])
 
-          render json: question, serializer: Questions::QuestionResponsibleUserSerializer
+          render json: create.question, serializer: Questions::QuestionResponsibleUserSerializer
         else
-          render json: question.errors, status: :unprocessable_entity
+          render json: create.errors, status: :unprocessable_entity
         end
       end
 
       def update
         question = Service.find(params[:service_id]).questions.find(params[:id])
         authorize question
-        decorated_ticket = QuestionDecorator.new(question)
+        decorated_question = QuestionDecorator.new(question)
 
-        if decorated_ticket.update_by_state(attributive_params)
+        if decorated_question.update_by_state(question_params)
           policy_attributes = policy(Question).attributes_for_show
-          notify_ticket_id = decorated_ticket.original ? decorated_ticket.original.ticket.id : decorated_ticket.ticket.id
+          notify_ticket_id = decorated_question.original ? decorated_question.original.ticket.id : decorated_question.ticket.id
           QuestionChangedWorker.perform_async(notify_ticket_id, current_user.tn, 'update', request.headers['origin'])
 
-          render json: decorated_ticket, serializer: policy_attributes.serializer, include: policy_attributes.serialize
+          render json: decorated_question, serializer: policy_attributes.serializer, include: policy_attributes.serialize
         else
-          render json: decorated_ticket.errors, status: :unprocessable_entity
+          render json: decorated_question.errors, status: :unprocessable_entity
         end
       end
 
       def destroy
         question = Service.find(params[:service_id]).questions.find(params[:id])
         authorize Ticket
-        decorated_ticket = QuestionDecorator.new(question)
+        decorated_question = QuestionDecorator.new(question)
 
-        if decorated_ticket.destroy_by_state
-          render json: question
+        if decorated_question.destroy_by_state
+          render json: decorated_question
         else
-          render json: question.errors, status: :unprocessable_entity
+          render json: decorated_question.errors, status: :unprocessable_entity
         end
       end
 
@@ -76,8 +76,8 @@ module Api
 
         questions = QuestionsQuery.new.waiting_for_publish(params[:ids].split(','))
         published = questions.map do |question|
-          decorated_ticket = QuestionDecorator.new(question)
-          decorated_ticket.publish ? question.reload : nil
+          decorated_question = QuestionDecorator.new(question)
+          decorated_question.publish ? question.reload : nil
         end
         policy_attributes = policy(Question).attributes_for_show
 
@@ -95,20 +95,11 @@ module Api
             :parent_id,
             :name,
             :is_hidden,
-            tags: %i[id name _destroy],
+            tags: %i[id name],
             responsible_users: %i[id responseable_type responseable_id tn _destroy]
           ],
           answers: %i[id _destroy question_id reason answer link is_hidden],
         )
-      end
-
-      def attributive_params
-        attributive_params = question_params
-        attributive_params[:answers_attributes] = attributive_params.delete(:answers) || []
-        attributive_params[:ticket][:tags_attributes] = attributive_params[:ticket].delete(:tags) || []
-        attributive_params[:ticket][:responsible_users_attributes] = attributive_params[:ticket].delete(:responsible_users) || []
-        attributive_params[:ticket_attributes] = attributive_params.delete(:ticket)
-        attributive_params
       end
 
       def check_access

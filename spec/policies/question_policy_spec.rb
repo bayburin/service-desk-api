@@ -153,7 +153,7 @@ RSpec.describe QuestionPolicy do
     end
 
     it 'sets :sql_include attribute' do
-      expect(policy.sql_include).to eq [:correction, ticket: %i[responsible_users tags], answers: :attachments]
+      expect(policy.sql_include).to eq [:correction, ticket: %i[service responsible_users tags ticket_tags], answers: :attachments]
     end
 
     it 'sets :serialize attribute' do

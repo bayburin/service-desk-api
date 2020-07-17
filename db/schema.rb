@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_29_081853) do
+ActiveRecord::Schema.define(version: 2020_07_03_045801) do
 
   create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "visit_id"
@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 2020_05_29_081853) do
   end
 
   create_table "tickets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "identity"
     t.bigint "service_id", null: false
     t.integer "original_id"
     t.string "name", null: false
@@ -167,6 +168,7 @@ ActiveRecord::Schema.define(version: 2020_05_29_081853) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "delta", default: true
+    t.index ["identity"], name: "index_tickets_on_identity"
     t.index ["original_id"], name: "index_tickets_on_original_id"
     t.index ["popularity"], name: "index_tickets_on_popularity"
     t.index ["service_id"], name: "index_tickets_on_service_id"

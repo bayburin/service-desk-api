@@ -8,7 +8,7 @@ module Api
         # subject { TicketBaseSerializer.new(ticket) }
 
         # it 'inherits from TicketBaseSerializer class' do
-        #   expect(TicketGuestSerializer).to be < TicketBaseSerializer
+        #   expect(described_class).to be < TicketBaseSerializer
         # end
 
         # describe '#answers' do
