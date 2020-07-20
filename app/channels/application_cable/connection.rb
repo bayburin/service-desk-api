@@ -10,9 +10,9 @@ module ApplicationCable
     protected
 
     def find_verified_user
-      response = Api::V1::AuthCenterApi.user_info(request.parameters[:access_token])
+      user_info = Api::V1::AuthCenter::AccessToken.get(request.parameters[:access_token])
 
-      if response.success? && user = User.authenticate(response.body)
+      if user_info && user = User.authenticate(user_info)
         user
       else
         reject_unauthorized_connection
