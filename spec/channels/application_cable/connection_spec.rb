@@ -6,10 +6,7 @@ module ApplicationCable
     let(:access_token) { 'my_access_token' }
 
     context 'with valid access_token' do
-      before do
-        stub_request(:get, 'https://auth-center.iss-reshetnev.ru/api/module/main/login_info')
-          .to_return(status: 200, body: user.to_json, headers: {})
-      end
+      before { allow(Api::V1::AuthCenter::AccessToken).to receive(:get).and_return(user.as_json) }
 
       it 'successfully connects' do
         connect "/cable/?access_token=#{access_token}"
@@ -19,10 +16,7 @@ module ApplicationCable
     end
 
     context 'with invalid access_token' do
-      before do
-        stub_request(:get, 'https://auth-center.iss-reshetnev.ru/api/module/main/login_info')
-          .to_return(status: 401, body: { error: 'Invalid token' }.to_json, headers: {})
-      end
+      before { allow(Api::V1::AuthCenter::AccessToken).to receive(:get).and_return(nil) }
 
       it 'rejects connection' do
         expect { connect "/cable/?access_token=#{access_token}" }.to have_rejected_connection
