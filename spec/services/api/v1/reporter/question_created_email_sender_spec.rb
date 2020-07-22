@@ -2,8 +2,8 @@ require 'rails_helper'
 
 module Api
   module V1
-    module Questions
-      RSpec.describe QuestionUpdatedEmailSender do
+    module Reporter
+      RSpec.describe QuestionCreatedEmailSender do
         let(:operator) { create(:operator_user) }
         let(:manager) { create(:content_manager_user) }
         let(:question) { create(:question, correction: create(:question)) }

@@ -9,7 +9,7 @@ module Api
         current_user = User.authenticate(tn: current_user_tn).load_details
         return if delivery_user.tn == current_user.tn
 
-        ReportSender.new(delivery_user, ticket, current_user: current_user, origin: origin).send_report(Questions::QuestionUpdatedEmailSender.new)
+        ReportSender.new(delivery_user, ticket, current_user: current_user, origin: origin).send_report(Reporter::QuestionUpdatedEmailSender.new)
       end
     end
   end
