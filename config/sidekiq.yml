@@ -3,14 +3,19 @@
   - default
   - mailers
 :schedule:
+  search_daily_statistics-worker:
+    cron: '30 0 * * *' # Запуск каждый день в 00:30 ночи
+    class: SearchDailyStatisticsWorker
+    description: 'Отправляет статистику по поисковым запросам за предыдущий день'
+
   calculate_popularity_worker:
     # every: ["20s"]
-    cron: '0 2 * * *'   # Запуск каждый день в 2 ночи
+    cron: '0 2 * * *' # Запуск каждый день в 2 ночи
     class: CalculatePopularityWorker
     description: 'Задача обновляет рейтинг категорий и услуг'
 
   update_indices_worker:
-    # cron: '0 3 * * *'   # Запуск каждый день в 3 ночи
+    # cron: '0 3 * * *' # Запуск каждый день в 3 ночи
     every: '60m'
     class: UpdateIndicesWorker
     description: 'Обновление индексов Sphinx'

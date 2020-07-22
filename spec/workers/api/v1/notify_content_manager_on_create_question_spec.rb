@@ -7,6 +7,7 @@ module Api
       let!(:operator) { create(:operator_user) }
       let!(:manager) { create(:content_manager_user) }
       let(:sender) { double(ReportSender, send_report: true) }
+      let(:origin) { 'origin' }
       before do
         allow(User).to receive(:find).with(manager.id).and_return(manager)
         # allow(User).to receive(:find).with(operator.id).and_return(operator)
@@ -20,25 +21,25 @@ module Api
       it 'find user with specified id' do
         expect(User).to receive(:find).with(manager.id).and_return(manager)
 
-        subject.perform(manager.id, ticket.id, operator.tn, '')
+        subject.perform(manager.id, ticket.id, operator.tn, origin)
       end
 
       it 'calls #load_details method for finded user' do
         expect(manager).to receive(:load_details)
 
-        subject.perform(manager.id, ticket.id, operator.tn, '')
+        subject.perform(manager.id, ticket.id, operator.tn, origin)
       end
 
       it 'creates instance of ReportSender' do
-        expect(ReportSender).to receive(:new).with(manager, ticket, operator, '').and_return(sender)
+        expect(ReportSender).to receive(:new).with(manager, ticket, current_user: operator, origin: origin).and_return(sender)
 
-        subject.perform(manager.id, ticket.id, operator.tn, '')
+        subject.perform(manager.id, ticket.id, operator.tn, origin)
       end
 
       it 'calls #send_report method for ReportSender instance' do
         expect(sender).to receive(:send_report).with(an_instance_of(Questions::QuestionCreatedEmailSender))
 
-        subject.perform(manager.id, ticket.id, operator.tn, '')
+        subject.perform(manager.id, ticket.id, operator.tn, origin)
       end
 
       context 'when delivery_user and current_user is the same' do
@@ -47,7 +48,7 @@ module Api
         it 'does not call #send_report method' do
           expect(sender).not_to receive(:send_report)
 
-          subject.perform(manager.id, ticket.id, manager.tn, '')
+          subject.perform(manager.id, ticket.id, manager.tn, origin)
         end
       end
     end

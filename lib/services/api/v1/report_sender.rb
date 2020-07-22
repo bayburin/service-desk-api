@@ -1,15 +1,14 @@
 module Api
   module V1
     class ReportSender
-      def initialize(delivery_user, object, current_user, origin)
+      def initialize(delivery_user, object, **params)
         @delivery_user = delivery_user
         @object = object
-        @current_user = current_user
-        @origin = origin
+        @params = params
       end
 
       def send_report(sender)
-        sender.send(@delivery_user, @object, @current_user, @origin)
+        sender.send(@delivery_user, @object, **@params)
       end
     end
   end
