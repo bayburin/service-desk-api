@@ -18,6 +18,6 @@ class ApplicationController < ActionController::API
   end
 
   def track_action
-    ahoy.track 'Ran action', request.path_parameters
+    ahoy.track Ahoy::Event::TYPES[:ran_action], request.path_parameters
   end
 end

@@ -6,7 +6,7 @@ module Api
       end
 
       def all_search_by(date)
-        @scope = scope.where(name: 'Search').or(scope.where(name: 'Deep Search'))
+        @scope = scope.searched.or(scope.deep_search)
         scope.where('DATE(time) = ?', date)
       end
     end
