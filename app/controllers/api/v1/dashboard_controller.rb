@@ -16,9 +16,17 @@ module Api
       end
 
       def search
-        ahoy.track 'Search', params[:search]
+        search = Search::Search.call(user: current_user, term: params[:search])
+        ahoy.track(
+          Ahoy::Event::TYPES[:search_result],
+          term: params[:search],
+          found: search.result.count,
+          found_categories: search.categories.count,
+          found_services: search.services.count,
+          found_questions: search.questions.count
+        )
 
-        render json: search_categories + search_services + search_tickets
+        render json: search.result
       end
 
       def deep_search
