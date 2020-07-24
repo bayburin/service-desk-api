@@ -80,6 +80,7 @@ group :development do
   gem 'capistrano-sidekiq', require: false
   gem 'capistrano-sneakers', require: false
   gem 'capistrano3-unicorn', require: false
+  gem 'guard-rspec', require: false
 end
 
 group :test do
