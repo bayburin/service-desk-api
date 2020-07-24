@@ -28,4 +28,16 @@ class Ticket < ApplicationRecord
   def responsibles
     responsible_users.presence || service.responsible_users
   end
+
+  def question?
+    ticketable_type == 'Question'
+  end
+
+  def app_form?
+    ticketable_type == 'AppForm'
+  end
+
+  def free_app_form?
+    ticketable_type == 'FreeAppForm'
+  end
 end

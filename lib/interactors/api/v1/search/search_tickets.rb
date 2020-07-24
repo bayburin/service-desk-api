@@ -9,7 +9,7 @@ module Api
           context.tickets = TicketPolicy::SphinxScope.new(context.user, search_tickets).resolve
 
           # Поиск и обработка вопросов
-          question_ids = context.tickets.select { |ticket| ticket.ticketable_type == 'Question' }.map(&:ticketable_id)
+          question_ids = context.tickets.select(&:question?).map(&:ticketable_id)
           context.questions = Question.where(id: question_ids).includes(question_attributes.sql_include)
           (context.result ||= []).concat(
             ActiveModel::Serializer::CollectionSerializer.new(context.questions, serializer: question_attributes.serializer)
