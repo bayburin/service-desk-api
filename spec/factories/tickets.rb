@@ -22,7 +22,7 @@ FactoryBot.define do
 
     trait :common_case do
       after(:build) do |ticket, ev|
-        ticket.ticketable_type = 'FreeAppForm' unless ticket.ticketable
+        ticket.ticketable_type = 'FreeApplication' unless ticket.ticketable
       end
     end
 

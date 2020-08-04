@@ -43,7 +43,7 @@ module Api
 
       describe '#search_daily_statistics_email' do
         let(:date) { Date.today }
-        let(:mail) { described_class.search_daily_statistics_email(receiver, %w[search list is here], date: date) }
+        let(:mail) { described_class.search_daily_statistics_email(receiver, %w[search list is here], date: date.to_s) }
 
         it 'render the subject' do
           expect(mail.subject).to eq("Портал \"Техподдержка УИВТ\": поисковые запросы пользователей за #{date.strftime('%d.%m.%Y')}")
