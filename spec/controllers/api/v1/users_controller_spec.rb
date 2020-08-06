@@ -20,14 +20,15 @@ module Api
       end
 
       describe 'GET #owns' do
+        let(:items_response_dbl) { double(:response, body: []) }
         before do
           create_list(:service, 3, is_hidden: false)
           create_list(:service, 3, is_hidden: true)
-          stub_request(:get, "#{ENV['SVT_URL']}/user_isses/#{subject.current_user.id_tn}/items").to_return(body: '')
+          allow(SvtApi).to receive(:items).and_return(items_response_dbl)
         end
 
-        it 'calls Svt::SvtApi#items method to receive :items' do
-          expect(SvtApi).to receive(:items).with(subject.current_user).and_call_original
+        it 'call Svt::SvtApi#items method to receive :items' do
+          expect(SvtApi).to receive(:items).with(subject.current_user)
 
           get :owns, format: :json
         end
@@ -40,7 +41,7 @@ module Api
           end
         end
 
-        it 'runs :allowed_to_create_app method for ServiceQuery query' do
+        it 'call :allowed_to_create_app method for ServiceQuery query' do
           expect_any_instance_of(ServicesQuery).to receive(:allowed_to_create_app).and_call_original
 
           get :owns, format: :json

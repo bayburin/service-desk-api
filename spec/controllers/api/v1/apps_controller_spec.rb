@@ -67,61 +67,50 @@ module Api
       describe 'POST #create' do
         let(:app) { build(:app, without_item: true) }
         let(:params) { { app: app.as_json } }
-        let(:decorator) { AppSaveDecorator.new(app) }
-
+        let(:decorator_dbl) { double(:decorator, decorate: true, app: app) }
+        let(:body) { { app_id: 1, foo: 'bar' } }
+        let(:status) { 200 }
+        let(:response_dbl) { double(:response, body: body, status: status) }
         before do
-          stub_request(:post, "#{astraea_url}/cases.json")
-            .to_return(status: 200, body: app.to_json, headers: {})
           allow(App).to receive(:new).and_return(app)
-          allow(AppSaveDecorator).to receive(:new).and_return(decorator)
+          allow(AppSaveDecorator).to receive(:new).and_return(decorator_dbl)
+          allow(AppApi).to receive(:save).and_return(response_dbl)
         end
 
-        it 'runs #authorize method' do
+        it 'call #authorize method' do
           expect(controller).to receive(:authorize).with(app)
 
           post :create, params: params, format: :json
         end
 
-        it 'creates instance of AppSaveDecorator and pass the app instance to it' do
-          expect(AppSaveDecorator).to receive(:new).with(app).and_return(decorator)
+        it 'create instance of AppSaveDecorator and pass the app instance to it' do
+          expect(AppSaveDecorator).to receive(:new).with(app).and_return(decorator_dbl)
 
           post :create, params: params, format: :json
         end
 
-        it 'runs #decorate method' do
-          expect(decorator).to receive(:decorate)
+        it 'call #decorate method' do
+          expect(decorator_dbl).to receive(:decorate)
 
           post :create, params: params, format: :json
         end
 
-        it 'runs #save method of Apps::AppApi' do
-          expect(AppApi).to receive(:save).with(decorator.app).and_call_original
+        it 'call #save method of Apps::AppApi' do
+          expect(AppApi).to receive(:save).with(decorator_dbl.app)
 
           post :create, params: params, format: :json
         end
 
-        context 'when app was created' do
-          it 'respond with status 200' do
-            post :create, params: params, format: :json
+        it 'respond with received status' do
+          post :create, params: params, format: :json
 
-            expect(response.status).to eq 200
-          end
-
-          it 'respond with app data' do
-            post :create, params: params, format: :json
-
-            expect(response.body).to have_json_path('case_id')
-          end
+          expect(response.status).to eq status
         end
 
-        context 'when case was not created' do
-          before { allow_any_instance_of(Faraday::Response).to receive(:status).and_return(422) }
+        it 'respond with app data' do
+          post :create, params: params, format: :json
 
-          it 'respond with error status' do
-            post :create, params: params, format: :json
-
-            expect(response.status).to eq 422
-          end
+          expect(response.body).to eq body.to_json
         end
       end
 
@@ -129,56 +118,48 @@ module Api
         let(:app_id) { '12345' }
         let(:app) { build(:app, case_id: app_id, without_item: true) }
         let(:params) { { case_id: app_id, app: app.as_json } }
+        let(:body) { { app_id: 1, foo: 'bar' } }
+        let(:status) { 200 }
+        let(:response_dbl) { double(:response, body: body, status: status) }
 
         before do
           allow(App).to receive(:new).and_return(app)
-          stub_request(:put, "#{astraea_url}/cases/#{app_id}.json")
-            .to_return(status: 200, body: { message: 'updated' }.to_json, headers: {})
+          allow(AppApi).to receive(:update).and_return(response_dbl)
         end
 
-        it 'runs #authorize method' do
+        it 'call #authorize method' do
           expect(controller).to receive(:authorize).with(app)
 
           post :update, params: params, format: :json
         end
 
-        it 'runs #update method of Apps::AppApi' do
-          expect(AppApi).to receive(:update).with(app_id, app).and_call_original
+        it 'call #update method of Apps::AppApi' do
+          expect(AppApi).to receive(:update).with(app_id, app)
 
           post :update, params: params, format: :json
         end
 
-        context 'when app_id was updated' do
-          it 'respond with status 200' do
-            post :update, params: params, format: :json
+        it 'respond with received status' do
+          post :update, params: params, format: :json
 
-            expect(response.status).to eq 200
-          end
-
-          it 'respond with app data' do
-            post :update, params: params, format: :json
-
-            expect(response.body).to have_json_path('message')
-          end
+          expect(response.status).to eq 200
         end
 
-        context 'when app_id was not updated' do
-          before { allow_any_instance_of(Faraday::Response).to receive(:status).and_return(422) }
+        it 'respond with app data' do
+          post :update, params: params, format: :json
 
-          it 'respond with error status' do
-            post :update, params: params, format: :json
-
-            expect(response.status).to eq 422
-          end
+          expect(response.body).to eq body.to_json
         end
       end
 
       describe 'DELETE #destroy' do
         let(:params) { { case_id: 12_345 } }
+        let(:body) { { app_id: 1, foo: 'bar' } }
+        let(:status) { 200 }
+        let(:response_dbl) { double(:response, body: body, status: status) }
 
         before do
-          stub_request(:delete, %r{#{astraea_url}/cases.json?})
-            .to_return(status: 200, body: {}.to_json)
+          allow_any_instance_of(AppApi).to receive(:destroy).and_return(response_dbl)
         end
 
         it 'creates instance of scope policy' do
@@ -187,29 +168,22 @@ module Api
           delete :destroy, params: params, format: :json
         end
 
-        it 'runs #resolve method for policy instance' do
+        it 'call #resolve method for policy instance' do
           expect_any_instance_of(AppApiPolicy::Scope).to receive(:resolve).and_call_original
 
           delete :destroy, params: params, format: :json
         end
 
-        it 'respond with 200 status' do
+        it 'respond with received status' do
           delete :destroy, params: params, format: :json
 
-          expect(response.status).to eq 200
+          expect(response.status).to eq status
         end
 
-        context 'when api respond with error' do
-          before do
-            stub_request(:delete, %r{#{astraea_url}/cases.json?})
-              .to_return(status: 422, body: {}.to_json)
-          end
+        it 'respond with app data' do
+          delete :destroy, params: params, format: :json
 
-          it 'respond with error status' do
-            delete :destroy, params: params, format: :json
-
-            expect(response.status).to eq 422
-          end
+          expect(response.body).to eq body.to_json
         end
       end
     end

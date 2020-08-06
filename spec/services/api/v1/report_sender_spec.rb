@@ -3,15 +3,15 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe ReportSender do
-      let(:operator) { create(:operator_user) }
-      let(:manager) { create(:content_manager_user) }
+      let(:user) { create(:content_manager_user) }
       let(:object) { {} }
       let(:sender) { double(:sender, send: true) }
-      subject { ReportSender.new(manager, object, operator, '') }
+      let(:params) { { foo: 'foo param', bar: 'bar param' } }
+      subject { ReportSender.new(user, object, **params) }
 
       describe '#send_report' do
-        it 'calls :send method for received instance' do
-          expect(sender).to receive(:send).with(manager, object, operator, '')
+        it 'call :send method for received instance with params' do
+          expect(sender).to receive(:send).with(user, object, **params)
 
           subject.send_report(sender)
         end
