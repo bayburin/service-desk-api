@@ -11,13 +11,12 @@ module Api
           return
         end
 
-        @delivery_user = delivery_user
         @question = QuestionDecorator.new(ticket.ticketable)
         @current_user = current_user
         @origin = origin
 
         mail(
-          to: "#{@delivery_user.details.full_name} <#{@delivery_user.details.email}>",
+          to: "#{delivery_user.details.full_name} <#{delivery_user.details.email}>",
           subject: "Портал \"Техподдержка УИВТ\": добавлен новый вопрос №#{ticket.id}"
         )
       end
@@ -30,14 +29,13 @@ module Api
           return
         end
 
-        @delivery_user = delivery_user
         @question = QuestionDecorator.new(ticket.ticketable)
         @current_user = current_user
         @origin = origin
         @updated_date = ticket.published_state? ? @question.correction.updated_at : @question.updated_at
 
         mail(
-          to: "#{@delivery_user.details.full_name} <#{@delivery_user.details.email}>",
+          to: "#{delivery_user.details.full_name} <#{delivery_user.details.email}>",
           subject: "Портал \"Техподдержка УИВТ\": вопрос №#{ticket.id} изменен"
         )
       end

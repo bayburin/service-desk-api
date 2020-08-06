@@ -22,7 +22,7 @@ class Ahoy::Event < ApplicationRecord
 
   scope :ran_action, ->(**) { where(name: TYPES[:ran_action]) }
   scope :searched, ->(**) { where(name: TYPES[:search]) }
-  scope :deep_search, ->(**) { where(name: TYPES[:deep_search]) }
-  scope :search_result, ->(**) { where(name: TYPES[:search_result]) }
-  scope :deep_search_result, ->(**) { where(name: TYPES[:deep_search_result]) }
+  scope :deep_searched, ->(**) { where(name: TYPES[:deep_search]) }
+  scope :searched_result, ->(**) { where(name: TYPES[:search_result]) }
+  scope :deep_searched_result, ->(**) { where(name: TYPES[:deep_search_result]) }
 end

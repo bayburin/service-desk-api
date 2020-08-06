@@ -1,3 +1,22 @@
-<% @search_list.each do |term| %>
-  <p><%= term %></p>
-<% end %>
+<style>
+  .not_found { background-color: #e4c2c2; }
+</style>
+
+<h2>Список поисковых запросов за <%= @date %></h2>
+<h4>Не найдено:</h4>
+<ol>
+  <% @search_list.select { |search| search['found'].zero? }.each do |search| %>
+    <li><span class="not_found"><b><%= search['term'] %>.</b></span></li>
+  <% end %>
+</ol>
+<h4>Найдено:</h4>
+<ol>
+  <% @search_list.select { |search| !search['found'].zero? }.each do |search| %>
+    <li>
+      <b><%= search['term'] %>.</b> Найдено: <%= search['found'] %>.
+      Категорий: <%= search['found_categories'] %>.
+      Услуг: <%= search['found_services'] %>.
+      Вопросов: <%= search['found_questions'] %>.
+    </li>
+  <% end %>
+</ol>

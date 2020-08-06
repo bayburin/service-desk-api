@@ -4,7 +4,7 @@ module Api
       attributes :id, :responseable_type, :responseable_id, :tn, :details
 
       def details
-        object.details ? ActiveModel::SerializableResource.new(object.details) : nil
+        object.details ? ActiveModelSerializers::SerializableResource.new(object.details) : nil
       end
     end
   end

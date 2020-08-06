@@ -16,10 +16,10 @@ module Api
       end
 
       def search
-        search = Search::Search.call(user: current_user, term: params[:search])
+        search = Search::Search.call(user: current_user, term: params[:search].strip)
         ahoy.track(
           Ahoy::Event::TYPES[:search_result],
-          term: params[:search],
+          term: params[:search].strip,
           found: search.result.count,
           found_categories: search.categories.count,
           found_services: search.services.count,
@@ -30,10 +30,10 @@ module Api
       end
 
       def deep_search
-        deep_search = Search::DeepSearch.call(user: current_user, term: params[:search])
+        deep_search = Search::DeepSearch.call(user: current_user, term: params[:search].strip)
         ahoy.track(
           Ahoy::Event::TYPES[:deep_search_result],
-          term: params[:search],
+          term: params[:search].strip,
           found: deep_search.result.count,
           found_categories: deep_search.categories.count,
           found_services: deep_search.services.count,

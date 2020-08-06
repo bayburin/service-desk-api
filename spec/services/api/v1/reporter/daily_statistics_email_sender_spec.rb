@@ -5,7 +5,7 @@ module Api
     module Reporter
       RSpec.describe DailyStatisticsEmailSender do
         let(:manager) { create(:content_manager_user) }
-        let(:object) { %w[search1 search2] }
+        let(:object) { create_list(:search_result_event, 3).pluck(:properties) }
         let(:date) { Date.today.to_s }
 
         describe '#send' do
