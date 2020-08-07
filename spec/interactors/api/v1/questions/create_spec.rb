@@ -11,12 +11,12 @@ module Api
         subject(:context) { described_class.call(params: question_params) }
         before do
           allow(Question).to receive(:new).and_return(question)
-          allow(Questions::QuestionForm).to receive(:new).and_return(create_form_dbl)
+          allow(QuestionForm).to receive(:new).and_return(create_form_dbl)
         end
 
         describe '.call' do
-          it 'create instance of Questions::QuestionForm' do
-            expect(Questions::QuestionForm).to receive(:new).with(question)
+          it 'create instance of QuestionForm' do
+            expect(QuestionForm).to receive(:new).with(question)
 
             described_class.call(params: question_params)
           end
