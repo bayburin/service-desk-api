@@ -28,6 +28,7 @@ Rails.application.routes.draw do
         resources :questions do
           post :raise_rating, to: :raise_rating, on: :member
         end
+        resources :app_templates, only: :create
       end
       resources :responsible_users, only: :index do
         get :search, to: :search, on: :collection
