@@ -9,30 +9,29 @@ module Api
       let(:connect_ticket) { create(:ticket, :app) }
       let!(:service) { create(:service, tickets: [common_ticket, connect_ticket]) }
       let!(:app) { build(:app, host_id: nil, item_id: nil, service: service) }
-
-      subject { AppSaveDecorator.new(app) }
+      subject { described_class.new(app) }
 
       before do
-        stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json')
-          .to_return(status: 200, body: '', headers: {})
+        # stub_request(:post, 'https://astraea-ui.iss-reshetnev.ru/api/cases.json')
+        #   .to_return(status: 200, body: '', headers: {})
       end
 
       context 'when ticket_id is not defined' do
         before { app.ticket_id = nil }
 
-        it 'adds :ticket_id attribute from :common_case type' do
+        it 'adds :ticket_id attribute from :FreeApplication type' do
           subject.decorate
 
           expect(subject.app.ticket_id).to eq common_ticket.id
         end
 
-        it 'adds :sla attribute from :common_case type' do
+        it 'adds :sla attribute from :FreeApplication type' do
           subject.decorate
 
           expect(subject.app.sla).to eq common_ticket.sla
         end
 
-        it 'adds responsible users from :common_case type' do
+        it 'adds responsible users from :FreeApplication type' do
           subject.decorate
 
           expect(subject.app.accs).to match_array(common_ticket.responsible_users.pluck(:tn))

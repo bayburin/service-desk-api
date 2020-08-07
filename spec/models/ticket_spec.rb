@@ -56,4 +56,58 @@ RSpec.describe Ticket, type: :model do
       expect(subject.generate_identity).to eq identity
     end
   end
+
+  describe '#question?' do
+    context 'if ticketable_type is equal "Question"' do
+      before { subject.ticketable_type = 'Question' }
+
+      it 'return true' do
+        expect(subject.question?).to be_truthy
+      end
+    end
+
+    context 'if ticketable_type is not equal "Question"' do
+      before { subject.ticketable_type = 'not Question' }
+
+      it 'return true' do
+        expect(subject.question?).to be_falsey
+      end
+    end
+  end
+
+  describe '#app_form?' do
+    context 'if ticketable_type is equal "AppForm"' do
+      before { subject.ticketable_type = 'AppForm' }
+
+      it 'return true' do
+        expect(subject.app_form?).to be_truthy
+      end
+    end
+
+    context 'if ticketable_type is not equal "AppForm"' do
+      before { subject.ticketable_type = 'not AppForm' }
+
+      it 'return true' do
+        expect(subject.app_form?).to be_falsey
+      end
+    end
+  end
+
+  describe '#free_app_form?' do
+    context 'if ticketable_type is equal "FreeAppForm"' do
+      before { subject.ticketable_type = 'FreeAppForm' }
+
+      it 'return true' do
+        expect(subject.free_app_form?).to be_truthy
+      end
+    end
+
+    context 'if ticketable_type is not equal "FreeAppForm"' do
+      before { subject.ticketable_type = 'not FreeAppForm' }
+
+      it 'return true' do
+        expect(subject.free_app_form?).to be_falsey
+      end
+    end
+  end
 end

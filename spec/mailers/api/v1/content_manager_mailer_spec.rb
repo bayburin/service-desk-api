@@ -3,21 +3,54 @@ require "rails_helper"
 module Api
   module V1
     RSpec.describe ContentManagerMailer, type: :mailer do
-      let(:operator) { create(:operator_user) }
-      let(:manager) { create(:content_manager_user) }
-      let(:question) { create(:question, correction: create(:question)) }
-      let(:mail) { ContentManagerMailer.question_updated_email(manager, question.ticket, operator, '') }
+      let(:receiver) { create(:content_manager_user) }
 
-      it 'renders the subject' do
-        expect(mail.subject).to eq("Портал \"Техподдержка УИВТ\": вопрос №#{question.ticket.id} изменен")
+      shared_examples_for 'a mailer' do
+        let(:sender) { 'uivt06@iss-reshetnev.ru' }
+
+        it 'render the receiver email' do
+          expect(mail.to).to eq([receiver.details.email])
+        end
+
+        it 'render the sender email' do
+          expect(mail.from).to eq([sender])
+        end
       end
 
-      it 'renders the receiver email' do
-        expect(mail.to).to eq([manager.details.email])
+      describe '#question_created_email' do
+        let(:operator) { create(:operator_user) }
+        let(:question) { create(:question, correction: create(:question)) }
+        let(:mail) { described_class.question_created_email(receiver, question.ticket, current_user: operator, origin: '') }
+
+        it 'render the subject' do
+          expect(mail.subject).to eq("Портал \"Техподдержка УИВТ\": добавлен новый вопрос №#{question.ticket.id}")
+        end
+
+        it_behaves_like 'a mailer'
       end
 
-      it 'renders the sender email' do
-        expect(mail.from).to eq(['uivt06@iss-reshetnev.ru'])
+      describe '#question_updated_email' do
+        let(:operator) { create(:operator_user) }
+        let(:question) { create(:question, correction: create(:question)) }
+        let(:mail) { described_class.question_updated_email(receiver, question.ticket, current_user: operator, origin: '') }
+
+        it 'render the subject' do
+          expect(mail.subject).to eq("Портал \"Техподдержка УИВТ\": вопрос №#{question.ticket.id} изменен")
+        end
+
+        it_behaves_like 'a mailer'
+      end
+
+      describe '#search_daily_statistics_email' do
+        let(:date) { Date.today }
+        let(:search_results) { create_list(:search_result_event, 3) }
+        let(:mail) { described_class.search_daily_statistics_email(receiver, search_results.pluck(:properties), date: date.to_s) }
+
+        it 'render the subject' do
+          expect(mail.subject).to eq("Портал \"Техподдержка УИВТ\": поисковые запросы пользователей за #{date.strftime('%d.%m.%Y')}")
+        end
+
+        it_behaves_like 'a mailer'
       end
     end
   end

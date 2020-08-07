@@ -3,7 +3,7 @@ require 'rails_helper'
 module Api
   module V1
     RSpec.describe EmployeeApi, type: :model do
-      subject { EmployeeApi }
+      subject { described_class }
 
       it 'define API_ENDPOINT constant' do
         expect(subject.const_defined?(:API_ENDPOINT)).to be_truthy
@@ -16,14 +16,14 @@ module Api
       describe '::login' do
         let(:username) { 'username' }
         let(:password) { 'password' }
-        before { stub_request(:post, 'https://hr.iss-reshetnev.ru/ref-info/api/login').to_return(status: 200, body: '', headers: {}) }
+        before { stub_request(:post, "#{ENV['EMPLOYEE_DATABASE_URL']}/login").to_return(status: 200, body: '', headers: {}) }
 
         it 'sends :post request with required headers' do
           ENV['EMPLOYEE_DATABASE_USERNAME'] = username
           ENV['EMPLOYEE_DATABASE_PASSWORD'] = password
           subject.login
 
-          expect(WebMock).to have_requested(:post, 'https://hr.iss-reshetnev.ru/ref-info/api/login')
+          expect(WebMock).to have_requested(:post, "#{ENV['EMPLOYEE_DATABASE_URL']}/login")
                                .with(headers: { 'X-Auth-Username': username, 'X-Auth-Password': password })
         end
 
@@ -34,14 +34,14 @@ module Api
 
       describe '::load_users' do
         let(:token) { 'custom_token' }
-        let(:server_url) { 'https://hr.iss-reshetnev.ru/ref-info/api/emp' }
+        let(:server_url) { "#{ENV['EMPLOYEE_DATABASE_URL']}/emp" }
         before { allow_any_instance_of(Employees::Authorize).to receive(:token).and_return(token) }
         before { stub_request(:get, /#{server_url}.*/).to_return(status: 200, body: '', headers: {}) }
 
         it 'sends :get request with required params and headers' do
           subject.load_users([123])
 
-          expect(WebMock).to have_requested(:get, 'https://hr.iss-reshetnev.ru/ref-info/api/emp?search=personnelNo=in=(123)')
+          expect(WebMock).to have_requested(:get, "#{ENV['EMPLOYEE_DATABASE_URL']}/emp?search=personnelNo=in=(123)")
                                .with(headers: { 'X-Auth-Token': token })
         end
 
@@ -52,19 +52,19 @@ module Api
 
       describe '::load_users_like' do
         let(:token) { 'custom_token' }
-        let(:server_url) { 'https://hr.iss-reshetnev.ru/ref-info/api/emp' }
+        let(:server_url) { "#{ENV['EMPLOYEE_DATABASE_URL']}/emp" }
         before { allow_any_instance_of(Employees::Authorize).to receive(:token).and_return(token) }
         before { stub_request(:get, /#{server_url}.*/).to_return(status: 200, body: '', headers: {}) }
 
         it 'sends :get request with required params and headers' do
-          subject.load_users_like(:personnelNo, 12345)
+          subject.load_users_like(:personnelNo, 12_345)
 
-          expect(WebMock).to have_requested(:get, "https://hr.iss-reshetnev.ru/ref-info/api/emp?search=personnelNo=='*12345*'")
+          expect(WebMock).to have_requested(:get, "#{ENV['EMPLOYEE_DATABASE_URL']}/emp?search=personnelNo=='*12345*'")
                                .with(headers: { 'X-Auth-Token': token })
         end
 
         it 'returns instance of Faraday::Response class' do
-          expect(subject.load_users_like(:personnelNo, 12345)).to be_instance_of(Faraday::Response)
+          expect(subject.load_users_like(:personnelNo, 12_345)).to be_instance_of(Faraday::Response)
         end
       end
     end

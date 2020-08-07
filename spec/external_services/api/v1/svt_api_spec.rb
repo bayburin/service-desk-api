@@ -8,7 +8,7 @@ module Api
       describe '::items' do
         let(:user) { build(:user) }
         let(:params) { { foo: :bar } }
-        let(:svt_url) { "https://svt.iss-reshetnev.ru/user_isses/#{user.id_tn}/items" }
+        let(:svt_url) { "#{ENV['SVT_URL']}/user_isses/#{user.id_tn}/items" }
 
         before { stub_request(:get, /#{svt_url}.*/).to_return(status: 200, body: '', headers: {}) }
 
