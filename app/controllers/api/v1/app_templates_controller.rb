@@ -5,7 +5,7 @@ module Api
         create = AppTemplates::Create.call(params: app_template_params)
 
         if create.success?
-          render json: create.app_template
+          render json: create.app_template, serializer: AppTemplates::AppTemplateBaseSerializer
         else
           render json: create.errors, status: :unprocessable_entity
         end

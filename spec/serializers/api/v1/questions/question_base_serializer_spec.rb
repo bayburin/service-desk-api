@@ -22,7 +22,7 @@ module Api
         end
 
         describe '#ticket' do
-          it 'calls AnswerSerializer for :faq association' do
+          it 'calls Tickets::TicketBaseSerializer for :ticket association' do
             expect(Api::V1::Tickets::TicketBaseSerializer).to receive(:new).and_call_original
 
             subject.to_json
