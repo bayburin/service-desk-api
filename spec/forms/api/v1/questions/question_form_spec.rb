@@ -7,11 +7,8 @@ module Api
         subject { described_class.new(Question.new) }
         let(:params) { { ticket: { name: 'test' } } }
 
-        it 'add error if ticket is invalid' do
-          allow_any_instance_of(TicketForm).to receive(:valid?).and_return(false)
-          subject.validate(params)
-
-          expect(subject.errors.details.keys).to include(:ticket)
+        it_behaves_like 'TicketableForm' do
+          let(:ticketable_object) { create(:question) }
         end
 
         describe '#populate_answers!' do
@@ -44,17 +41,6 @@ module Api
 
           it 'remove answer with _destroy attribute' do
             expect(subject.answers.any? { |a| a.answer == destroy_answer[:answer] }).to be_falsey
-          end
-        end
-
-        describe '#validate' do
-          let(:question) { create(:question) }
-          subject { described_class.new(question) }
-
-          it 'call #populate_collections method for ticket property' do
-            expect(subject.ticket).to receive(:populate_collections).with(params[:ticket])
-
-            subject.validate(params)
           end
         end
       end
