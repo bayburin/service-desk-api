@@ -76,37 +76,37 @@ RSpec.describe Ticket, type: :model do
   end
 
   describe '#app_form?' do
-    context 'if ticketable_type is equal "AppForm"' do
-      before { subject.ticketable_type = 'AppForm' }
+    context 'if ticketable_type is equal "AppTemplate"' do
+      before { subject.ticketable_type = 'AppTemplate' }
 
       it 'return true' do
-        expect(subject.app_form?).to be_truthy
+        expect(subject.app_template?).to be_truthy
       end
     end
 
-    context 'if ticketable_type is not equal "AppForm"' do
-      before { subject.ticketable_type = 'not AppForm' }
+    context 'if ticketable_type is not equal "AppTemplate"' do
+      before { subject.ticketable_type = 'not AppTemplate' }
 
       it 'return true' do
-        expect(subject.app_form?).to be_falsey
+        expect(subject.app_template?).to be_falsey
       end
     end
   end
 
-  describe '#free_app_form?' do
-    context 'if ticketable_type is equal "FreeAppForm"' do
-      before { subject.ticketable_type = 'FreeAppForm' }
+  describe '#free_application?' do
+    context 'if ticketable_type is equal "FreeApplication"' do
+      before { subject.ticketable_type = 'FreeApplication' }
 
       it 'return true' do
-        expect(subject.free_app_form?).to be_truthy
+        expect(subject.free_application?).to be_truthy
       end
     end
 
-    context 'if ticketable_type is not equal "FreeAppForm"' do
-      before { subject.ticketable_type = 'not FreeAppForm' }
+    context 'if ticketable_type is not equal "FreeApplication"' do
+      before { subject.ticketable_type = 'not FreeApplication' }
 
       it 'return true' do
-        expect(subject.free_app_form?).to be_falsey
+        expect(subject.free_application?).to be_falsey
       end
     end
   end

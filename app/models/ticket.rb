@@ -33,11 +33,11 @@ class Ticket < ApplicationRecord
     ticketable_type == 'Question'
   end
 
-  def app_form?
-    ticketable_type == 'AppForm'
+  def app_template?
+    ticketable_type == 'AppTemplate'
   end
 
-  def free_app_form?
-    ticketable_type == 'FreeAppForm'
+  def free_application?
+    ticketable_type == 'FreeApplication'
   end
 end
