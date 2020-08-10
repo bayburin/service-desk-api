@@ -72,7 +72,7 @@ class ServicePolicy < ApplicationPolicy
         serialize: [
           '*', 'questions.ticket.service', 'questions.ticket.*', 'questions.answers.attachments', 'questions.correction.*',
           'questions.correction.answers.attachments', 'questions.correction.ticket.responsible_users',
-          'questions.correction.ticket.tags'
+          'questions.correction.ticket.tags', 'app_templates.ticket.service', 'app_templates.ticket.*'
         ]
       )
     elsif user.role?(:operator)
@@ -81,14 +81,17 @@ class ServicePolicy < ApplicationPolicy
         sql_include: [ticket: %i[service responsible_users]],
         serialize: [
           'category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.ticket.responsible_users',
-          'questions.ticket.service'
+          'questions.ticket.service', 'app_templates.ticket.service', 'app_templates.ticket.*'
         ]
       )
     else
       PolicyAttributes.new(
         serializer: Api::V1::Services::ServiceGuestSerializer,
         sql_include: [ticket: :service],
-        serialize: ['category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.*']
+        serialize: [
+          'category', 'questions.ticket.service', 'questions.answers.attachments', 'questions.*', 'app_templates.ticket.service',
+          'app_templates.ticket.*'
+        ]
       )
     end
   end

@@ -4,6 +4,7 @@ class Service < ApplicationRecord
 
   has_many :tickets, dependent: :destroy
   has_many :questions, through: :tickets, source: :ticketable, source_type: 'Question'
+  has_many :app_templates, through: :tickets, source: :ticketable, source_type: 'AppTemplate'
   has_many :responsible_users, as: :responseable, dependent: :destroy
 
   belongs_to :category
