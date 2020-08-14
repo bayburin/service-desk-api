@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_07_035752) do
+ActiveRecord::Schema.define(version: 2020_08_14_061720) do
 
   create_table "ahoy_events", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "visit_id"
@@ -152,6 +152,14 @@ ActiveRecord::Schema.define(version: 2020_08_07_035752) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "template_works", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "app_template_id", null: false
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_template_id"], name: "index_template_works_on_app_template_id"
+  end
+
   create_table "ticket_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "ticket_id", null: false
     t.bigint "tag_id", null: false
@@ -210,6 +218,7 @@ ActiveRecord::Schema.define(version: 2020_08_07_035752) do
   add_foreign_key "answer_attachments", "answers"
   add_foreign_key "answers", "questions"
   add_foreign_key "services", "categories"
+  add_foreign_key "template_works", "app_templates"
   add_foreign_key "ticket_tags", "tags"
   add_foreign_key "ticket_tags", "tickets"
   add_foreign_key "tickets", "services"
