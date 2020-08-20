@@ -5,7 +5,7 @@ module Api
     RSpec.describe Runtime, type: :model do
       let(:starttime) { Time.zone.now }
       let(:endtime) { Time.zone.now + 4.days }
-      let(:time) { (Time.zone.now + 2.days).to_i }
+      let(:time) { Time.zone.now + 2.days }
       subject { Runtime.new(starttime: starttime, endtime: endtime, time: time) }
 
       describe '#alive?' do
@@ -45,7 +45,7 @@ module Api
 
         context 'when :alive?' do
           let(:endtime) { nil }
-          let(:time_s) { DateTime.strptime(time.to_s, '%s').strftime('%d.%m.%Y') }
+          let(:time_s) { time.strftime('%d.%m.%Y') }
 
           it 'adds :time to result' do
             expect(subject.to_s).to eq "#{starttime_s} - #{time_s}"

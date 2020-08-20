@@ -22,7 +22,7 @@ class App
   attribute :status, String
   attribute :starttime, DateTime
   attribute :endtime, DateTime
-  attribute :time, DateTime
+  attribute :time, Api::V1::Timestamp
   attribute :sla, Integer
   attribute :accs, Array[Integer]
   attribute :runtime, Api::V1::Runtime

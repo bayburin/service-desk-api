@@ -15,6 +15,7 @@ namespace :deploy do
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
       invoke 'unicorn:stop'
+      sleep 1
       invoke 'unicorn:start'
     end
   end

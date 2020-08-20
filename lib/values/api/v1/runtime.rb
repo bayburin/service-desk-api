@@ -11,7 +11,7 @@ module Api
       values do
         attribute :starttime, DateTime
         attribute :endtime, DateTime
-        attribute :time, Timestamp
+        attribute :time, DateTime
       end
 
       def alive?
