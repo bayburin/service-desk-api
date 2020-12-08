@@ -1,7 +1,7 @@
 namespace :reports do
   desc 'Создать xls файл со списком всех вопросов и списком ответственных'
   task question_list: :environment do
-    questions = Ticket.where(ticket_type: :question).includes(:responsible_users, :tags, :service)
+    questions = Question.includes(ticket: [:responsible_users, :tags, :service])
 
     tns = []
     questions.find_each { |q| q.responsible_users.each { |u| tns << u.tn } }
@@ -20,7 +20,7 @@ namespace :reports do
         dept = (%w[712 713 714 715] & tags).first || (user_info.any? ? user_info.first.dept : '')
         user_info.map!(&:full_name)
         # Услуга, вопрос, теги
-        result = [q.service.name, q.name, dept.to_i, tags.join(', ')]
+        result = [q.service.name, q.ticket.name, dept.to_i, tags.join(', ')]
         result += user_info
 
         file << result
