@@ -33,13 +33,13 @@ class App
   alias_attribute :invent_num, :host_id
 
   def runtime
-    Api::V1::Runtime.new(starttime: starttime, endtime: endtime, time: time)
+    Api::V1::Runtime.new(starttime: starttime, endtime: endtime, time: Time.at(time.to_i))
   end
 
   def runtime=(runtime)
     self.starttime = runtime.starttime
     self.endtime = runtime.endtime
-    self.time = runtime.time
+    self.time = runtime.time.to_i
 
     super(runtime)
   end

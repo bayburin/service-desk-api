@@ -124,7 +124,7 @@ module Api
         end
 
         it 'calls QuestionChangedWorker worker with id of ticket' do
-          expect(QuestionChangedWorker).to receive(:perform_async).with(question.id, subject.current_user.tn, 'update', nil)
+          expect(QuestionChangedWorker).to receive(:perform_async).with(question.ticket.id, subject.current_user.tn, 'update', nil)
 
           put :update, params: params, format: :json
         end

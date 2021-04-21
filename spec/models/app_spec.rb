@@ -27,13 +27,20 @@ RSpec.describe App, type: :model do
   end
 
   describe '#runtime=' do
-    let!(:current_time) { Time.zone.now }
+    let!(:current_time) { Time.parse('Wed, 21 Apr 2021 11:48:01 +07 +07:00') }
     let!(:starttime) { current_time - 10.days }
     let!(:endtime) { current_time + 10.days }
     let!(:time) { current_time.change(usec: 0) }
-    let!(:runtime) { Api::V1::Runtime.new(starttime: starttime, endtime: endtime, time: time.to_i) }
+    let!(:runtime) { Api::V1::Runtime.new(starttime: starttime, endtime: endtime, time: time) }
+    before do
+      subject.runtime = runtime
+    end
 
-    before { subject.runtime = runtime }
+    # it 'test' do
+    #   p time
+    #   p subject.time
+    #   expect(subject.time).to eq time
+    # end
 
     %i[starttime endtime time].each do |attr|
       it "changes :#{attr} attribute" do
