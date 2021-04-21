@@ -5,7 +5,7 @@ RSpec.describe AuthCenterStrategy, type: :request do
     let!(:user) { create(:user) }
     let(:access_token) { 'my_access_token' }
     let(:headers) { { Authorization: "Bearer #{access_token}" }.as_json }
-    let(:access_token) { 'my_token' }
+    # let(:access_token) { 'my_token' }
     before { Api::V1::AuthCenter::AccessToken.set(access_token, user.as_json) }
 
     it 'call #authenticate method for User' do
