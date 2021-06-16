@@ -59,7 +59,7 @@ Rails.application.routes.draw do
         resources :answer_attachments, only: :show
       end
       resources :services, only: :index
-      resources :tickets, only: :show do
+      resources :tickets, only: [:index, :show] do
         get '/identity/:identity_id', to: 'tickets#show_by_identity', on: :collection
       end
     end
