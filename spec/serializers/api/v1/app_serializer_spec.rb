@@ -6,7 +6,7 @@ module Api
       let(:app) { build(:app) }
       subject { AppSerializer.new(app) }
 
-      %w[case_id service_id ticket_id user_tn id_tn user_info host_id item_id desc phone email mobile status_id status runtime service ticket rating].each do |attr|
+      %w[case_id service_id ticket_id user_tn id_tn user_info host_id item_id barcode desc phone email mobile status_id status runtime service ticket rating].each do |attr|
         it "has #{attr} attribute" do
           expect(subject.to_json).to have_json_path(attr)
         end

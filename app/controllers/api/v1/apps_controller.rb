@@ -59,6 +59,7 @@ module Api
           :without_item,
           :service_id,
           :item_id,
+          :barcode,
           :invent_num,
           :rating,
           additional: [:comment],

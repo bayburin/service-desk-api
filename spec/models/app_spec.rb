@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe App, type: :model do
-  app_attributes = %i[case_id service_id ticket_id user_tn id_tn user_info host_id item_id desc phone email mobile status_id status starttime endtime time rating]
+  app_attributes = %i[case_id service_id ticket_id user_tn id_tn user_info host_id item_id barcode desc phone email mobile status_id status starttime endtime time rating]
 
   app_attributes.each do |attr|
     it { is_expected.to respond_to(attr) }

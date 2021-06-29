@@ -19,6 +19,7 @@ FactoryBot.define do
     ticket { nil }
     host_id { 765_300 }
     item_id { 123 }
+    barcode { 456 }
     desc { Faker::Quote.famous_last_words }
     mobile { Faker::PhoneNumber.phone_number }
     without_service { false }
@@ -46,5 +47,3 @@ FactoryBot.define do
     end
   end
 end
-
-
