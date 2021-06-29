@@ -14,6 +14,7 @@ class App
   attribute :user_info, String
   attribute :host_id, String
   attribute :item_id, Integer
+  attribute :barcode, Integer
   attribute :desc, String
   attribute :phone, String
   attribute :email, String
