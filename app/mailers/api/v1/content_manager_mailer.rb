@@ -32,7 +32,7 @@ module Api
         @question = QuestionDecorator.new(ticket.ticketable)
         @current_user = current_user
         @origin = origin
-        @updated_date = ticket.published_state? ? @question.correction.updated_at : @question.updated_at
+        @updated_date = ticket.published_state? ? @question.updated_at : @question.correction.updated_at
 
         mail(
           to: "#{delivery_user.details.full_name} <#{delivery_user.details.email}>",
