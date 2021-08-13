@@ -1,7 +1,7 @@
 module Api
   module V2
     class TicketOrbitaSerializer < ActiveModel::Serializer
-      attributes :id, :identity, :service_id, :name, :ticketable_id, :ticketable_type, :state, :responsible_users
+      attributes :id, :identity, :service_id, :name, :ticketable_id, :ticketable_type, :sla, :state, :responsible_users
 
       belongs_to :service, serializer: ServiceOrbitaSerializer
 
